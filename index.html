@@ -535,6 +535,239 @@ html[data-js="on"] .noscript{display:none}
   body{background:#fff;color:#000}
   .card{break-inside:avoid;box-shadow:none}
 }
+/* ==========================================================================
+   16. Capa urbana — tipografía dura, textura de asfalto y movimiento
+   ========================================================================== */
+:root{
+  --f-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;
+  --grain:rgba(0,0,0,.15);
+  --edge:#0D0F12;
+  --accent:#E43A0B; --accent-hover:#BF3007; --accent-soft:#FFE7DE;
+  --bg:#E9E9E4; --surface-2:#F4F4EF; --line:#C7C7C0; --line-soft:#DCDCD5;
+  --radius:4px; --radius-sm:3px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --grain:rgba(255,255,255,.09); --edge:#3A4049;
+    --accent:#FF6A3D; --accent-hover:#FF8358; --accent-soft:#2A1710;
+    --bg:#08090B; --surface:#121417; --surface-2:#0D0F12; --line:#272B31; --line-soft:#1F2328;
+    --deep:#050608; --deep-2:#040507; --deep-line:#23272D;
+  }
+}
+:root[data-theme="dark"]{
+  --grain:rgba(255,255,255,.09); --edge:#3A4049;
+  --accent:#FF6A3D; --accent-hover:#FF8358; --accent-soft:#2A1710;
+  --bg:#08090B; --surface:#121417; --surface-2:#0D0F12; --line:#272B31; --line-soft:#1F2328;
+  --deep:#050608; --deep-2:#040507; --deep-line:#23272D;
+}
+
+/* 16.1 Asfalto: retícula tenue + grano fino --------------------------------- */
+body{
+  background-color:var(--bg);
+  background-image:
+    repeating-linear-gradient(90deg,rgba(0,0,0,.028) 0 1px,transparent 1px 104px),
+    radial-gradient(120% 80% at 50% -10%,rgba(255,255,255,.05),transparent 62%);
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;
+  background-image:radial-gradient(var(--grain) .6px,transparent .6px);
+  background-size:4px 4px;
+}
+
+/* 16.2 Etiquetas, títulos y numeración ------------------------------------- */
+.eyebrow,.card .brand-line,.tool > label,.field > label,.legal,.demo-note,.data-note,.tick-set{
+  font-family:var(--f-mono);letter-spacing:.17em;
+}
+.eyebrow::before{content:"// ";opacity:.75}
+.hero .eyebrow{
+  display:inline-block;background:var(--accent);color:var(--accent-ink);
+  padding:.34rem .6rem;transform:rotate(-2deg);
+  box-shadow:3px 3px 0 rgba(0,0,0,.45);letter-spacing:.14em;
+}
+.hero .eyebrow::before{content:"";display:none}
+.sec-head h2{position:relative;padding-bottom:.6rem}
+.sec-head h2::after{
+  content:"";position:absolute;left:0;bottom:0;width:66px;height:5px;
+  background:var(--accent);transform:skewX(-20deg);transform-origin:0 50%;
+}
+
+/* 16.3 Cabecera translúcida, progreso de lectura y marquesina -------------- */
+.top{
+  background:linear-gradient(180deg,rgba(6,8,10,.95),rgba(6,8,10,.82));
+  -webkit-backdrop-filter:blur(14px) saturate(140%);
+  backdrop-filter:blur(14px) saturate(140%);
+}
+.nav a{position:relative}
+.nav a::after{
+  content:"";position:absolute;left:.55rem;right:.55rem;bottom:.12rem;height:2px;
+  background:var(--accent);transform:scaleX(0);transform-origin:0 50%;
+  transition:transform .25s ease;
+}
+.nav a:hover::after{transform:scaleX(1)}
+.progress{display:none}
+@supports (animation-timeline:scroll()){
+  .progress{
+    display:block;position:fixed;inset:0 0 auto;height:3px;z-index:70;
+    background:var(--accent);transform-origin:0 50%;transform:scaleX(0);
+    animation:progressGrow linear both;animation-timeline:scroll(root block);
+  }
+}
+@keyframes progressGrow{to{transform:scaleX(1)}}
+.ticker{
+  background:var(--accent);color:var(--accent-ink);overflow:hidden;
+  border-bottom:1px solid rgba(0,0,0,.18);position:relative;z-index:2;
+}
+.ticker-track{display:flex;width:max-content;animation:marquee 32s linear infinite}
+.ticker:hover .ticker-track,.ticker:focus-within .ticker-track{animation-play-state:paused}
+.tick-set{
+  display:flex;align-items:center;padding-block:.5rem;
+  font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.22em;
+}
+.tick-set b{font-weight:700;display:inline-flex;align-items:center;white-space:nowrap}
+.tick-set b::after{content:"◆";margin:0 1.15rem;font-size:.72em;opacity:.5}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* 16.4 Portada: titular recortado, sticker y paralaje ---------------------- */
+.hero::after{
+  content:"35";position:absolute;right:-.06em;bottom:-.24em;z-index:0;pointer-events:none;
+  font-family:var(--f-display);font-weight:800;letter-spacing:-.02em;line-height:.7;
+  font-size:clamp(11rem,24vw,21rem);color:transparent;
+  -webkit-text-stroke:2px rgba(255,255,255,.08);
+}
+.hero h1{font-size:clamp(2.7rem,8vw,6rem);letter-spacing:-.015em;max-width:15ch}
+.hero h1 em{color:var(--accent);text-shadow:4px 4px 0 rgba(0,0,0,.4)}
+@supports (-webkit-text-stroke:1px #000){
+  .hero h1 em{color:transparent;-webkit-text-stroke:2.5px var(--accent);text-shadow:none}
+}
+.stats{border-top:1px solid rgba(255,255,255,.16);padding-top:1rem}
+.stats strong{font-size:clamp(2rem,4.6vw,2.6rem);letter-spacing:-.01em}
+.hero-cta .btn{box-shadow:5px 5px 0 rgba(0,0,0,.5)}
+.hero-art{width:min(480px,38vw)}
+.hero-art img{-webkit-mask-image:linear-gradient(to right,transparent 0,#000 17%);mask-image:linear-gradient(to right,transparent 0,#000 17%)}
+.hero-art::after{
+  content:"JULIACA · PUNO";position:absolute;left:6%;bottom:8%;
+  font-family:var(--f-mono);font-size:.62rem;letter-spacing:.22em;
+  color:#fff;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.28);
+  padding:.28rem .5rem;transform:rotate(-3deg);
+}
+@keyframes pulseGlow{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:1;transform:scale(1.07)}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes parallaxHero{to{translate:0 -46px}}
+@media (prefers-reduced-motion:no-preference){
+  .hero-art::before{animation:pulseGlow 6s ease-in-out infinite}
+}
+@media (prefers-reduced-motion:no-preference) and (min-width:761px){
+  .hero-art img{animation:floaty 7s ease-in-out infinite}
+}
+@supports (animation-timeline:scroll()){
+  .hero-art{animation:parallaxHero linear both;animation-timeline:scroll(root block);animation-range:0 70vh}
+}
+
+/* 16.5 Controles con carácter --------------------------------------------- */
+.btn{
+  position:relative;overflow:hidden;border-radius:2px;letter-spacing:.09em;
+  transition:transform .16s ease,box-shadow .16s ease,background .16s ease,border-color .16s ease;
+}
+.btn::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);
+  transform:translateX(-130%);transition:transform .65s ease;
+}
+.btn:hover::before{transform:translateX(130%)}
+.btn:not(.ghost):not(.on-deep){box-shadow:4px 4px 0 rgba(0,0,0,.5)}
+.btn:not(.ghost):not(.on-deep):hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 rgba(0,0,0,.5)}
+.btn:not(.ghost):not(.on-deep):active{transform:translate(1px,1px);box-shadow:2px 2px 0 rgba(0,0,0,.5)}
+.icon-btn{border-radius:2px;transition:transform .15s ease,background .15s ease,border-color .15s ease}
+.icon-btn:hover{transform:translateY(-2px)}
+.chip{
+  border-radius:2px;border:1.5px solid var(--edge);text-transform:uppercase;
+  font-family:var(--f-mono);font-size:.74rem;letter-spacing:.08em;
+  transition:transform .16s ease,background .16s ease,color .16s ease,border-color .16s ease;
+}
+.chip:hover{transform:translateY(-2px)}
+.style-btn{border:1.5px solid var(--edge);border-radius:2px;overflow:hidden}
+.style-btn::after{
+  content:"";position:absolute;left:0;bottom:0;height:4px;width:100%;background:var(--accent);
+  transform:scaleX(0);transform-origin:0 50%;transition:transform .28s ease;
+}
+.style-btn:hover::after{transform:scaleX(1)}
+
+/* 16.6 Tarjetas del catálogo ----------------------------------------------- */
+.grid{counter-reset:moto}
+.card{
+  position:relative;counter-increment:moto;border:1.5px solid var(--edge);border-radius:2px;
+  transition:transform .22s cubic-bezier(.2,.7,.2,1),box-shadow .22s ease,border-color .22s ease;
+}
+.card:hover{transform:translate(-3px,-5px);box-shadow:7px 9px 0 var(--accent);border-color:var(--edge)}
+.card .body{position:relative}
+.card .body::after{
+  content:counter(moto,decimal-leading-zero);position:absolute;top:.5rem;right:1rem;
+  font-family:var(--f-mono);font-size:.66rem;letter-spacing:.1em;color:var(--muted);opacity:.6;
+}
+.art{border-bottom:1.5px solid var(--line-soft);padding:.35rem}
+.art::before{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;
+  background:linear-gradient(115deg,transparent 32%,rgba(255,120,60,.28) 50%,transparent 68%);
+  transform:translateX(-120%);transition:transform .7s ease,opacity .3s ease;
+}
+.card:hover .art::before{transform:translateX(120%);opacity:1}
+.art .tag{
+  border-radius:2px;transform:rotate(-1.8deg);font-family:var(--f-mono);
+  letter-spacing:.13em;box-shadow:2px 2px 0 rgba(0,0,0,.25);transition:transform .25s ease;
+}
+.card:hover .art .tag{transform:rotate(0) scale(1.04)}
+.bike-img{transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.card:hover .bike-img{transform:scale(1.045) rotate(-.4deg)}
+.card h3 button{
+  background-image:linear-gradient(var(--accent),var(--accent));
+  background-size:0 2px;background-position:0 100%;background-repeat:no-repeat;
+  transition:background-size .28s ease,color .2s ease;
+}
+.card h3 button:hover{background-size:100% 2px;color:var(--accent);text-decoration:none}
+.specs span{border:1px solid var(--line-soft);font-variant-numeric:tabular-nums}
+
+/* 16.7 Financiamiento, paneles, pie --------------------------------------- */
+.fin::after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;
+  background-image:
+    linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px),
+    linear-gradient(0deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:76px 76px;
+}
+.panel{border:1.5px solid var(--edge);border-radius:2px}
+.sim{border-top:4px solid var(--accent);border-radius:2px}
+.result{border-left:4px solid var(--accent)}
+footer{border-top:3px solid var(--accent)}
+.cmp-bar{border-top:3px solid var(--accent)}
+.toast{border-radius:2px;border:1.5px solid var(--accent)}
+.modal-box{border-radius:2px;border-top:4px solid var(--accent)}
+
+/* 16.8 Movimiento: revelado escalonado y microinteracciones ---------------- */
+@keyframes riseIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.28)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:no-preference){
+  .reveal{opacity:0}
+  .reveal.is-in{
+    opacity:1;animation:riseIn .62s cubic-bezier(.2,.7,.2,1) backwards;
+    animation-delay:calc(var(--i,0)*55ms);
+  }
+  .art .heart[aria-pressed="true"]{animation:pop .32s ease}
+  .card:focus-within{box-shadow:7px 9px 0 var(--accent)}
+}
+@media (prefers-reduced-motion:reduce){
+  .ticker-track,.hero-art img,.hero-art::before,.progress{animation:none!important}
+  .reveal,.reveal.is-in{opacity:1!important;transform:none!important;animation:none!important}
+}
+@media (hover:none){
+  .card:hover{transform:none;box-shadow:var(--shadow-sm)}
+  .card:hover .bike-img{transform:none}
+  .card:hover .art::before{opacity:0}
+}
+@media print{
+  .ticker,.progress,body::after{display:none!important}
+  .card{box-shadow:none!important;transform:none!important}
+  .reveal,.reveal.is-in{opacity:1!important;transform:none!important;animation:none!important}
+}
 </style>
 </head>
 <body>
@@ -718,6 +951,24 @@ function Heart(p){
     title:p.on?'Quitar de favoritas':'Agregar a favoritas',
     onClick:function(e){e.stopPropagation();p.onClick()}
   },h('svg',{viewBox:'0 0 24 24',width:20,height:20,fill:p.on?'currentColor':'none',stroke:'currentColor',strokeWidth:2,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':'true',focusable:'false'},h('path',{d:P.heart})));
+}
+
+/* Cifra que sube desde 0 al montar (respeta movimiento reducido). */
+function CountUp(p){
+  var st=useState(reduced()?p.to:0), v=st[0], setV=st[1];
+  useEffect(function(){
+    if(reduced()){setV(p.to);return;}
+    var t0=null, raf=0, dur=p.dur||950, target=p.to;
+    function step(t){
+      if(t0===null)t0=t;
+      var k=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-k,3);
+      setV(target*e);
+      raf=k<1?requestAnimationFrame(step):0;
+    }
+    raf=requestAnimationFrame(step);
+    return function(){if(raf)cancelAnimationFrame(raf)};
+  },[p.to]);
+  return h(React.Fragment,null,p.format?p.format(v):String(Math.round(v)));
 }
 
 function Art(p){
@@ -1006,9 +1257,9 @@ function App(){
       h('h1',null,'La moto que buscas, ',h('em',null,'la tenemos')),
       h('p',{className:'sub'},'Precio, ficha técnica y cuota estimada en un solo lugar. '+MOTOS.length+' modelos de '+brands.length+' marcas para elegir con calma y sin vueltas.'),
       h('ul',{className:'stats'},
-        h('li',null,h('strong',null,MOTOS.length),h('span',null,'modelos')),
-        h('li',null,h('strong',null,brands.length),h('span',null,'marcas')),
-        h('li',null,h('strong',null,money(minCuota,cur)),h('span',null,'cuota desde'))),
+        h('li',null,h('strong',null,h(CountUp,{to:MOTOS.length})),h('span',null,'modelos')),
+        h('li',null,h('strong',null,h(CountUp,{to:brands.length})),h('span',null,'marcas')),
+        h('li',null,h('strong',null,h(CountUp,{to:minCuota,format:function(v){return money(v,cur)}})),h('span',null,'cuota desde'))),
       h('div',{className:'hero-cta'},
         h('a',{className:'btn',href:'#catalogo'},'Ver catálogo'),
         h('a',{className:'btn on-deep',href:'#financiamiento'},'Calcular mi cuota')),
@@ -1323,11 +1574,54 @@ function App(){
 
   var toastEl=toast?h('div',{className:'toast',role:'status'},h(Icon,{d:[P.check],size:18}),h('span',null,toast)):null;
 
+  /* Marquesina de marcas: el bloque se duplica para que el bucle sea continuo. */
+  var tickBrands=[];
+  MOTOS.forEach(function(m){if(tickBrands.indexOf(m.brand)<0)tickBrands.push(m.brand)});
+  var tickItems=tickBrands.map(function(b){return h('b',{key:b},b)});
+  var ticker=h('div',{className:'ticker','aria-hidden':'true'},
+    h('div',{className:'ticker-track'},
+      h('span',{className:'tick-set'},tickItems),
+      h('span',{className:'tick-set'},tickItems)));
+
+  /* Revelado progresivo al hacer scroll: observa tarjetas y bloques nuevos. */
+  useEffect(function(){
+    var sel='.card,.sec-head,.panel,.style-btn,.brands';
+    if(reduced()||!('IntersectionObserver' in window)){
+      var plain=document.querySelectorAll(sel);
+      for(var a=0;a<plain.length;a++)plain[a].classList.add('reveal','is-in');
+      return;
+    }
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){en.target.classList.add('is-in');io.unobserve(en.target);}
+      });
+    },{rootMargin:'0px 0px -6% 0px',threshold:.06});
+    var raf=0;
+    function scan(){
+      var els=document.querySelectorAll(sel);
+      var n=0;
+      for(var j=0;j<els.length;j++){
+        if(els[j].classList.contains('reveal'))continue;
+        els[j].classList.add('reveal');
+        els[j].style.setProperty('--i',String(Math.min(n,7)));
+        io.observe(els[j]);
+        n++;
+      }
+    }
+    function schedule(){if(!raf)raf=requestAnimationFrame(function(){raf=0;scan();});}
+    scan();
+    var root=document.getElementById('root');
+    var mo=root?new MutationObserver(schedule):null;
+    if(mo)mo.observe(root,{childList:true,subtree:true});
+    return function(){io.disconnect();if(mo)mo.disconnect();cancelAnimationFrame(raf);};
+  },[]);
+
   var modalOpen=!!dm||(!!cmpOpen&&cmp.length>=2);
   return h(React.Fragment,null,
+    h('div',{className:'progress','aria-hidden':'true'}),
     h('div',{inert:modalOpen?'':undefined,'aria-hidden':modalOpen?'true':undefined},
       header,
-      h('main',null,heroShell(finder),stylesSec,brandsSec,catalog,fin,panels),
+      h('main',null,ticker,heroShell(finder),stylesSec,brandsSec,catalog,fin,panels),
       footer,
       bar),
     detailView,
