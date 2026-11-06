@@ -15,6 +15,7 @@
 <meta property="og:description" content="35 modelos de 11 marcas con precio, ficha técnica, comparador y simulador de crédito.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23101B25'/%3E%3Cpath d='M9 23 23 9' stroke='%23FF6A3D' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preload" as="image" href="assets/hero-duke.webp" type="image/webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Saira+Extra+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
@@ -202,14 +203,11 @@ button{cursor:pointer}
   content:"";position:absolute;inset:auto 0 0;height:60%;pointer-events:none;
   background:repeating-linear-gradient(115deg,rgba(255,255,255,.04) 0 1px,transparent 1px 14px);
 }
-.hero-inner{position:relative}
-.hero-art{
-  --ink:#fff;position:absolute;right:max(-70px,-4vw);top:0;
-  width:min(620px,54vw);opacity:.15;pointer-events:none;
-  -webkit-mask-image:linear-gradient(to left,#000 40%,transparent 100%);
-  mask-image:linear-gradient(to left,#000 40%,transparent 100%);
-}
-.hero-art svg{width:100%;height:auto;display:block}
+.hero-inner{position:relative;z-index:1}
+.hero-art{position:absolute;right:0;top:.6rem;width:min(520px,44vw);pointer-events:none;z-index:0}
+.hero-art::before{content:"";position:absolute;inset:-14%;background:radial-gradient(closest-side,rgba(255,122,77,.3),rgba(255,122,77,0) 72%)}
+.hero-art img{position:relative;width:100%;height:auto;display:block;filter:drop-shadow(0 30px 48px rgba(0,0,0,.55))}
+@media (max-width:760px){.hero-art{display:none}}
 .hero h1{font-size:clamp(2.7rem,8vw,5.6rem);max-width:15ch}
 .hero h1 em{font-style:normal;color:var(--accent)}
 .hero .sub{color:var(--deep-muted);font-size:clamp(1rem,2.2vw,1.13rem);margin-top:1rem;max-width:48ch}
@@ -325,7 +323,9 @@ section[id]{scroll-margin-top:calc(var(--header-real,var(--header-h)) + 16px)}
   background:linear-gradient(160deg,var(--chip) 0%,var(--surface-2) 100%);
 }
 .art svg{width:94%;height:auto;display:block}
-.art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;padding:0}
+.art.has-photo{background:linear-gradient(170deg,#FFFFFF 0%,#F4F6F8 58%,#E7ECF0 100%)}
+.art.has-photo .bike-img{width:100%;height:100%;object-fit:contain;padding:4% 6%;filter:drop-shadow(0 12px 20px rgba(16,27,37,.13))}
+.art img.upload-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;padding:0}
 .art .tag{
   position:absolute;left:.6rem;top:.6rem;z-index:2;
   background:var(--deep);color:var(--deep-ink);font-size:.66rem;letter-spacing:.1em;
@@ -516,7 +516,6 @@ html[data-js="on"] .noscript{display:none}
   .nav::-webkit-scrollbar{display:none}
   .nav .pill-btn{margin-left:0}
   .top-actions{order:2}
-  .hero-art{opacity:.09;width:82vw;right:-25%}
   .toolbar .count{margin-right:0;width:100%}
 }
 @media (max-width:560px){
@@ -608,6 +607,29 @@ var MOTOS=D.map(function(r,i){
   return {id:i+1,brand:r[0],model:r[1],year:r[2],type:r[3],cc:r[4],pw:r[5],price:r[6],cur:r[7],style:r[8],color:BCOL[r[0]]||'#555',kind:KIND[r[3]]||'naked'};
 });
 var BYID={}; MOTOS.forEach(function(m){BYID[m.id]=m});
+/* Fotografías de producto de los sitios oficiales de cada marca (ver pie de
+   página). Los modelos sin foto oficial conservan la ilustración vectorial. */
+var PHOTOS={
+  1:'assets/honda-dio.webp',
+  2:'assets/honda-elite.webp',
+  3:'assets/honda-xr190l.webp',
+  4:'assets/yamaha-yb125.webp',
+  6:'assets/yamaha-fzx.webp',
+  7:'assets/yamaha-fzs400.webp',
+  8:'assets/yamaha-xtz150.webp',
+  9:'assets/yamaha-r15.webp',
+  20:'assets/ktm-duke200.webp',
+  21:'assets/ktm-duke250.webp',
+  22:'assets/re-hunter350.webp',
+  23:'assets/re-classic350.webp',
+  24:'assets/re-meteor350.webp',
+  25:'assets/re-himalayan450.webp',
+  26:'assets/re-interceptor650.webp',
+  27:'assets/re-bear650.webp',
+  28:'assets/re-supermeteor650.webp',
+  29:'assets/suzuki-gn125.webp',
+  30:'assets/suzuki-gsx125.webp'
+};
 var STYLES=[
   {k:'trabajo',n:'Full chamba',d:'Máxima economía para largas jornadas'},
   {k:'ciudad',n:'Callejero',d:'El tráfico no existe para ti'},
@@ -622,6 +644,7 @@ var CC_OPTS=[
   {v:'201-400',l:'201 a 400 cc'},{v:'401-1000',l:'Más de 400 cc'}
 ];
 var SORTS=[
+  {v:'featured',l:'Recomendadas primero'},
   {v:'price-asc',l:'Precio: menor a mayor'},{v:'price-desc',l:'Precio: mayor a menor'},
   {v:'cc-desc',l:'Cilindrada: mayor a menor'},{v:'year-desc',l:'Modelos más nuevos'},{v:'name',l:'Marca y modelo (A-Z)'}
 ];
@@ -698,16 +721,22 @@ function Heart(p){
 }
 
 function Art(p){
-  var m=p.m, src=p.src;
-  return h('div',{className:'art'+(p.large?' art-lg':'')},
-    src
-      ? h('img',{src:src,alt:'Foto de '+m.brand+' '+m.model,decoding:'async',loading:'lazy'})
+  var m=p.m, upload=p.src, photo=upload||PHOTOS[m.id];
+  var cls='art'+(p.large?' art-lg':'')+(photo?' has-photo':'');
+  return h('div',{className:cls},
+    photo
+      ? h('img',{
+          className:upload?'upload-img':'bike-img',
+          src:photo,
+          alt:(upload?'Foto subida de ':'Fotografía de ')+m.brand+' '+m.model,
+          decoding:'async',loading:'lazy',width:900,height:620
+        })
       : h(Illustration,{m:m}),
     h('span',{className:'tag'},m.type),
     p.onFav?h(Heart,{on:p.fav,label:m.brand+' '+m.model,onClick:p.onFav}):null,
     p.onUpload?h('label',{className:'photo-btn',title:'Sube una foto de esta moto; se guarda en tu navegador'},
       h(Icon,{d:[P.camera],size:14}),
-      h('span',null,src?'Cambiar':'Foto'),
+      h('span',null,upload?'Cambiar':'Foto'),
       h('input',{type:'file',accept:'image/*',onChange:function(e){var file=e.target.files&&e.target.files[0];if(file)p.onUpload(m.id,file);e.target.value=''}})
     ):null
   );
@@ -755,7 +784,7 @@ function App(){
   var _rt=useState(String(rate)), rateTxt=_rt[0], setRateTxt=_rt[1];
   var _th=useState(lsGet('ma_theme','auto')), theme=_th[0], setTheme=_th[1];
   var _f=useState({max:MAXP,cc:'all',type:'all',text:'',style:null,brand:null,favs:false}), f=_f[0], setF=_f[1];
-  var _s=useState('price-asc'), sort=_s[0], setSort=_s[1];
+  var _s=useState('featured'), sort=_s[0], setSort=_s[1];
   var _n=useState(PAGE), shown=_n[0], setShown=_n[1];
   var _fv=useState(function(){
     var v=lsGet('ma_favs',[]);
@@ -880,6 +909,11 @@ function App(){
       return true;
     });
     out.sort(function(a,b){
+      if(sort==='featured'){
+        var pa=PHOTOS[a.id]?0:1, pb=PHOTOS[b.id]?0:1;
+        if(pa!==pb) return pa-pb;
+        return conv(a,'PEN',rate)-conv(b,'PEN',rate);
+      }
       if(sort==='price-asc') return conv(a,'PEN',rate)-conv(b,'PEN',rate);
       if(sort==='price-desc') return conv(b,'PEN',rate)-conv(a,'PEN',rate);
       if(sort==='cc-desc') return b.cc-a.cc;
@@ -965,7 +999,8 @@ function App(){
 
   /* --- Portada ----------------------------------------------------------- */
   var heroShell=function(finderEl){return h('section',{className:'hero',id:'inicio'},
-    h('div',{className:'hero-art','aria-hidden':'true'},h(Illustration,{m:{brand:'moto',model:'deportiva',color:'#fff',kind:'naked'}})),
+    h('div',{className:'hero-art','aria-hidden':'true'},
+      h('img',{src:'assets/hero-duke.webp',alt:'',width:918,height:604,decoding:'async',fetchpriority:'high'})),
     h('div',{className:'wrap hero-inner'},
       h('p',{className:'eyebrow'},'Motos nuevas en Juliaca'),
       h('h1',null,'La moto que buscas, ',h('em',null,'la tenemos')),
@@ -1087,7 +1122,7 @@ function App(){
           hasFilters?h('button',{className:'btn',type:'button',onClick:resetFilters},'Limpiar filtros'):null))),
     list.length>shown?h('div',{className:'more'},
       h('button',{className:'btn ghost',type:'button',onClick:function(){setShown(shown+PAGE)}},'Ver más motos ('+(list.length-shown)+')')):null,
-    h('p',{className:'data-note'},'Las fichas técnicas se completan con datos del fabricante cuando el listado público no los trae. La cuota es informativa y no incluye seguros ni gastos de la financiera.') ));
+    h('p',{className:'data-note'},'Fotografías de producto de los sitios oficiales de Honda, Yamaha, KTM, Royal Enfield y Suzuki. Las fichas técnicas se completan con datos del fabricante cuando el listado público no los trae; algunos modelos se muestran con ilustración cuando no hay foto oficial disponible. La cuota es informativa y no incluye seguros ni gastos de la financiera.') ));
 
   /* --- Financiamiento ---------------------------------------------------- */
   var fin=h('section',{className:'fin',id:'financiamiento'},h('div',{className:'wrap fin-grid'},
@@ -1201,7 +1236,8 @@ function App(){
         h('p',null,h('a',{href:'#inicio'},'Volver arriba')))),
     h('div',{className:'legal'},
       h('p',null,'© 2026 Moto Altiplano. Las marcas y modelos pertenecen a sus respectivos dueños.'),
-      h('p',null,'Sitio de demostración. Precios referenciales y sujetos a cambio sin previo aviso.'))));
+      h('p',null,'Sitio de demostración. Precios referenciales y sujetos a cambio sin previo aviso.'),
+      h('p',null,'Fotografías de producto: sitios oficiales de Honda, Yamaha, KTM, Royal Enfield y Suzuki. Marcas y modelos pertenecen a sus dueños; estas imágenes se usan como referencia visual en una demo.'))));
 
   /* --- Ficha de la moto -------------------------------------------------- */
   var dm=detail?BYID[detail]:null;
