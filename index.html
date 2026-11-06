@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Moto Altiplano — Motos nuevas, precios y financiamiento en Juliaca</title>
-<meta name="description" content="Catálogo de motos nuevas con precio, ficha técnica y cuota estimada. Compara modelos de Honda, Yamaha, Bajaj, KTM, Royal Enfield y más. Simulador de crédito y SOAT.">
+<meta name="description" content="Catálogo de motos nuevas con precio, ficha técnica y cuota estimada. Compara modelos de Honda, Yamaha, Bajaj, Hero, KTM, Royal Enfield y más. Simulador de crédito y SOAT.">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#EDF0F3" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#101B25" media="(prefers-color-scheme: dark)">
@@ -12,10 +12,9 @@
 <meta property="og:locale" content="es_PE">
 <meta property="og:site_name" content="Moto Altiplano">
 <meta property="og:title" content="Moto Altiplano — Encuentra tu moto nueva">
-<meta property="og:description" content="35 modelos de 11 marcas con precio, ficha técnica, comparador y simulador de crédito.">
+<meta property="og:description" content="36 modelos de 12 marcas con precio, ficha técnica, comparador y simulador de crédito.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23101B25'/%3E%3Cpath d='M9 23 23 9' stroke='%23FF6A3D' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
-<!-- Fuentes de Google para el look de la imagen -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
@@ -24,7 +23,7 @@
    Moto Altiplano — hoja de estilos única
    ========================================================================== */
 
-/* 1. Tokens y Variables (Ajustadas para el nuevo diseño oscuro) --------------- */
+/* 1. Tokens y Variables ---------------------------------------------------- */
 :root{
   color-scheme: light;
   --bg:#EDF0F3;
@@ -55,8 +54,7 @@
   --gutter:clamp(16px,4vw,32px);
   --f-display:'Oswald', sans-serif;
   --f-body:'Montserrat', sans-serif;
-  
-  /* Nuevos colores para el Hero */
+
   --hero-bg: #111;
   --gold: #c79b2f;
   --gold-hover: #b08825;
@@ -119,6 +117,7 @@ button{cursor:pointer}
 .wrap{padding-right:max(var(--gutter),env(safe-area-inset-right,0px))}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .note{font-size:.82rem;color:var(--muted);line-height:1.45}
+.hint{font-size:.78rem;color:var(--muted)}
 .eyebrow{
   font-family: var(--f-body); font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;
   font-weight:700;color:var(--gold);margin-bottom:.5rem;
@@ -173,6 +172,16 @@ button{cursor:pointer}
 }
 .cur button[aria-pressed="true"]{background:var(--gold);color:#fff}
 
+/* Campos de formulario (etiqueta + control) */
+.field{display:grid;gap:.3rem;min-width:0}
+.field > label{font-size:.72rem;letter-spacing:.11em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.field input[type=text],.field input[type=tel],.field input[type=email],.field select{
+  width:100%;min-height:44px;border:1.5px solid var(--line);border-radius:var(--radius-sm);
+  background:var(--surface);padding:.5rem .7rem;color:var(--ink);
+}
+.field input[type=range]{width:100%;accent-color:var(--gold);min-height:32px}
+.field output{color:var(--ink);font-weight:700;letter-spacing:0;text-transform:none}
+
 /* 4. Cabecera -------------------------------------------------------------- */
 .top{
   position:sticky;top:0;z-index:50;
@@ -198,16 +207,31 @@ button{cursor:pointer}
 .top .icon-btn{background:transparent;border-color:rgba(255,255,255,0.2);color:#fff}
 .top .icon-btn:hover{background:rgba(255,255,255,.1);border-color:#fff}
 
-/* 5. Portada (Hero Rediseñado) --------------------------------------------- */
+/* Marquesina de marcas */
+.ticker{overflow:hidden;background:var(--gold);color:#111;border-block:1px solid rgba(0,0,0,.25)}
+.ticker-track{display:flex;width:max-content}
+.tick-set{display:flex;flex:0 0 auto}
+.tick-set b{
+  font-family:var(--f-display);font-weight:700;font-size:.95rem;letter-spacing:.14em;text-transform:uppercase;
+  padding:.5rem 1.4rem;white-space:nowrap;position:relative;
+}
+.tick-set b::after{content:"";position:absolute;right:-.2rem;top:50%;width:.4rem;height:.65rem;background:#111;transform:translateY(-50%) skewX(-18deg);opacity:.5}
+@media (prefers-reduced-motion:no-preference){
+  .ticker-track{animation:tick 38s linear infinite}
+  .ticker:hover .ticker-track{animation-play-state:paused}
+}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* 5. Portada --------------------------------------------------------------- */
 .hero{
   position:relative;
   background-color: var(--hero-bg);
   color: #fff;
-  min-height: 100vh;
+  min-height: calc(100vh - var(--header-real,var(--header-h)));
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-block: 2rem;
+  padding-block: 2rem 4.5rem;
   overflow: hidden;
 }
 .hero-bg {
@@ -270,174 +294,66 @@ button{cursor:pointer}
   color: #fff;
   text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
-.finder-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-.finder-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-.field-dark {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
+.finder-form { display: flex; flex-direction: column; gap: 1.5rem; }
+.finder-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width:480px){ .finder-row{grid-template-columns:1fr} }
+.field-dark { display: flex; flex-direction: column; gap: 0.5rem; }
 .field-dark label {
-  font-size: 0.85rem;
-  color: #ccc;
-  text-transform: uppercase;
-  font-weight: 600;
+  font-size: 0.85rem; color: #ccc; text-transform: uppercase; font-weight: 600;
 }
-.field-dark output {
-  color: #fff;
-  font-weight: 700;
-  float: right;
-}
-/* Estilos de Sliders (Simulando los de la imagen) */
-input[type=range].range-dark {
-  -webkit-appearance: none;
-  width: 100%;
-  background: transparent;
-}
+.field-dark output { color: #fff; font-weight: 700; float: right; }
+input[type=range].range-dark { -webkit-appearance: none; appearance:none; width: 100%; background: transparent; height:22px }
 input[type=range].range-dark::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  height: 16px;
-  width: 16px;
-  border-radius: 50%;
-  background: var(--gold);
-  cursor: pointer;
-  margin-top: -6px;
-  box-shadow: 0 0 0 3px rgba(0,0,0,0.5);
+  -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
+  background: var(--gold); cursor: pointer; margin-top: -6px; box-shadow: 0 0 0 3px rgba(0,0,0,0.5);
 }
 input[type=range].range-dark::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 4px;
-  cursor: pointer;
-  background: #555;
-  border-radius: 2px;
+  width: 100%; height: 4px; cursor: pointer; background: #555; border-radius: 2px;
 }
-.range-values {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #fff;
-  margin-top: 0.5rem;
-}
+input[type=range].range-dark::-moz-range-thumb{height:16px;width:16px;border:0;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px rgba(0,0,0,.5)}
+input[type=range].range-dark::-moz-range-track{height:4px;background:#555;border-radius:2px}
+.range-values { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: #fff; margin-top: 0.5rem; }
 .field-dark select {
-  width: 100%;
-  background: transparent;
-  border: 1px solid #555;
-  color: #fff;
-  padding: 0.8rem;
-  border-radius: 0;
-  font-size: 0.95rem;
-  appearance: none;
+  width: 100%; background-color: transparent; border: 1px solid #555; color: #fff;
+  padding: 0.8rem; border-radius: 0; font-size: 0.95rem; appearance: none;
   background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.8rem top 50%;
-  background-size: 0.65rem auto;
+  background-repeat: no-repeat; background-position: right 0.8rem top 50%; background-size: 0.65rem auto;
 }
 .field-dark select option { background: #111; color: #fff; }
 .btn-search-large {
-  width: 100%;
-  background: var(--gold);
-  color: #fff;
-  border: none;
-  padding: 1rem;
-  font-size: 1rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  cursor: pointer;
-  transition: background 0.2s;
-  margin-top: 1rem;
+  width: 100%; background: var(--gold); color: #fff; border: none; padding: 1rem;
+  font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+  cursor: pointer; transition: background 0.2s; margin-top: 1rem; font-family:var(--f-body);
 }
 .btn-search-large:hover { background: var(--gold-hover); }
-
-/* Columna Derecha */
-.search-dark-wrap {
-  position: relative;
-  margin-bottom: 2rem;
-}
+.search-dark-wrap { position: relative; margin-bottom: 2rem; }
 .search-dark-wrap input {
-  width: 100%;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid #555;
-  color: #fff;
-  padding: 1rem 1rem 1rem 3rem;
-  font-size: 0.95rem;
+  width: 100%; background: rgba(255,255,255,0.05); border: 1px solid #555; color: #fff;
+  padding: 1rem 1rem 1rem 3rem; font-size: 0.95rem;
 }
 .search-dark-wrap input::placeholder { color: #999; }
-.search-dark-wrap svg {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #fff;
-  width: 20px;
-  height: 20px;
-}
+.search-dark-wrap svg { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #fff; width: 20px; height: 20px; }
 .link-catalog {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #555;
-  padding: 1rem;
-  text-decoration: none;
-  color: #fff;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.9rem;
-  transition: border-color 0.2s;
+  display: flex; align-items: center; justify-content: space-between; border: 1px solid #555;
+  padding: 1rem; text-decoration: none; color: #fff; font-weight: 600; text-transform: uppercase;
+  font-size: 0.9rem; transition: border-color 0.2s;
 }
 .link-catalog:hover { border-color: var(--gold); }
-.link-catalog svg { color: #fff; }
-
-/* Flecha de scroll */
 .scroll-down {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #fff;
-  color: #111;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  cursor: pointer;
-  z-index: 10;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: #fff; color: #111; width: 40px; height: 40px; display: flex;
+  align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;
+  z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border:0;
 }
 .scroll-down svg { width: 20px; height: 20px; }
-
-/* WhatsApp Botón */
 .whatsapp-btn {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 100;
-  background: #25D366;
-  color: #fff;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  text-decoration: none;
-  transition: transform 0.2s;
+  position: fixed; bottom: 24px; right: 24px; z-index: 100; background: #25D366; color: #fff;
+  width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); text-decoration: none; transition: transform 0.2s;
 }
 .whatsapp-btn:hover { transform: scale(1.1); }
 
-/* 6. Secciones (Resto de la página) ---------------------------------------- */
+/* 6. Secciones ------------------------------------------------------------- */
 section{padding-block:clamp(2.6rem,6vw,4.2rem)}
 section[id]{scroll-margin-top:calc(var(--header-real,var(--header-h)) + 16px)}
 .sec-head{display:flex;justify-content:space-between;align-items:end;gap:1rem 2rem;flex-wrap:wrap;margin-bottom:clamp(1.2rem,3vw,1.9rem)}
@@ -469,6 +385,26 @@ section[id]{scroll-margin-top:calc(var(--header-real,var(--header-h)) + 16px)}
 .chip:hover{border-color:var(--gold)}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .chip[aria-pressed="true"] small{color:inherit;opacity:.7}
+
+/* Moto destacada */
+.spot{padding-block:clamp(2.2rem,5vw,3.4rem) 0}
+.spot-card{
+  display:grid;grid-template-columns:1fr;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);
+}
+@media (min-width:860px){.spot-card{grid-template-columns:1.05fr 1fr}}
+.spot-card .art{aspect-ratio:auto;min-height:280px;border-radius:0}
+.spot-body{padding:clamp(1.2rem,3vw,2.1rem);display:grid;gap:.95rem;align-content:center}
+.spot-body h2{font-size:clamp(1.9rem,5vw,2.8rem)}
+.spot-body > p{color:var(--muted);font-size:.95rem;max-width:56ch}
+.spot-badge{
+  justify-self:start;background:var(--gold);color:#fff;font-size:.7rem;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;padding:.25rem .55rem;border-radius:4px;
+}
+.qstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.6rem}
+.qstat{background:var(--surface-2);border:1px solid var(--line-soft);border-radius:var(--radius-sm);padding:.6rem .75rem;display:grid;gap:.1rem}
+.qstat span{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.qstat strong{font-family:var(--f-display);font-size:1.25rem;line-height:1.1;font-variant-numeric:tabular-nums}
 
 /* 7. Catálogo -------------------------------------------------------------- */
 .active-filters{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;margin-bottom:1rem}
@@ -541,6 +477,7 @@ section[id]{scroll-margin-top:calc(var(--header-real,var(--header-h)) + 16px)}
 .card h3 button:hover{color:var(--gold);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
 .specs{display:flex;flex-wrap:wrap;gap:.35rem}
 .specs span{background:var(--chip);border-radius:5px;padding:.15rem .45rem;font-size:.78rem;font-weight:600;font-variant-numeric:tabular-nums}
+.specs span.hl{background:var(--accent-soft);color:var(--gold)}
 .price-block{margin-top:auto;padding-top:.35rem;display:grid;gap:.15rem}
 .price{font-family:var(--f-display);font-size:1.95rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
 .price small{font-family:var(--f-body);font-size:.74rem;font-weight:500;color:var(--muted);margin-left:.3rem;letter-spacing:0}
@@ -565,6 +502,13 @@ section[id]{scroll-margin-top:calc(var(--header-real,var(--header-h)) + 16px)}
 .more{display:flex;justify-content:center;margin-top:1.6rem}
 .more .btn{flex:0 0 auto;min-width:240px}
 
+/* Revelado al hacer scroll */
+@media (prefers-reduced-motion:no-preference){
+  html[data-js="on"] .reveal{opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s ease;transition-delay:calc(var(--i,0) * 50ms)}
+  html[data-js="on"] .reveal.is-in{opacity:1;transform:none}
+  html[data-js="on"] .card.reveal.is-in:hover{transform:translateY(-3px)}
+}
+
 /* 8. Financiamiento -------------------------------------------------------- */
 .fin{background:var(--deep);color:var(--deep-ink);position:relative;overflow:hidden}
 .fin::before{
@@ -583,11 +527,10 @@ section[id]{scroll-margin-top:calc(var(--header-real,var(--header-h)) + 16px)}
 .sim .sim-title{font-size:1.35rem;font-family:var(--f-display);text-transform:uppercase;letter-spacing:.01em}
 .sim-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem}
 .result{background:var(--surface-2);border:1px solid var(--line-soft);border-radius:var(--radius-sm);padding:1rem;display:grid;gap:.15rem}
-.result .big{font-family:var(--f-display);font-size:clamp(2.2rem,6vw,2.9rem);font-weight:800;line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
+.result .big{font-family:var(--f-display);font-size:clamp(2.2rem,6vw,2.9rem);font-weight:700;line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
 .result dl{margin:.7rem 0 0;display:grid;grid-template-columns:1fr auto;gap:.25rem 1rem;font-size:.88rem;font-variant-numeric:tabular-nums}
 .result dt{color:var(--muted)}
 .result dd{margin:0;font-weight:700;text-align:right}
-.result .total{border-top:1px solid var(--line-soft);padding-top:.35rem;margin-top:.15rem}
 
 /* 9. Paneles y formularios ------------------------------------------------ */
 .panels{display:grid;gap:1.1rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:start}
@@ -601,7 +544,6 @@ section[id]{scroll-margin-top:calc(var(--header-real,var(--header-h)) + 16px)}
 .panel address{font-style:normal;font-size:.94rem;display:grid;gap:.15rem}
 .form{display:grid;gap:.85rem}
 .form .btn{margin-top:.2rem}
-.form-row{display:grid;gap:.85rem;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
 .err-msg{color:#B3261E;font-size:.78rem;font-weight:600}
 :root[data-theme="dark"] .err-msg{color:#FFB4AB}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .err-msg{color:#FFB4AB}}
@@ -637,7 +579,7 @@ footer a:hover{color:var(--deep-ink);text-decoration:underline;text-underline-of
 .cmp-chip button:hover{background:rgba(0,0,0,.35)}
 .cmp-bar .btn{flex:0 0 auto}
 
-/* 12. Diálogos ------------------------------------------------------------- */
+/* 12. Diálogos y ficha ----------------------------------------------------- */
 .modal{
   position:fixed;inset:0;z-index:90;background:var(--shade);
   display:flex;justify-content:center;align-items:flex-start;overflow-y:auto;overscroll-behavior:contain;
@@ -669,6 +611,46 @@ footer a:hover{color:var(--deep-ink);text-decoration:underline;text-underline-of
 .dl dt{color:var(--muted);font-size:.85rem}
 .dl dd{margin:0;font-weight:700;text-align:right}
 .detail .actions{display:flex;gap:.6rem;flex-wrap:wrap}
+
+/* Colores */
+.swatches{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+.swatches .lbl{font-size:.8rem;color:var(--muted);font-weight:600;margin-right:.2rem}
+.swatch{
+  width:34px;height:34px;border-radius:50%;border:2px solid var(--line);padding:0;
+  box-shadow:inset 0 0 0 3px var(--surface);transition:border-color .15s,transform .15s;
+}
+.swatch:hover{transform:scale(1.06)}
+.swatch[aria-pressed="true"]{border-color:var(--gold);box-shadow:inset 0 0 0 3px var(--surface),0 0 0 2px var(--gold)}
+.swatches .cname{font-size:.85rem;font-weight:700}
+
+/* Ficha técnica con pestañas */
+.ficha{grid-column:1/-1;margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid var(--line-soft);display:grid;gap:1rem}
+.ficha > h3{font-size:1.5rem}
+.ficha-intro{color:var(--muted);font-size:.93rem;max-width:80ch}
+.tabs{display:flex;gap:.35rem;overflow-x:auto;scrollbar-width:thin;padding-bottom:.35rem;border-bottom:1px solid var(--line-soft)}
+.tab{
+  flex:0 0 auto;background:transparent;border:1.5px solid transparent;border-radius:999px;
+  padding:.4rem .85rem;font-weight:700;font-size:.8rem;letter-spacing:.04em;color:var(--muted);white-space:nowrap;
+}
+.tab:hover{color:var(--ink);background:var(--surface-2)}
+.tab[aria-selected="true"]{background:var(--gold);color:#fff}
+.tabpanel{display:grid;gap:1rem;min-height:120px}
+.tabpanel > p{color:var(--muted);font-size:.92rem;max-width:80ch}
+.hl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.8rem}
+.hl-card{background:var(--surface-2);border:1px solid var(--line-soft);border-radius:var(--radius-sm);padding:.9rem 1rem;display:grid;gap:.3rem;align-content:start}
+.hl-card h4{font-family:var(--f-display);font-size:1.15rem;text-transform:uppercase;letter-spacing:.02em;margin:0;color:var(--gold)}
+.hl-card p{font-size:.86rem;color:var(--muted);line-height:1.45}
+.chips-line{display:grid;gap:.45rem}
+.chips-line b{font-size:.72rem;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.chips-line div{display:flex;gap:.35rem;flex-wrap:wrap}
+.chips-line span{background:var(--chip);border-radius:999px;padding:.2rem .65rem;font-size:.82rem;font-weight:600}
+.spec-dl{grid-template-columns:minmax(120px,40%) 1fr;gap:0;margin:0;border:1px solid var(--line-soft);border-radius:var(--radius-sm);overflow:hidden}
+.spec-dl dt,.spec-dl dd{padding:.6rem .85rem;border-bottom:1px solid var(--line-soft)}
+.spec-dl dt{background:var(--surface-2);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+.spec-dl dd{text-align:left;font-weight:600}
+.spec-dl dt:last-of-type,.spec-dl dd:last-of-type{border-bottom:0}
+.src-note{font-size:.78rem}
+.src-note a{color:var(--gold);font-weight:700}
 .tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line-soft);border-radius:var(--radius-sm)}
 .tbl table{border-collapse:collapse;width:100%;min-width:560px;font-variant-numeric:tabular-nums}
 .tbl th,.tbl td{text-align:left;padding:.7rem .8rem;border-bottom:1px solid var(--line-soft);font-size:.9rem;vertical-align:top}
@@ -706,20 +688,21 @@ html[data-js="on"] .noscript{display:none}
 }
 @media (max-width:560px){
   .grid{grid-template-columns:1fr}
-  .stats{gap:1rem 1.6rem}
-  .stats strong{font-size:1.7rem}
   .modal{padding-inline:0}
   .modal-box{border-radius:0;min-height:100%}
   .legal{flex-direction:column}
   .hero-layout { padding-inline: 1rem; }
+  .spec-dl{grid-template-columns:1fr}
+  .spec-dl dt{border-bottom:0;padding-bottom:.1rem}
 }
 @media (hover:none){
   .card:hover{transform:none}
 }
 @media print{
-  .top,.cmp-bar,.modal,.toast,.hero-art,.art .photo-btn,.art .heart,.whatsapp-btn{display:none!important}
+  .top,.cmp-bar,.modal,.toast,.ticker,.art .photo-btn,.art .heart,.whatsapp-btn,.scroll-down{display:none!important}
   body{background:#fff;color:#000}
   .card{break-inside:avoid;box-shadow:none}
+  .reveal{opacity:1!important;transform:none!important}
 }
 </style>
 </head>
@@ -738,7 +721,7 @@ html[data-js="on"] .noscript{display:none}
 </div>
 <!-- Botón flotante de WhatsApp -->
 <a href="https://wa.me/51999999999?text=Hola,%20estoy%20interesado%20en%20una%20moto" class="whatsapp-btn" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
-  <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+  <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor" aria-hidden="true">
     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
   </svg>
 </a>
@@ -789,35 +772,81 @@ var D=[
 ['Ronco','RC 125C',2027,'Cub',125,'8,5 CV',3929,'PEN','trabajo'],
 ['Ssenda','Leo 125 Rally',2026,'Cub',125,null,3920,'PEN','trabajo'],
 ['Sonlink','SL150-T11',2027,'Scooter',150,null,3822,'PEN','ciudad'],
-['Lifan','LF125T',2026,'Scooter',125,null,4034,'PEN','ciudad']
+['Lifan','LF125T',2026,'Scooter',125,null,4034,'PEN','ciudad'],
+['Hero','Hunk 160R 4V',2027,'Pistera',163,'16,8 HP',2899,'USD','ciudad']
 ];
 var KIND={'Scooter':'scooter','Cub':'cub','Utilitaria':'cub','Pistera':'naked','Naked':'naked','Deportiva':'sport','Cruiser':'cruiser','Doble propósito':'dual','Café Racer':'naked','Touring':'dual'};
-var BCOL={'Honda':'#C8321E','Yamaha':'#1E4DB0','Bajaj':'#D4A017','KTM':'#E8650A','Royal Enfield':'#3C5A4A','Suzuki':'#2E6FB7','RTM':'#2B2B30','Ronco':'#7A2E2E','Ssenda':'#2E8C6A','Sonlink':'#5E6B78','Lifan':'#B8312F'};
+var BCOL={'Honda':'#C8321E','Yamaha':'#1E4DB0','Bajaj':'#D4A017','KTM':'#E8650A','Royal Enfield':'#3C5A4A','Suzuki':'#2E6FB7','RTM':'#2B2B30','Ronco':'#7A2E2E','Ssenda':'#2E8C6A','Sonlink':'#5E6B78','Lifan':'#B8312F','Hero':'#2B2F36'};
 var MOTOS=D.map(function(r,i){
   return {id:i+1,brand:r[0],model:r[1],year:r[2],type:r[3],cc:r[4],pw:r[5],price:r[6],cur:r[7],style:r[8],color:BCOL[r[0]]||'#555',kind:KIND[r[3]]||'naked'};
 });
 var BYID={}; MOTOS.forEach(function(m){BYID[m.id]=m});
+var SPOT_ID=36;
 
-/* Fotografías de producto (Ahora usando links externos como pediste) */
+/* Fichas técnicas completas (fuente: Somos Moto Perú). Solo los modelos con datos verificados. */
+var FICHAS={
+36:{
+  src:'https://somosmoto.pe/hero/pistera/hunk-160r-4v-2027/JaWJ',
+  pdf:'https://somosmoto.pe/hero/pistera/hunk-160r-4v-2027/JaWJ/print',
+  srcPrice:'Somos Moto la lista en US$ 2,899 (S/ 10,089 con tipo de cambio referencial de 3,48).',
+  intro:'Motor económico de 163 cc y 4 válvulas pensado para la ciudad. Su tecnología Xsens, con 14 sensores, mejora la eficiencia del motor, la potencia y el ahorro de combustible.',
+  colors:[{n:'Negro/Gris',c:'#2B2F36'},{n:'Amarillo',c:'#F2B705'}],
+  badges:['ABS','Inyección','Full LED'],
+  stats:[['Cilindrada','164 cc'],['Potencia','16,8 HP'],['Rendimiento','160 km/gal'],['Garantía','36 meses']],
+  statsNote:'Garantía de 36 meses o 30 mil km, lo que ocurra primero.',
+  q:{torque:'14,6 Nm (6.500 RPM)',peso:'144 kg',tanque:'3,2 galones',autonomia:'512 km',abs:'Sí (monocanal)',vmax:'125 km/h'},
+  hl:[
+    {t:'Tecnología Xsens',d:'Sistema de 14 sensores que optimiza el motor: más potencia, menos consumo y menos emisiones.'},
+    {t:'Inyección electrónica',d:'Encendido inmediato y buen desempeño a gran altura; autonomía de hasta 512 km por tanqueada.'},
+    {t:'ABS monocanal',d:'Freno antibloqueo en la rueda delantera, con disco de 276 mm, para frenadas de emergencia más seguras.'},
+    {t:'Iluminación 100% LED',d:'Faro, stop y direccionales en LED, y tablero digital de lectura clara incluso a pleno sol.'}
+  ],
+  tablero:['Digital','Velocímetro','Tacómetro','Medidor de gasolina','Indicador de marcha','Reloj'],
+  extras:['Cargador USB','Seguro de timón','Parador central'],
+  sec:[
+    {k:'motor',l:'Motor',t:'Motor y sistema eléctrico',d:'Monocilíndrico de 4 tiempos y 4 válvulas, enfriado por aceite, con encendido electrónico y arranque eléctrico.',r:[
+      ['Cilindrada','163,24 cc'],['Cilindros','1'],['Potencia','16,8 HP'],['Torque','14,6 Nm a 6.500 RPM'],
+      ['Tipo de motor','4 tiempos OHC, 4 válvulas'],['Diámetro x carrera','57,3 x 57,8 mm'],['Relación de compresión','9,8:1'],
+      ['Enfriamiento','Por aceite'],['Encendido','ECU 12 V'],['Arranque','Eléctrico (botón)']]},
+    {k:'frenos',l:'Frenos',t:'Frenos',d:'Disco ventilado y lobulado en ambas ruedas para disipar mejor el calor; ABS en la rueda delantera.',r:[
+      ['ABS delantero','Sí'],['Freno delantero','Disco ventilado y lobulado de 276 mm, caliper de doble pistón'],
+      ['Freno posterior','Disco ventilado y lobulado de 220 mm, caliper monopistón']]},
+    {k:'llantas',l:'Llantas',t:'Aros y llantas',d:'Aros de aleación de 17 pulgadas con llantas de cocada baja, sin cámara.',r:[
+      ['Neumático delantero','100/80-17'],['Neumático posterior','130/70-17'],['Aro delantero','Aleación'],['Aro posterior','Aleación']]},
+    {k:'susp',l:'Suspensión',t:'Suspensión',d:'Horquilla invertida adelante y monoshock regulable atrás para mantener la estabilidad en curva.',r:[
+      ['Delantera','Horquillas telescópicas invertidas hidráulicas (37 mm)'],['Posterior','Monoshock ajustable en 7 posiciones']]},
+    {k:'cons',l:'Consumo',t:'Consumo y rendimiento',d:'Moto inyectada con buena autonomía. Valores aproximados en condiciones óptimas de conducción.',r:[
+      ['Octanaje','95'],['Sistema de combustible','Inyección electrónica Xsense FI'],['Capacidad del tanque','3,2 galones'],
+      ['Autonomía','512 km'],['Rendimiento por galón','160 km']]},
+    {k:'trans',l:'Transmisión',t:'Transmisión',d:'Caja mecánica de 5 velocidades, con bajas vibraciones gracias al balanceo del monocilíndrico.',r:[
+      ['Transmisión','Mecánica'],['Número de cambios','5 velocidades'],['Velocidad máxima','125 km/h (aprox.)']]},
+    {k:'dim',l:'Dimensiones',t:'Dimensiones',d:'Compacta y ligera, con buen radio de giro para moverse entre el tráfico.',r:[
+      ['Peso','144 kg'],['Carga útil','150 kg'],['Asientos','2'],['Altura del asiento','79 cm'],['Distancia entre ejes','133,5 cm'],
+      ['Largo','206 cm'],['Ancho','81 cm'],['Alto total','112 cm'],['Despeje del suelo','17 cm']]}
+  ]
+}
+};
+
+/* Fotografías de producto (enlaces externos) */
 var PHOTOS={
-  1:'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=800&auto=format&fit=crop', // Scooter
-  2:'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=800&auto=format&fit=crop', // Scooter
-  3:'https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=800&auto=format&fit=crop', // Dual
-  4:'https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?q=80&w=800&auto=format&fit=crop', // Utilitaria
-  6:'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=800&auto=format&fit=crop', // Cafe Racer
-  7:'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=800&auto=format&fit=crop', // Naked
-  8:'https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=800&auto=format&fit=crop', // Dual
-  9:'https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?q=80&w=800&auto=format&fit=crop', // Sport
-  20:'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=800&auto=format&fit=crop', // KTM
-  21:'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=800&auto=format&fit=crop', // KTM
-  22:'https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=800&auto=format&fit=crop', // RE
-  23:'https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?q=80&w=800&auto=format&fit=crop', // RE
-  25:'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=800&auto=format&fit=crop', // RE Himalayan
-  26:'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=800&auto=format&fit=crop', // RE
-  27:'https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=800&auto=format&fit=crop', // RE
-  28:'https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?q=80&w=800&auto=format&fit=crop', // RE
-  29:'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=800&auto=format&fit=crop', // Suzuki
-  30:'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=800&auto=format&fit=crop'  // Suzuki
+  1:'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=800&auto=format&fit=crop',
+  2:'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=800&auto=format&fit=crop',
+  3:'https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=800&auto=format&fit=crop',
+  4:'https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?q=80&w=800&auto=format&fit=crop',
+  6:'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=800&auto=format&fit=crop',
+  7:'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=800&auto=format&fit=crop',
+  8:'https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=800&auto=format&fit=crop',
+  9:'https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?q=80&w=800&auto=format&fit=crop',
+  20:'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=800&auto=format&fit=crop',
+  21:'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=800&auto=format&fit=crop',
+  22:'https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=800&auto=format&fit=crop',
+  23:'https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?q=80&w=800&auto=format&fit=crop',
+  25:'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=800&auto=format&fit=crop',
+  26:'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=800&auto=format&fit=crop',
+  27:'https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=800&auto=format&fit=crop',
+  28:'https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?q=80&w=800&auto=format&fit=crop',
+  29:'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=800&auto=format&fit=crop',
+  30:'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=800&auto=format&fit=crop'
 };
 
 var STYLES=[
@@ -838,7 +867,7 @@ var SORTS=[
   {v:'price-asc',l:'Precio: menor a mayor'},{v:'price-desc',l:'Precio: mayor a menor'},
   {v:'cc-desc',l:'Cilindrada: mayor a menor'},{v:'year-desc',l:'Modelos más nuevos'},{v:'name',l:'Marca y modelo (A-Z)'}
 ];
-var RATE0=3.7, TEA0=35, PAGE=12, MAXP=36000;
+var RATE0=3.7, TEA0=35, PAGE=12, MAXP=36000, MINP=3000;
 
 /* --- Utilidades ----------------------------------------------------------- */
 function lsGet(k,d){try{var v=window.localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}}
@@ -912,23 +941,6 @@ function Heart(p){
   },h('svg',{viewBox:'0 0 24 24',width:20,height:20,fill:p.on?'currentColor':'none',stroke:'currentColor',strokeWidth:2,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':'true',focusable:'false'},h('path',{d:P.heart})));
 }
 
-function CountUp(p){
-  var st=useState(reduced()?p.to:0), v=st[0], setV=st[1];
-  useEffect(function(){
-    if(reduced()){setV(p.to);return;}
-    var t0=null, raf=0, dur=p.dur||950, target=p.to;
-    function step(t){
-      if(t0===null)t0=t;
-      var k=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-k,3);
-      setV(target*e);
-      raf=k<1?requestAnimationFrame(step):0;
-    }
-    raf=requestAnimationFrame(step);
-    return function(){if(raf)cancelAnimationFrame(raf)};
-  },[p.to]);
-  return h(React.Fragment,null,p.format?p.format(v):String(Math.round(v)));
-}
-
 function Art(p){
   var m=p.m, upload=p.src, photo=upload||PHOTOS[m.id];
   var cls='art'+(p.large?' art-lg':'')+(photo?' has-photo':'');
@@ -983,6 +995,95 @@ function Modal(p){
         h('h2',{id:p.titleId},p.title),
         h('button',{className:'icon-btn modal-close',type:'button','aria-label':'Cerrar','onClick':p.onClose},h(Icon,{d:[P.close]}))),
       p.children));
+}
+
+/* Ficha de la moto: datos básicos para todas y ficha técnica con pestañas para las que la tienen. */
+function Ficha(p){
+  var m=p.m, F=FICHAS[m.id];
+  var _c=useState(0), ci=_c[0], setCi=_c[1];
+  var _t=useState(0), ti=_t[0], setTi=_t[1];
+  var tabs=F?[{k:'dest',l:'Destacados'}].concat(F.sec.map(function(s){return {k:s.k,l:s.l}})):[];
+  var shown=F&&F.colors?Object.assign({},m,{color:F.colors[ci].c}):m;
+  var cur=p.cur, rate=p.rate;
+
+  function onTabKey(e){
+    var n=tabs.length, next=-1;
+    if(e.key==='ArrowRight') next=(ti+1)%n;
+    else if(e.key==='ArrowLeft') next=(ti-1+n)%n;
+    else if(e.key==='Home') next=0;
+    else if(e.key==='End') next=n-1;
+    if(next<0) return;
+    e.preventDefault();setTi(next);
+    var el=document.getElementById('tab-'+tabs[next].k);if(el)el.focus();
+  }
+
+  var left=h('div',{className:'dside'},
+    h(Art,{m:shown,src:p.src,large:true,fav:p.fav,onFav:p.onFav,onUpload:p.onUpload}),
+    F&&F.colors?h('div',{className:'swatches',role:'group','aria-label':'Color de la moto'},
+      h('span',{className:'lbl'},'Color:'),
+      F.colors.map(function(c,i){
+        return h('button',{key:c.n,type:'button',className:'swatch','aria-pressed':i===ci,'aria-label':c.n,title:c.n,style:{background:c.c},onClick:function(){setCi(i)}});
+      }),
+      h('span',{className:'cname'},F.colors[ci].n)):null,
+    F?h('p',{className:'note'},'La ilustración cambia de color a modo de referencia; los colores reales pueden variar.'):null,
+    p.hasUpload?h('button',{className:'btn ghost sm',type:'button',style:{flex:'0 0 auto',alignSelf:'flex-start'},onClick:p.onRemovePhoto},'Quitar foto'):null,
+    h('p',{className:'note'},'La foto que subas se guarda solo en este navegador: no se envía a ningún servidor.'));
+
+  var right=h('div',{className:'dside'},
+    h('div',{className:'detail-price'},
+      h('p',{className:'price'},money(conv(m,cur,rate),cur),h('small',null,'precio de lista')),
+      h('p',{className:'cuota'},'Desde '+money(monthly(m,cur,rate),cur)+' al mes'),
+      h('p',{className:'note'},'20% de inicial, 24 meses, TEA '+TEA0+'%.'),
+      F&&F.srcPrice?h('p',{className:'note'},F.srcPrice):null),
+    F?h('div',{className:'qstats'},F.stats.map(function(s){
+      return h('div',{className:'qstat',key:s[0]},h('span',null,s[0]),h('strong',null,s[1]));
+    })):null,
+    F&&F.statsNote?h('p',{className:'note'},F.statsNote):null,
+    h('dl',{className:'dl'},
+      h('dt',null,'Marca'),h('dd',null,m.brand),
+      h('dt',null,'Modelo'),h('dd',null,m.model+' '+m.year),
+      h('dt',null,'Tipo'),h('dd',null,m.type),
+      h('dt',null,'Cilindrada'),h('dd',null,m.cc+' cc'),
+      h('dt',null,'Potencia'),h('dd',null,m.pw||'Consultar'),
+      h('dt',null,'Estilo'),h('dd',null,STYLE_NAME[m.style]),
+      h('dt',null,'Precio de lista'),h('dd',null,money(m.price,m.cur)+(m.cur==='USD'?' (dólares)':' (soles)'))),
+    h('div',{className:'actions'},
+      h('button',{className:'btn',type:'button',onClick:p.onSim},'Simular crédito'),
+      h('button',{className:'btn ghost',type:'button',onClick:p.onCmp},p.inCmp?'Quitar del comparador':'Agregar al comparador'),
+      h('button',{className:'btn ghost',type:'button',onClick:p.onFav},p.fav?'Quitar de favoritas':'Guardar en favoritas')));
+
+  var sheet=null;
+  if(F){
+    var cur_t=tabs[ti], sec=ti>0?F.sec[ti-1]:null, panel;
+    if(!sec){
+      panel=h('div',{className:'tabpanel',role:'tabpanel',id:'panel-dest','aria-labelledby':'tab-dest',tabIndex:0},
+        h('div',{className:'hl-grid'},F.hl.map(function(x){return h('div',{className:'hl-card',key:x.t},h('h4',null,x.t),h('p',null,x.d))})),
+        h('div',{className:'chips-line'},h('b',null,'Tablero'),h('div',null,F.tablero.map(function(x){return h('span',{key:x},x)}))),
+        h('div',{className:'chips-line'},h('b',null,'Adicionales'),h('div',null,F.extras.map(function(x){return h('span',{key:x},x)}))));
+    }else{
+      var rows=[];
+      sec.r.forEach(function(r){rows.push(h('dt',{key:'t'+r[0]},r[0]));rows.push(h('dd',{key:'d'+r[0]},r[1]))});
+      panel=h('div',{className:'tabpanel',role:'tabpanel',id:'panel-'+sec.k,'aria-labelledby':'tab-'+sec.k,tabIndex:0},
+        h('p',null,sec.d),
+        h('dl',{className:'dl spec-dl'},rows));
+    }
+    sheet=h('div',{className:'ficha'},
+      h('h3',null,'Ficha técnica'),
+      h('p',{className:'ficha-intro'},F.intro),
+      h('div',{className:'tabs',role:'tablist','aria-label':'Secciones de la ficha técnica',onKeyDown:onTabKey},
+        tabs.map(function(t,i){
+          return h('button',{key:t.k,type:'button',role:'tab',id:'tab-'+t.k,className:'tab','aria-selected':i===ti,'aria-controls':'panel-'+t.k,tabIndex:i===ti?0:-1,onClick:function(){setTi(i)}},t.l);
+        })),
+      panel,
+      h('p',{className:'note src-note'},'Datos de la ficha de ',
+        h('a',{href:F.src,target:'_blank',rel:'noopener noreferrer'},'Somos Moto Perú'),' · ',
+        h('a',{href:F.pdf,target:'_blank',rel:'noopener noreferrer'},'Ficha técnica (PDF)'),
+        '. Valores aproximados en condiciones óptimas de conducción; confirma con el concesionario.'));
+  }else{
+    sheet=h('div',{className:'ficha'},
+      h('p',{className:'note'},'Para este modelo mostramos los datos básicos del listado. La ficha técnica ampliada (motor, frenos, suspensión, dimensiones) se agrega a medida que se verifican los datos del fabricante.'));
+  }
+  return h(React.Fragment,null,h('div',{className:'detail'},left,right),sheet);
 }
 
 /* --- Aplicación ----------------------------------------------------------- */
@@ -1109,14 +1210,16 @@ function App(){
       if(f.brand&&m.brand!==f.brand) return false;
       if(f.favs&&favs.indexOf(m.id)<0) return false;
       if(q.length){
-        var hay=norm(m.brand+' '+m.model+' '+m.type+' '+STYLE_NAME[m.style]+' '+m.year+' '+m.cc+'cc');
+        var F=FICHAS[m.id];
+        var hay=norm(m.brand+' '+m.model+' '+m.type+' '+STYLE_NAME[m.style]+' '+m.year+' '+m.cc+'cc'+(F?' '+F.badges.join(' '):''));
         for(var i=0;i<q.length;i++){if(hay.indexOf(q[i])<0) return false}
       }
       return true;
     });
+    function rank(m){return FICHAS[m.id]?0:(PHOTOS[m.id]?1:2)}
     out.sort(function(a,b){
       if(sort==='featured'){
-        var pa=PHOTOS[a.id]?0:1, pb=PHOTOS[b.id]?0:1;
+        var pa=rank(a), pb=rank(b);
         if(pa!==pb) return pa-pb;
         return conv(a,'PEN',rate)-conv(b,'PEN',rate);
       }
@@ -1135,13 +1238,12 @@ function App(){
   var brandCount=useMemo(function(){var c={};MOTOS.forEach(function(m){c[m.brand]=(c[m.brand]||0)+1});return c},[]);
   var brands=useMemo(function(){return Object.keys(brandCount).sort(function(a,b){return a.localeCompare(b,'es')})},[brandCount]);
   var styleCount=useMemo(function(){var c={};MOTOS.forEach(function(m){c[m.style]=(c[m.style]||0)+1});return c},[]);
-  var minCuota=useMemo(function(){return Math.min.apply(null,MOTOS.map(function(m){return monthly(m,cur,rate)}))},[cur,rate]);
 
   function priceOf(m){return money(conv(m,cur,rate),cur)}
-  function limitLabel(){return f.max>=MAXP?'Sin límite':money(cur==='PEN'?f.max:f.max/rate,cur)}
+  function fromPen(v){return cur==='PEN'?v:v/rate}
+  function limitLabel(){return f.max>=MAXP?'Sin límite':money(fromPen(f.max),cur)}
   function ccLabel(v){var o=CC_OPTS.filter(function(x){return x.v===v})[0];return o?o.l:v}
 
-  /* Términos activos del filtro, cada uno removible. */
   var chips=[];
   function addChip(key,label,clear){chips.push({key:key,label:label,clear:clear})}
   if(f.text.trim()) addChip('text','«'+f.text.trim()+'»',function(){upd({text:''})});
@@ -1188,6 +1290,7 @@ function App(){
         h('span',{className:'logo-mark','aria-hidden':'true'}),'Moto Altiplano'),
       h('nav',{className:'nav','aria-label':'Principal'},
         h('a',{href:'#catalogo'},'Catálogo'),
+        h('a',{href:'#destacada'},'Destacada'),
         h('a',{href:'#estilos'},'Estilos'),
         h('a',{href:'#financiamiento'},'Financiamiento'),
         h('a',{href:'#soat'},'SOAT'),
@@ -1203,27 +1306,26 @@ function App(){
           h('button',{type:'button','aria-pressed':cur==='USD',onClick:function(){setCur('USD')},title:'Mostrar precios en dólares'},'US$')))
     ));
 
-  /* --- Portada (Hero Rediseñado) ----------------------------------------- */
+  /* --- Portada ----------------------------------------------------------- */
   var heroShell=function(){
     return h('section',{className:'hero',id:'inicio'},
       h('div',{className:'hero-bg'}),
       h('div',{className:'wrap hero-inner'},
         h('h1',null,'LA MOTO QUE BUSCAS, ',h('em',null,'LA TENEMOS')),
-        h('p',{className:'sub'},'Conócela, compra o financiación aquí.'),
+        h('p',{className:'sub'},'Conócela, compra o financia aquí.'),
         h('div',{className:'hero-layout'},
-          /* Columna Izquierda: Filtros */
           h('div',{className:'hero-col'},
             h('h2',null,'COMPLETA LOS FILTROS Y ENCUENTRA TU MOTO IDEAL.'),
             h('form',{className:'finder-form',onSubmit:function(e){e.preventDefault();goto('catalogo')}},
               h('div',{className:'finder-row'},
                 h('div',{className:'field-dark'},
-                  h('label',null,'Precio', h('output',null, limitLabel())),
-                  h('input',{type:'range',className:'range-dark',min:3000,max:MAXP,step:500,value:f.max,onChange:function(e){upd({max:+e.target.value})}}),
-                  h('div',{className:'range-values'}, h('span',null, money(3000, cur)), h('span',null, 'S/ 50,000+'))
+                  h('label',{htmlFor:'heroPrice'},'Precio máx.', h('output',{htmlFor:'heroPrice'}, limitLabel())),
+                  h('input',{id:'heroPrice',type:'range',className:'range-dark',min:MINP,max:MAXP,step:500,value:f.max,onChange:function(e){upd({max:+e.target.value})}}),
+                  h('div',{className:'range-values'}, h('span',null, money(fromPen(MINP), cur)), h('span',null, money(fromPen(MAXP), cur)+'+'))
                 ),
                 h('div',{className:'field-dark'},
-                  h('label',null,'Cilindrada', h('output',null, f.cc==='all'?'Todas':ccLabel(f.cc))),
-                  h('input',{type:'range',className:'range-dark',min:0,max:1000,step:50,value:f.cc==='all'?0:parseInt(f.cc.split('-')[1]),onChange:function(e){
+                  h('label',{htmlFor:'heroCc'},'Cilindrada', h('output',{htmlFor:'heroCc'}, f.cc==='all'?'Todas':ccLabel(f.cc))),
+                  h('input',{id:'heroCc',type:'range',className:'range-dark',min:0,max:1000,step:50,value:f.cc==='all'?0:parseInt(f.cc.split('-')[1]),onChange:function(e){
                     var val = +e.target.value;
                     if(val === 0) upd({cc: 'all'});
                     else if(val <= 125) upd({cc: '0-125'});
@@ -1231,7 +1333,7 @@ function App(){
                     else if(val <= 400) upd({cc: '201-400'});
                     else upd({cc: '401-1000'});
                   }}),
-                  h('div',{className:'range-values'}, h('span',null, '0 cc'), h('span',null, '1,000 cc+'))
+                  h('div',{className:'range-values'}, h('span',null, '0 cc'), h('span',null, '1.000 cc+'))
                 )
               ),
               h('div',{className:'field-dark'},
@@ -1244,12 +1346,11 @@ function App(){
               h('button',{className:'btn-search-large',type:'submit'},'BUSCAR MOTOS')
             )
           ),
-          /* Columna Derecha: Buscador y Link */
           h('div',{className:'hero-col'},
             h('h3',null,'¿TIENES UNA MOTO EN MENTE? BÚSCALA AQUÍ.'),
             h('div',{className:'search-dark-wrap'},
               h(Icon,{d:[P.search],size:20}),
-              h('input',{type:'text',placeholder:'Escribe modelo, marca o tipo de moto',value:f.text,onChange:function(e){upd({text:e.target.value})}})
+              h('input',{type:'text','aria-label':'Buscar por modelo, marca o tipo',placeholder:'Escribe modelo, marca o tipo de moto',value:f.text,onChange:function(e){upd({text:e.target.value})}})
             ),
             h('p',{style:{color:'#ccc', fontSize:'0.9rem', marginBottom:'1rem', textTransform:'uppercase'}},'MIRA TODOS LOS MODELOS'),
             h('a',{href:'#catalogo',className:'link-catalog'},
@@ -1259,11 +1360,30 @@ function App(){
           )
         )
       ),
-      h('div',{className:'scroll-down',onClick:function(){goto('catalogo')},'aria-label':'Ir al catálogo'},
+      h('button',{className:'scroll-down',type:'button',onClick:function(){goto('destacada')},'aria-label':'Bajar a la moto destacada'},
         h(Icon,{d:[P.chevronDown],size:24})
       )
     );
   };
+
+  /* --- Moto destacada ---------------------------------------------------- */
+  var SM=BYID[SPOT_ID], SF=FICHAS[SPOT_ID];
+  var spotSec=h('section',{id:'destacada',className:'spot'},h('div',{className:'wrap'},
+    h('div',{className:'spot-card'},
+      h(Art,{m:Object.assign({},SM,{color:SF.colors[0].c}),src:photos[SM.id]}),
+      h('div',{className:'spot-body'},
+        h('span',{className:'spot-badge'},'Novedad '+SM.year),
+        h('div',null,h('p',{className:'eyebrow'},SM.brand+' · '+SM.type),h('h2',null,SM.model)),
+        h('p',null,SF.intro),
+        h('div',{className:'qstats'},SF.stats.map(function(s){
+          return h('div',{className:'qstat',key:s[0]},h('span',null,s[0]),h('strong',null,s[1]));
+        })),
+        h('div',{className:'price-block'},
+          h('p',{className:'price'},priceOf(SM),h('small',null,'precio de lista')),
+          h('p',{className:'cuota'},'Desde '+money(monthly(SM,cur,rate),cur)+' al mes')),
+        h('div',{className:'actions',style:{display:'flex',gap:'.6rem',flexWrap:'wrap'}},
+          h('button',{className:'btn',type:'button',onClick:function(){openDetail(SM.id)}},'Ver ficha completa'),
+          h('button',{className:'btn ghost',type:'button',onClick:function(){toggleCmp(SM.id)}},cmp.indexOf(SM.id)>-1?'Quitar del comparador':'Comparar'))))));
 
   /* --- Estilos ----------------------------------------------------------- */
   var stylesSec=h('section',{id:'estilos'},h('div',{className:'wrap'},
@@ -1289,7 +1409,7 @@ function App(){
 
   /* --- Tarjeta de moto --------------------------------------------------- */
   function card(m){
-    var isFav=favs.indexOf(m.id)>-1, inCmp=cmp.indexOf(m.id)>-1;
+    var isFav=favs.indexOf(m.id)>-1, inCmp=cmp.indexOf(m.id)>-1, F=FICHAS[m.id];
     return h('article',{className:'card',key:m.id},
       h(Art,{m:m,src:photos[m.id],fav:isFav,onFav:function(){toggleFav(m.id)},onUpload:upload}),
       h('div',{className:'body'},
@@ -1298,13 +1418,14 @@ function App(){
         h('div',{className:'specs'},
           h('span',null,m.cc+' cc'),
           m.pw?h('span',null,m.pw):null,
-          h('span',null,STYLE_NAME[m.style])),
+          h('span',null,STYLE_NAME[m.style]),
+          F?F.badges.map(function(b){return h('span',{className:'hl',key:b},b)}):null),
         h('div',{className:'price-block'},
           h('p',{className:'price'},priceOf(m),h('small',null,'precio de lista')),
           h('p',{className:'cuota'},'Desde '+money(monthly(m,cur,rate),cur)+' al mes'),
           h('p',{className:'note'},'20% inicial · 24 meses · TEA '+TEA0+'%')),
         h('div',{className:'actions'},
-          h('button',{className:'btn sm',type:'button',onClick:function(){openDetail(m.id)}},'Ver ficha'),
+          h('button',{className:'btn sm',type:'button',onClick:function(){openDetail(m.id)}},F?'Ver ficha completa':'Ver ficha'),
           h('button',{className:'cmp-toggle',type:'button','aria-pressed':inCmp,onClick:function(){toggleCmp(m.id)},
             'aria-label':(inCmp?'Quitar ':'Agregar ')+m.brand+' '+m.model+(inCmp?' del comparador':' al comparador')},
             h(Icon,{d:[inCmp?P.check:P.plus],size:15}),
@@ -1345,7 +1466,7 @@ function App(){
           hasFilters?h('button',{className:'btn',type:'button',onClick:resetFilters},'Limpiar filtros'):null))),
     list.length>shown?h('div',{className:'more'},
       h('button',{className:'btn ghost',type:'button',onClick:function(){setShown(shown+PAGE)}},'Ver más motos ('+(list.length-shown)+')')):null,
-    h('p',{className:'data-note'},'Fotografías de producto de los sitios oficiales de Honda, Yamaha, KTM, Royal Enfield y Suzuki. Las fichas técnicas se completan con datos del fabricante cuando el listado público no los trae; algunos modelos se muestran con ilustración cuando no hay foto oficial disponible. La cuota es informativa y no incluye seguros ni gastos de la financiera.') ));
+    h('p',{className:'data-note'},'Fotografías de referencia con enlaces externos; algunos modelos se muestran con ilustración cuando no hay foto disponible. La ficha técnica completa de la Hero Hunk 160R 4V proviene de Somos Moto Perú; en los demás modelos se muestran los datos básicos del listado. La cuota es informativa y no incluye seguros ni gastos de la financiera.') ));
 
   /* --- Financiamiento ---------------------------------------------------- */
   var fin=h('section',{className:'fin',id:'financiamiento'},h('div',{className:'wrap fin-grid'},
@@ -1385,7 +1506,7 @@ function App(){
           h('dt',null,'Intereses totales'),h('dd',null,money(Math.max(0,sc*sim.n-smonto),cur)),
           h('dt',null,'Total a pagar'),h('dd',null,money(si+sc*sim.n,cur))),
         h('p',{className:'note',style:{marginTop:'.5rem'}},'TEM equivalente: '+tema.toFixed(2)+'%. Simulación referencial con cuotas fijas; no incluye seguros ni gastos de la entidad financiera.')),
-      h('p',{className:'note'},'La tasa de referencia del catálogo es '+TEA0+'% anual; ajústala al valor real que te ofrezca la financiera.'))));
+      h('p',{className:'note'},'La tasa de referencia del catálogo es '+TEA0+'% anual; ajústala al valor real que te ofrezca la financiera. Las financieras suelen aplicar tasas distintas según tu perfil crediticio.'))));
 
   /* --- Servicios -------------------------------------------------------- */
   var panels=h('section',{id:'soat'},h('div',{className:'wrap'},
@@ -1460,38 +1581,23 @@ function App(){
     h('div',{className:'legal'},
       h('p',null,'© 2026 Moto Altiplano. Las marcas y modelos pertenecen a sus respectivos dueños.'),
       h('p',null,'Sitio de demostración. Precios referenciales y sujetos a cambio sin previo aviso.'),
-      h('p',null,'Fotografías de producto: sitios oficiales de Honda, Yamaha, KTM, Royal Enfield y Suzuki. Marcas y modelos pertenecen a sus dueños; estas imágenes se usan como referencia visual en una demo.'))));
+      h('p',null,'Datos técnicos de la Hero Hunk 160R 4V: Somos Moto Perú. Las imágenes se usan como referencia visual en una demo.'))));
 
   /* --- Ficha de la moto -------------------------------------------------- */
   var dm=detail?BYID[detail]:null;
-  var dmBody=dm?h('div',{className:'detail'},
-      h('div',{className:'dside'},
-        h(Art,{m:dm,src:photos[dm.id],large:true,fav:favs.indexOf(dm.id)>-1,onFav:function(){toggleFav(dm.id)},onUpload:upload}),
-        photos[dm.id]?h('button',{className:'btn ghost sm',type:'button',style:{flex:'0 0 auto',alignSelf:'flex-start'},onClick:function(){removePhoto(dm.id)}},'Quitar foto'):null,
-        h('p',{className:'note'},'La foto que subas se guarda solo en este navegador: no se envía a ningún servidor.'),
-        h('p',{className:'note'},'Toca el corazón para guardar esta moto en favoritas.')),
-      h('div',{className:'dside'},
-        h('div',{className:'detail-price'},
-          h('p',{className:'price'},priceOf(dm),h('small',null,'precio de lista')),
-          h('p',{className:'cuota'},'Desde '+money(monthly(dm,cur,rate),cur)+' al mes'),
-          h('p',{className:'note'},'20% de inicial, 24 meses, TEA '+TEA0+'%.')),
-        h('dl',{className:'dl'},
-          h('dt',null,'Marca'),h('dd',null,dm.brand),
-          h('dt',null,'Modelo'),h('dd',null,dm.model+' '+dm.year),
-          h('dt',null,'Tipo'),h('dd',null,dm.type),
-          h('dt',null,'Cilindrada'),h('dd',null,dm.cc+' cc'),
-          h('dt',null,'Potencia'),h('dd',null,dm.pw||'Consultar'),
-          h('dt',null,'Estilo'),h('dd',null,STYLE_NAME[dm.style]),
-          h('dt',null,'Precio de lista'),h('dd',null,money(dm.price,dm.cur)+(dm.cur==='USD'?' (dólares)':' (soles)'))),
-        h('div',{className:'actions'},
-          h('button',{className:'btn',type:'button',onClick:function(){setS({id:dm.id});setDetail(null);goto('financiamiento')}},'Simular crédito'),
-          h('button',{className:'btn ghost',type:'button',onClick:function(){toggleCmp(dm.id)}},cmp.indexOf(dm.id)>-1?'Quitar del comparador':'Agregar al comparador'),
-          h('button',{className:'btn ghost',type:'button',onClick:function(){toggleFav(dm.id)}},favs.indexOf(dm.id)>-1?'Quitar de favoritas':'Guardar en favoritas')))):null;
+  var dmBody=dm?h(Ficha,{
+      key:dm.id,m:dm,cur:cur,rate:rate,src:photos[dm.id],hasUpload:!!photos[dm.id],
+      fav:favs.indexOf(dm.id)>-1,inCmp:cmp.indexOf(dm.id)>-1,
+      onFav:function(){toggleFav(dm.id)},onUpload:upload,onRemovePhoto:function(){removePhoto(dm.id)},
+      onSim:function(){setS({id:dm.id});setDetail(null);goto('financiamiento')},
+      onCmp:function(){toggleCmp(dm.id)}
+    }):null;
   var detailView=h(Modal,{open:!!dm,onClose:function(){setDetail(null)},titleId:'dTitle',title:dm?dm.brand+' '+dm.model:''},dmBody);
 
   /* --- Comparador -------------------------------------------------------- */
   function comparisonTable(){
     var ms=cmp.map(function(id){return BYID[id]});
+    function q(key){return function(m){var F=FICHAS[m.id];return F&&F.q[key]?F.q[key]:'—'}}
     var rows=[
       {l:'Precio',f:function(m){return priceOf(m)},best:'min',v:function(m){return conv(m,cur,rate)}},
       {l:'Cuota estimada',f:function(m){return money(monthly(m,cur,rate),cur)+' /mes'},best:'min',v:function(m){return monthly(m,cur,rate)}},
@@ -1501,6 +1607,12 @@ function App(){
       {l:'Estilo',f:function(m){return STYLE_NAME[m.style]}},
       {l:'Año',f:function(m){return m.year},best:'max',v:function(m){return m.year}}
     ];
+    if(ms.some(function(m){return FICHAS[m.id]})){
+      rows=rows.concat([
+        {l:'Torque',f:q('torque')},{l:'Peso',f:q('peso')},{l:'Tanque',f:q('tanque')},
+        {l:'Autonomía',f:q('autonomia')},{l:'ABS',f:q('abs')},{l:'Vel. máxima',f:q('vmax')}
+      ]);
+    }
     return h('table',null,
       h('caption',{className:'sr-only'},'Comparación de las motos seleccionadas'),
       h('thead',null,h('tr',null,
@@ -1527,7 +1639,7 @@ function App(){
 
   var cmpView=h(Modal,{open:!!cmpOpen&&cmp.length>=2,onClose:function(){setCmpOpen(false)},titleId:'cTitle',title:'Comparador'},
     cmp.length>=2?h('div',null,
-      h('p',{className:'note',style:{marginBottom:'.9rem'}},'Comparando '+cmp.length+' motos. La estrella marca el mejor valor de cada fila; toca un modelo para abrir su ficha.'),
+      h('p',{className:'note',style:{marginBottom:'.9rem'}},'Comparando '+cmp.length+' motos. La estrella marca el mejor valor de cada fila; toca un modelo para abrir su ficha. Un guion (—) indica que no hay dato verificado.'),
       h('div',{className:'tbl'},comparisonTable()),
       h('div',{className:'actions',style:{marginTop:'1rem',display:'flex',gap:'.6rem',flexWrap:'wrap'}},
         h('button',{className:'btn ghost',type:'button',onClick:function(){setCmp([]);setCmpOpen(false)}},'Vaciar comparador'))):null);
@@ -1557,7 +1669,7 @@ function App(){
 
   /* Revelado progresivo al hacer scroll: observa tarjetas y bloques nuevos. */
   useEffect(function(){
-    var sel='.card,.sec-head,.panel,.style-btn,.brands';
+    var sel='.card,.sec-head,.panel,.style-btn,.brands,.spot-card';
     if(reduced()||!('IntersectionObserver' in window)){
       var plain=document.querySelectorAll(sel);
       for(var a=0;a<plain.length;a++)plain[a].classList.add('reveal','is-in');
@@ -1590,10 +1702,9 @@ function App(){
 
   var modalOpen=!!dm||(!!cmpOpen&&cmp.length>=2);
   return h(React.Fragment,null,
-    h('div',{className:'progress','aria-hidden':'true'}),
     h('div',{inert:modalOpen?'':undefined,'aria-hidden':modalOpen?'true':undefined},
       header,
-      h('main',null,ticker,heroShell(),stylesSec,brandsSec,catalog,fin,panels),
+      h('main',null,ticker,heroShell(),spotSec,stylesSec,brandsSec,catalog,fin,panels),
       footer,
       bar),
     detailView,
