@@ -1,193 +1,570 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Moto Altiplano</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Moto Altiplano — Motos nuevas, precios y financiamiento en Juliaca</title>
+<meta name="description" content="Catálogo de motos nuevas con precio, ficha técnica y cuota estimada. Compara modelos de Honda, Yamaha, Bajaj, KTM, Royal Enfield y más. Simulador de crédito y SOAT.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#EDF0F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101B25" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_PE">
+<meta property="og:site_name" content="Moto Altiplano">
+<meta property="og:title" content="Moto Altiplano — Encuentra tu moto nueva">
+<meta property="og:description" content="35 modelos de 11 marcas con precio, ficha técnica, comparador y simulador de crédito.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23101B25'/%3E%3Cpath d='M9 23 23 9' stroke='%23FF6A3D' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Saira+Extra+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-/* Concepto: portal de motos nuevas. Banda oscura con buscador al frente, catálogo filtrable con ficha por moto, comparador, favoritas y simulador de crédito. */
+/* ==========================================================================
+   Moto Altiplano — hoja de estilos única
+   1. Tokens        2. Base         3. Utilidades    4. Cabecera
+   5. Portada       6. Buscador     7. Secciones     8. Catálogo
+   9. Financiamiento 10. Paneles     11. Pie          12. Comparador
+   13. Diálogos     14. Avisos       15. Adaptación
+   ========================================================================== */
+
+/* 1. Tokens ---------------------------------------------------------------- */
 :root{
-  --bg:#EEF0F2; --surface:#FFFFFF; --ink:#16202B; --muted:#566473; --line:#D3D9DF;
-  --accent:#E0481F; --accent-ink:#FFFFFF; --deep:#16202B; --deep-ink:#F3F5F7; --deep-muted:#A9B5C1;
-  --ok:#17745F; --chip:#E3E7EB; --shade:rgba(5,9,13,.72);
+  color-scheme:light;
+  --bg:#EDF0F3;
+  --surface:#FFFFFF;
+  --surface-2:#F5F7F9;
+  --ink:#111A24;
+  --muted:#55636F;
+  --line:#C9D2DA;
+  --line-soft:#DDE3E9;
+  --accent:#D63E16;
+  --accent-hover:#B93311;
+  --accent-soft:#FBEAE4;
+  --accent-ink:#FFFFFF;
+  --deep:#101B25;
+  --deep-2:#0A1219;
+  --deep-line:#283643;
+  --deep-ink:#F2F5F8;
+  --deep-muted:#A3B1BE;
+  --ok:#0E6B57;
+  --chip:#E4E9EE;
+  --shade:rgba(6,11,16,.66);
+  --radius:14px;
+  --radius-sm:9px;
+  --shadow-sm:0 1px 2px rgba(16,27,37,.06),0 2px 6px -2px rgba(16,27,37,.09);
+  --shadow-md:0 20px 44px -26px rgba(16,27,37,.5);
+  --header-h:64px;
+  --maxw:1180px;
+  --gutter:clamp(16px,4vw,32px);
   --f-display:'Saira Extra Condensed','Arial Narrow',Impact,sans-serif;
   --f-body:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
-@media (prefers-color-scheme: dark){
+@media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#0E151C; --surface:#17212B; --ink:#EDF1F4; --muted:#9AA8B5; --line:#2A3743;
-    --accent:#FF6A3D; --accent-ink:#1A0D08; --deep:#070B0F; --deep-ink:#EDF1F4; --deep-muted:#8F9DAA;
-    --ok:#4CC3A5; --chip:#223040; color-scheme:dark;
+    color-scheme:dark;
+    --bg:#0C131A; --surface:#141E27; --surface-2:#101A22;
+    --ink:#EAF0F5; --muted:#9EACB9; --line:#28353F; --line-soft:#22303A;
+    --accent:#FF7A4D; --accent-hover:#FF9068; --accent-soft:#2B1A13; --accent-ink:#1A0F0A;
+    --deep:#060C12; --deep-2:#04090E; --deep-line:#21303B;
+    --deep-ink:#EAF0F5; --deep-muted:#94A2AF;
+    --ok:#4FD1AE; --chip:#1C2A35;
+    --shade:rgba(2,6,10,.78);
+    --shadow-sm:0 1px 2px rgba(0,0,0,.5);
+    --shadow-md:0 22px 50px -28px rgba(0,0,0,.9);
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0E151C; --surface:#17212B; --ink:#EDF1F4; --muted:#9AA8B5; --line:#2A3743;
-  --accent:#FF6A3D; --accent-ink:#1A0D08; --deep:#070B0F; --deep-ink:#EDF1F4; --deep-muted:#8F9DAA;
-  --ok:#4CC3A5; --chip:#223040; color-scheme:dark;
+  color-scheme:dark;
+  --bg:#0C131A; --surface:#141E27; --surface-2:#101A22;
+  --ink:#EAF0F5; --muted:#9EACB9; --line:#28353F; --line-soft:#22303A;
+  --accent:#FF7A4D; --accent-hover:#FF9068; --accent-soft:#2B1A13; --accent-ink:#1A0F0A;
+  --deep:#060C12; --deep-2:#04090E; --deep-line:#21303B;
+  --deep-ink:#EAF0F5; --deep-muted:#94A2AF;
+  --ok:#4FD1AE; --chip:#1C2A35;
+  --shade:rgba(2,6,10,.78);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.5);
+  --shadow-md:0 22px 50px -28px rgba(0,0,0,.9);
 }
-*{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--deep)}
-h1,h2,h3{font-family:var(--f-display);text-transform:uppercase;line-height:.95;margin:0;text-wrap:balance;letter-spacing:.01em}
+
+/* 2. Base ------------------------------------------------------------------ */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--header-real,var(--header-h)) + 16px)}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--f-body);font-size:16px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+body.no-scroll{overflow:hidden}
+img,svg{max-width:100%}
+h1,h2,h3{
+  font-family:var(--f-display);font-weight:800;text-transform:uppercase;
+  line-height:.94;letter-spacing:.01em;margin:0;text-wrap:balance;
+}
 p{margin:0}
 a{color:inherit}
-button,input,select{font:inherit;color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
-:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border:0;border-radius:6px;padding:.8rem 1.2rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:.85rem;text-decoration:none;background:var(--accent);color:var(--accent-ink)}
-.btn:hover{filter:brightness(1.07)}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.btn.ghost{background:transparent;color:inherit;border:2px solid currentColor}
-.eyebrow{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+::selection{background:var(--accent);color:var(--accent-ink)}
 
-header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--deep);color:var(--deep-ink);border-bottom:3px solid var(--accent)}
-.top .wrap{display:flex;align-items:center;gap:1.2rem;min-height:62px;flex-wrap:wrap;padding-block:.4rem}
-.logo{font-family:var(--f-display);font-weight:800;font-size:1.9rem;text-transform:uppercase;letter-spacing:.02em;text-decoration:none;display:flex;align-items:center;gap:.5rem}
-.logo i{display:inline-block;width:.9rem;height:.9rem;background:var(--accent);transform:skewX(-18deg)}
-.top nav{display:flex;gap:1.1rem;flex-wrap:wrap;margin-left:auto;font-size:.88rem;font-weight:600;align-items:center}
-.top nav a{text-decoration:none;color:var(--deep-muted);padding:.3rem 0;border-bottom:2px solid transparent}
-.top nav a:hover{color:var(--deep-ink);border-color:var(--accent)}
-.pillbtn{background:transparent;border:1px solid var(--deep-muted);color:var(--deep-ink);border-radius:999px;padding:.3rem .8rem;font-size:.82rem;font-weight:600}
-.pillbtn b{color:var(--accent)}
-.cur{display:inline-flex;border:1px solid var(--deep-muted);border-radius:999px;overflow:hidden}
-.cur button{background:transparent;border:0;color:var(--deep-ink);padding:.3rem .8rem;font-weight:700;font-size:.82rem}
-.cur button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink)}
+/* 3. Utilidades ------------------------------------------------------------ */
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:max(var(--gutter),env(safe-area-inset-left,0px))}
+.wrap{padding-right:max(var(--gutter),env(safe-area-inset-right,0px))}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.note{font-size:.82rem;color:var(--muted);line-height:1.45}
+.eyebrow{
+  font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;
+  font-weight:700;color:var(--accent);margin-bottom:.5rem;
+}
+.skip-link{
+  position:fixed;left:12px;top:-80px;z-index:200;background:var(--accent);color:var(--accent-ink);
+  padding:.7rem 1rem;border-radius:var(--radius-sm);font-weight:700;text-decoration:none;
+  transition:top .15s ease;
+}
+.skip-link:focus{top:12px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.45rem;
+  min-height:44px;padding:.6rem 1.1rem;border:2px solid transparent;
+  border-radius:var(--radius-sm);background:var(--accent);color:var(--accent-ink);
+  font-weight:700;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;
+  text-decoration:none;transition:background .15s,border-color .15s,color .15s,transform .15s;
+}
+.btn:hover{background:var(--accent-hover)}
+.btn:active{transform:translateY(1px)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{background:var(--surface-2);border-color:var(--muted)}
+.btn.on-deep{background:transparent;color:var(--deep-ink);border-color:var(--deep-line)}
+.btn.on-deep:hover{background:rgba(255,255,255,.08);border-color:var(--deep-muted)}
+.btn.sm{min-height:40px;font-size:.74rem;padding:.45rem .8rem;flex:1 1 auto}
+.btn.block{width:100%}
+.icon-btn{
+  display:inline-grid;place-items:center;width:40px;height:40px;flex:0 0 auto;
+  border:1px solid var(--line);border-radius:var(--radius-sm);
+  background:var(--surface);color:var(--ink);transition:background .15s,border-color .15s;
+}
+.icon-btn:hover{background:var(--surface-2);border-color:var(--muted)}
+.pill-btn{
+  display:inline-flex;align-items:center;gap:.35rem;white-space:nowrap;
+  background:transparent;border:1px solid var(--deep-line);color:var(--deep-ink);
+  border-radius:999px;padding:.4rem .8rem;font-size:.82rem;font-weight:600;
+  transition:border-color .15s,background .15s;
+}
+.pill-btn:hover{border-color:var(--deep-muted);background:rgba(255,255,255,.06)}
+.pill-btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.pill-btn b{font-variant-numeric:tabular-nums}
+.link-btn{
+  background:none;border:0;padding:.35rem 0;color:var(--muted);
+  font-weight:600;font-size:.85rem;text-decoration:underline;text-underline-offset:3px;
+}
+.link-btn:hover{color:var(--accent)}
+.cur{display:inline-flex;border:1px solid var(--deep-line);border-radius:999px;overflow:hidden}
+.cur button{
+  background:transparent;border:0;color:var(--deep-ink);padding:.4rem .7rem;
+  font-weight:700;font-size:.8rem;min-height:36px;
+}
+.cur button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
 
-.hero{background:var(--deep);color:var(--deep-ink);padding-block:3rem 0;position:relative;overflow:hidden}
-.hero h1{font-size:clamp(2.8rem,8.5vw,6rem);font-weight:800;max-width:14ch;position:relative}
-.hero h1 em{font-style:normal;color:var(--accent)}
-.hero .sub{color:var(--deep-muted);font-size:1.15rem;margin-top:1rem;max-width:46ch;position:relative}
-.pills{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.4rem;position:relative}
-.pills span{border:1px solid #3a4856;border-radius:999px;padding:.25rem .8rem;font-size:.82rem;font-weight:600}
-.pills span::before{content:"";display:inline-block;width:.5rem;height:.5rem;border-radius:50%;background:var(--ok);margin-right:.5rem}
-.hero-art{--ink:#fff;position:absolute;right:max(-60px,-4vw);top:1.5rem;width:min(560px,60vw);opacity:.14;pointer-events:none}
+/* 4. Cabecera -------------------------------------------------------------- */
+.top{
+  position:sticky;top:0;z-index:50;
+  background:var(--deep);color:var(--deep-ink);
+  border-bottom:3px solid var(--accent);
+}
+.top-inner{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;min-height:var(--header-h);padding-block:.5rem}
+.logo{
+  display:inline-flex;align-items:center;gap:.5rem;flex:0 0 auto;
+  font-family:var(--f-display);font-weight:800;font-size:1.7rem;line-height:1;
+  text-transform:uppercase;letter-spacing:.02em;text-decoration:none;
+}
+.logo-mark{width:.85rem;height:1.05rem;background:var(--accent);transform:skewX(-18deg);border-radius:2px}
+.nav{display:flex;align-items:center;gap:.15rem;flex:1 1 auto;order:2}
+.nav a{
+  text-decoration:none;color:var(--deep-muted);font-size:.88rem;font-weight:600;
+  padding:.45rem .55rem;border-radius:var(--radius-sm);white-space:nowrap;
+}
+.nav a:hover{color:var(--deep-ink);background:rgba(255,255,255,.06)}
+.nav .pill-btn{margin-left:.35rem}
+.top-actions{display:flex;align-items:center;gap:.5rem;margin-left:auto;order:3}
+.top .icon-btn{background:transparent;border-color:var(--deep-line);color:var(--deep-ink)}
+.top .icon-btn:hover{background:rgba(255,255,255,.08);border-color:var(--deep-muted)}
+
+/* 5. Portada --------------------------------------------------------------- */
+.hero{
+  position:relative;overflow:hidden;
+  background:radial-gradient(125% 120% at 88% 0%,#1E3242 0%,var(--deep) 52%,var(--deep-2) 100%);
+  color:var(--deep-ink);
+  padding-block:clamp(2.4rem,6vw,4.4rem) 0;
+}
+.hero::before{
+  content:"";position:absolute;inset:auto 0 0;height:60%;pointer-events:none;
+  background:repeating-linear-gradient(115deg,rgba(255,255,255,.04) 0 1px,transparent 1px 14px);
+}
+.hero-inner{position:relative}
+.hero-art{
+  --ink:#fff;position:absolute;right:max(-70px,-4vw);top:0;
+  width:min(620px,54vw);opacity:.15;pointer-events:none;
+  -webkit-mask-image:linear-gradient(to left,#000 40%,transparent 100%);
+  mask-image:linear-gradient(to left,#000 40%,transparent 100%);
+}
 .hero-art svg{width:100%;height:auto;display:block}
-.finder{background:var(--surface);color:var(--ink);border-radius:10px 10px 0 0;margin-top:2.4rem;padding:1.4rem;display:grid;gap:1.2rem;position:relative}
-.finder h2{font-size:1.5rem}
+.hero h1{font-size:clamp(2.7rem,8vw,5.6rem);max-width:15ch}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .sub{color:var(--deep-muted);font-size:clamp(1rem,2.2vw,1.13rem);margin-top:1rem;max-width:48ch}
+.stats{display:flex;flex-wrap:wrap;gap:1.4rem 2rem;list-style:none;padding:0;margin:1.7rem 0 0}
+.stats li{display:grid;gap:.1rem}
+.stats strong{font-family:var(--f-display);font-size:2rem;line-height:1;font-weight:700}
+.stats span{font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:var(--deep-muted)}
+.hero-cta{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.6rem}
+
+/* 6. Buscador -------------------------------------------------------------- */
+.finder{
+  position:relative;margin-top:clamp(1.8rem,4vw,2.6rem);
+  background:var(--surface);color:var(--ink);
+  border-radius:var(--radius) var(--radius) 0 0;
+  padding:clamp(1.1rem,3vw,1.7rem);
+  display:grid;gap:1.1rem;box-shadow:var(--shadow-md);
+}
+.finder h2{font-size:clamp(1.35rem,3.4vw,1.85rem)}
+.finder .note{max-width:62ch}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;align-items:end}
 .field{display:grid;gap:.35rem;min-width:0}
-.field label{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--muted)}
-.field select,.field input[type=text],.field input[type=number],.field input[type=email]{width:100%;border:1.5px solid var(--line);background:var(--bg);border-radius:6px;padding:.65rem .75rem;min-height:44px}
+.field > label{font-size:.72rem;letter-spacing:.11em;text-transform:uppercase;font-weight:700;color:var(--muted)}
 .field output{font-weight:700;font-variant-numeric:tabular-nums;text-transform:none;letter-spacing:0;color:var(--ink)}
-.field input[type=range]{width:100%;accent-color:var(--accent)}
-.finder-bottom{display:flex;gap:1rem;flex-wrap:wrap;align-items:end}
-.finder-bottom .field{flex:1 1 260px}
+.field select,.field input[type="text"],.field input[type="tel"],.field input[type="email"]{
+  width:100%;min-height:44px;padding:.6rem .75rem;
+  border:1.5px solid var(--line);border-radius:var(--radius-sm);
+  background:var(--surface-2);
+}
+.field input[type="range"]{width:100%;accent-color:var(--accent);min-height:32px}
+.field .hint{font-size:.75rem;color:var(--muted)}
+.search-wrap{position:relative;display:flex}
+.search-wrap input{padding-right:2.6rem!important}
+.search-clear{
+  position:absolute;right:.35rem;top:50%;transform:translateY(-50%);
+  width:32px;height:32px;display:grid;place-items:center;
+  border:0;border-radius:50%;background:var(--chip);color:var(--muted);
+}
+.search-clear:hover{background:var(--accent);color:var(--accent-ink)}
+.finder-actions{display:flex;gap:.8rem;align-items:end;flex-wrap:wrap}
+.finder-actions .field{flex:1 1 280px}
+.finder-actions .btn{flex:0 0 auto}
+@media (max-width:640px){.finder-actions .btn{width:100%}}
 
-section{padding-block:3.5rem}
-.sec-head{display:flex;justify-content:space-between;align-items:end;gap:1rem;flex-wrap:wrap;margin-bottom:1.6rem}
-.sec-head h2{font-size:clamp(2rem,5vw,3rem)}
-.styles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.8rem}
-.style-btn{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:1rem;display:grid;gap:.3rem;min-width:0}
-.style-btn:hover,.style-btn[aria-pressed=true]{border-color:var(--accent)}
-.style-btn[aria-pressed=true]{background:var(--accent);color:var(--accent-ink)}
-.style-btn[aria-pressed=true] small{color:inherit}
-.style-btn strong{font-family:var(--f-display);font-size:1.5rem;text-transform:uppercase;line-height:1}
-.style-btn small{color:var(--muted);font-size:.86rem}
+/* 7. Secciones ------------------------------------------------------------- */
+section{padding-block:clamp(2.6rem,6vw,4.2rem)}
+section[id]{scroll-margin-top:calc(var(--header-real,var(--header-h)) + 16px)}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:1rem 2rem;flex-wrap:wrap;margin-bottom:clamp(1.2rem,3vw,1.9rem)}
+.sec-head h2{font-size:clamp(1.9rem,5vw,2.9rem)}
+.sec-head .note{max-width:52ch}
+.styles{display:grid;grid-template-columns:repeat(auto-fit,minmax(172px,1fr));gap:.75rem}
+.style-btn{
+  position:relative;text-align:left;display:grid;gap:.15rem;align-content:start;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);
+  padding:1rem 1rem 1.1rem;min-width:0;transition:border-color .15s,background .15s,transform .15s;
+}
+.style-btn:hover{border-color:var(--accent);transform:translateY(-2px)}
+.style-btn strong{font-family:var(--f-display);font-size:1.5rem;text-transform:uppercase;line-height:1;font-weight:700}
+.style-btn small{color:var(--muted);font-size:.84rem;line-height:1.35}
+.style-btn .count{
+  position:absolute;right:.7rem;top:.7rem;font-size:.7rem;font-weight:700;
+  color:var(--muted);background:var(--chip);border-radius:999px;padding:.1rem .45rem;
+}
+.style-btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.style-btn[aria-pressed="true"] small,.style-btn[aria-pressed="true"] .count{color:inherit}
+.style-btn[aria-pressed="true"] .count{background:rgba(0,0,0,.16)}
 .brands{display:flex;flex-wrap:wrap;gap:.5rem}
-.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:.4rem .95rem;font-weight:600;font-size:.9rem}
-.chip small{color:var(--muted);margin-left:.3rem}
+.chip{
+  display:inline-flex;align-items:center;gap:.4rem;min-height:40px;
+  border:1.5px solid var(--line);background:var(--surface);border-radius:999px;
+  padding:.35rem .9rem;font-weight:600;font-size:.9rem;transition:border-color .15s,background .15s,color .15s;
+}
+.chip small{color:var(--muted);font-variant-numeric:tabular-nums;font-size:.78rem}
 .chip:hover{border-color:var(--accent)}
-.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.chip[aria-pressed=true] small{color:inherit;opacity:.7}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip[aria-pressed="true"] small{color:inherit;opacity:.7}
 
-.toolbar{display:flex;gap:.9rem;align-items:center;flex-wrap:wrap;margin-bottom:1.2rem}
-.toolbar .count{font-weight:700}
-.toolbar select,.toolbar input[type=number]{border:1.5px solid var(--line);background:var(--surface);border-radius:6px;padding:.5rem .7rem;min-height:40px}
-.toolbar input[type=number]{width:84px}
-.toolbar .clear{margin-left:auto;background:none;border:0;text-decoration:underline;color:var(--muted);font-weight:600}
-.note{font-size:.82rem;color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.1rem}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
-.art{background:var(--chip);position:relative;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;overflow:hidden;width:100%;max-width:100%}
-.art svg{width:92%;height:auto;display:block}
-.art img{width:100%;height:100%;object-fit:cover;display:block}
-.art .tag{position:absolute;left:.7rem;top:.7rem;background:var(--deep);color:var(--deep-ink);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:.2rem .5rem;border-radius:3px}
-.art .heart{position:absolute;right:.6rem;top:.6rem;width:38px;height:38px;border-radius:50%;border:0;background:var(--surface);color:var(--muted);display:grid;place-items:center}
-.art .heart[aria-pressed=true]{color:var(--accent)}
-.art .heart svg{width:20px;height:20px}
-.art .photo-btn{position:absolute;right:.6rem;bottom:.6rem;background:var(--deep);color:var(--deep-ink);font-size:.72rem;font-weight:700;border-radius:4px;padding:.25rem .55rem;cursor:pointer;letter-spacing:.04em}
-.card .body{padding:1rem 1.1rem 1.1rem;display:grid;gap:.7rem;flex:1;align-content:start}
-.brand{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
-.card h3{font-size:1.7rem}
-.specs{display:flex;gap:.4rem;flex-wrap:wrap}
-.specs span{background:var(--chip);border-radius:4px;padding:.15rem .5rem;font-size:.8rem;font-weight:600;font-variant-numeric:tabular-nums}
-.price{font-family:var(--f-display);font-size:2rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
-.price small{font-family:var(--f-body);font-size:.78rem;font-weight:500;color:var(--muted);margin-left:.35rem}
-.cuota{font-size:.88rem;color:var(--ok);font-weight:700;font-variant-numeric:tabular-nums;margin-top:.2rem}
-.actions{display:flex;gap:.5rem;flex-wrap:wrap}
-.actions .btn{flex:1 1 auto;padding:.6rem .8rem}
-.cmp-check{display:flex;align-items:center;gap:.4rem;font-size:.85rem;font-weight:600;cursor:pointer;color:var(--muted);flex:0 0 100%}
-.cmp-check input{accent-color:var(--accent);width:18px;height:18px}
-.empty{grid-column:1/-1;text-align:center;padding:3rem 1rem;background:var(--surface);border:1px dashed var(--line);border-radius:10px}
-.empty h3{font-size:1.8rem;margin-bottom:.4rem}
+/* 8. Catálogo -------------------------------------------------------------- */
+.active-filters{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;margin-bottom:1rem}
+.active-filters .af-label{font-size:.78rem;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.af-chip{
+  display:inline-flex;align-items:center;gap:.35rem;border:1.5px solid var(--accent);
+  background:var(--accent-soft);color:var(--accent);border-radius:999px;
+  padding:.2rem .35rem .2rem .7rem;font-size:.82rem;font-weight:600;max-width:100%;
+}
+.af-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.af-chip .x{display:grid;place-items:center;width:22px;height:22px;border:0;border-radius:50%;background:transparent;color:inherit}
+.af-chip .x:hover{background:var(--accent);color:var(--accent-ink)}
+.toolbar{display:flex;flex-wrap:wrap;align-items:end;gap:.9rem 1.2rem;margin-bottom:1.3rem;padding-bottom:1.1rem;border-bottom:1px solid var(--line-soft)}
+.toolbar .count{font-size:.95rem;color:var(--muted);margin-right:auto}
+.toolbar .count strong{color:var(--ink);font-size:1.15rem;font-variant-numeric:tabular-nums}
+.tool{display:grid;gap:.3rem}
+.tool > label{font-size:.72rem;letter-spacing:.11em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.tool select,.rate-box input{
+  min-height:44px;border:1.5px solid var(--line);border-radius:var(--radius-sm);
+  background:var(--surface);padding:.5rem .65rem;
+}
+.rate-box{display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem;color:var(--muted)}
+.rate-box input{width:76px;text-align:center;font-variant-numeric:tabular-nums;font-weight:700;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(266px,1fr));gap:1.1rem}
+.card{
+  display:flex;flex-direction:column;min-width:0;overflow:hidden;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);
+}
+@media (prefers-reduced-motion:no-preference){
+  .card{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+  .card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--line)}
+  .card:focus-within{box-shadow:var(--shadow-md)}
+}
+.art{
+  position:relative;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;width:100%;padding:.6rem;
+  background:linear-gradient(160deg,var(--chip) 0%,var(--surface-2) 100%);
+}
+.art svg{width:94%;height:auto;display:block}
+.art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;padding:0}
+.art .tag{
+  position:absolute;left:.6rem;top:.6rem;z-index:2;
+  background:var(--deep);color:var(--deep-ink);font-size:.66rem;letter-spacing:.1em;
+  text-transform:uppercase;font-weight:700;padding:.22rem .45rem;border-radius:4px;
+}
+.art .heart{
+  position:absolute;right:.55rem;top:.55rem;z-index:2;width:38px;height:38px;
+  display:grid;place-items:center;border:0;border-radius:50%;
+  background:var(--surface);color:var(--muted);box-shadow:var(--shadow-sm);
+}
+.art .heart:hover{color:var(--accent)}
+.art .heart[aria-pressed="true"]{color:var(--accent)}
+.art .photo-btn{
+  position:absolute;right:.55rem;bottom:.55rem;z-index:2;display:inline-flex;align-items:center;gap:.3rem;
+  background:rgba(10,18,25,.82);color:#fff;font-size:.68rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;border-radius:5px;padding:.3rem .45rem;cursor:pointer;
+}
+.art .photo-btn:hover{background:var(--accent)}
+.art .photo-btn input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.card .body{padding:1rem 1.05rem 1.1rem;display:flex;flex-direction:column;gap:.6rem;flex:1}
+.brand-line{font-size:.71rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted);display:flex;gap:.35rem;flex-wrap:wrap}
+.card h3{font-size:1.5rem;line-height:1.02}
+.card h3 button{
+  background:none;border:0;padding:0;text-align:left;font:inherit;color:inherit;
+  text-transform:inherit;letter-spacing:inherit;line-height:inherit;
+}
+.card h3 button:hover{color:var(--accent);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.specs{display:flex;flex-wrap:wrap;gap:.35rem}
+.specs span{background:var(--chip);border-radius:5px;padding:.15rem .45rem;font-size:.78rem;font-weight:600;font-variant-numeric:tabular-nums}
+.price-block{margin-top:auto;padding-top:.35rem;display:grid;gap:.15rem}
+.price{font-family:var(--f-display);font-size:1.95rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.price small{font-family:var(--f-body);font-size:.74rem;font-weight:500;color:var(--muted);margin-left:.3rem;letter-spacing:0}
+.cuota{font-size:.88rem;font-weight:700;color:var(--ok);font-variant-numeric:tabular-nums}
+.card .actions{display:flex;gap:.5rem;align-items:stretch;flex-wrap:wrap;margin-top:.35rem}
+.cmp-toggle{
+  display:inline-flex;align-items:center;justify-content:center;gap:.35rem;
+  min-height:40px;padding:.45rem .7rem;flex:0 0 auto;
+  border:1.5px solid var(--line);border-radius:var(--radius-sm);
+  background:var(--surface);color:var(--muted);font-weight:700;font-size:.74rem;
+  letter-spacing:.05em;text-transform:uppercase;
+}
+.cmp-toggle:hover{border-color:var(--ink);color:var(--ink)}
+.cmp-toggle[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.empty{
+  grid-column:1/-1;text-align:center;padding:clamp(2rem,5vw,3rem) 1.2rem;
+  background:var(--surface);border:1px dashed var(--line);border-radius:var(--radius);
+}
+.empty h3{font-size:1.7rem;margin-bottom:.4rem}
+.empty p{color:var(--muted);max-width:46ch;margin:0 auto 1.1rem}
+.empty .actions{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap}
 .more{display:flex;justify-content:center;margin-top:1.6rem}
+.more .btn{flex:0 0 auto;min-width:240px}
 
-.fin{background:var(--deep);color:var(--deep-ink)}
-.fin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;align-items:start}
-.fin h2{font-size:clamp(2.2rem,5.5vw,3.6rem)}
-.fin .lead{color:var(--deep-muted);margin-top:1rem;max-width:44ch}
-.sim{background:var(--surface);color:var(--ink);border-radius:10px;padding:1.4rem;display:grid;gap:1rem}
+/* 9. Financiamiento -------------------------------------------------------- */
+.fin{background:var(--deep);color:var(--deep-ink);position:relative;overflow:hidden}
+.fin::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background:radial-gradient(60% 80% at 100% 0%,rgba(255,255,255,.06),transparent 70%);
+}
+.fin .wrap{position:relative}
+.fin-grid{display:grid;grid-template-columns:1fr;gap:clamp(1.8rem,4vw,3.4rem);align-items:start}
+@media (min-width:980px){.fin-grid{grid-template-columns:1fr 1.05fr}}
+.fin h2{font-size:clamp(2rem,5.5vw,3.4rem)}
+.fin .lead{color:var(--deep-muted);margin-top:1rem;max-width:46ch}
+.fin ul.benefits{list-style:none;padding:0;margin:1.4rem 0 0;display:grid;gap:.55rem;color:var(--deep-muted);font-size:.92rem}
+.fin ul.benefits li{display:flex;gap:.55rem;align-items:flex-start}
+.fin ul.benefits svg{flex:0 0 auto;color:var(--accent);margin-top:.15rem}
+.sim{background:var(--surface);color:var(--ink);border-radius:var(--radius);padding:clamp(1.1rem,3vw,1.7rem);display:grid;gap:1rem;box-shadow:var(--shadow-md)}
+.sim .sim-title{font-size:1.35rem;font-family:var(--f-display);text-transform:uppercase;letter-spacing:.01em}
 .sim-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem}
-.result{background:var(--bg);border-radius:8px;padding:1rem;display:grid;gap:.2rem}
-.result .big{font-family:var(--f-display);font-size:3rem;font-weight:800;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
-.result dl{margin:.6rem 0 0;display:grid;grid-template-columns:1fr auto;gap:.2rem 1rem;font-size:.9rem;font-variant-numeric:tabular-nums}
+.result{background:var(--surface-2);border:1px solid var(--line-soft);border-radius:var(--radius-sm);padding:1rem;display:grid;gap:.15rem}
+.result .big{font-family:var(--f-display);font-size:clamp(2.2rem,6vw,2.9rem);font-weight:800;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.result dl{margin:.7rem 0 0;display:grid;grid-template-columns:1fr auto;gap:.25rem 1rem;font-size:.88rem;font-variant-numeric:tabular-nums}
 .result dt{color:var(--muted)}
 .result dd{margin:0;font-weight:700;text-align:right}
+.result .total{border-top:1px solid var(--line-soft);padding-top:.35rem;margin-top:.15rem}
 
-.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.2rem}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1.5rem;display:grid;gap:.9rem;align-content:start}
-.panel h3{font-size:2rem}
-.panel ul{margin:0;padding-left:1.1rem;color:var(--muted)}
-.form{display:grid;gap:.8rem}
-.ok-msg{color:var(--ok);font-weight:700}
-
-footer{background:var(--deep);color:var(--deep-ink);padding-block:2.5rem calc(2.5rem + 70px)}
-.fgrid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem}
-footer h4{font-family:var(--f-display);text-transform:uppercase;font-size:1.2rem;margin:0 0 .6rem;letter-spacing:.04em}
-footer p,footer li{color:var(--deep-muted);font-size:.92rem}
-footer ul{list-style:none;padding:0;margin:0;display:grid;gap:.3rem}
-footer a{text-decoration:none}
-footer a:hover{color:var(--deep-ink)}
-.legal{margin-top:2rem;padding-top:1rem;border-top:1px solid #2a3743;font-size:.8rem;color:var(--deep-muted)}
-
-.cmp-bar{position:fixed;left:0;right:0;bottom:0;z-index:55;background:var(--ink);color:var(--bg);padding-top:.7rem;padding-bottom:calc(.7rem + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}
-.cmp-bar .items{display:flex;gap:.5rem;flex-wrap:wrap;flex:1;min-width:0}
-.cmp-bar .items span{background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:.2rem .7rem;font-weight:700;font-size:.85rem}
-.cmp-bar .btn.ghost{color:var(--bg)}
-.modal{position:fixed;inset:0;z-index:70;background:var(--shade);display:flex;align-items:flex-start;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) 12px max(16px,env(safe-area-inset-bottom,0px));overflow:auto}
-.modal-box{background:var(--surface);color:var(--ink);border-radius:10px;width:min(960px,100%);padding:1.4rem;margin-top:2rem}
-.modal-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1rem}
-.modal-head h2{font-size:2.2rem}
-.detail{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.4rem;align-items:start}
-.detail .art{border-radius:8px;aspect-ratio:4/3}
-.dl{display:grid;grid-template-columns:auto 1fr;gap:.35rem 1.2rem;margin:.8rem 0;font-variant-numeric:tabular-nums}
-.dl dt{color:var(--muted);font-size:.85rem}
-.dl dd{margin:0;font-weight:700}
-.dside{display:grid;gap:.9rem;min-width:0}
-.tbl{overflow-x:auto}
-.tbl table{border-collapse:collapse;width:100%;min-width:520px;font-variant-numeric:tabular-nums}
-.tbl th,.tbl td{text-align:left;padding:.65rem .7rem;border-bottom:1px solid var(--line);font-size:.92rem;vertical-align:top}
-.tbl th{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);width:130px}
-.tbl thead th,.tbl thead td{font-family:var(--f-display);font-size:1.4rem;text-transform:uppercase;color:var(--ink);letter-spacing:.01em}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:.6rem 1rem;border-radius:6px;font-weight:600;z-index:80;font-size:.9rem;max-width:90vw}
-@media (prefers-reduced-motion:no-preference){
-  .card{transition:transform .15s ease,border-color .15s ease}
-  .card:hover{transform:translateY(-3px);border-color:var(--accent)}
+/* 10. Paneles y formularios ------------------------------------------------ */
+.panels{display:grid;gap:1.1rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:start}
+.panel{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:clamp(1.2rem,3vw,1.6rem);display:grid;gap:.85rem;align-content:start;height:100%;
 }
-@media (max-width:560px){.top nav{margin-left:0;gap:.7rem}.hero-art{display:none}}
+.panel h3{font-size:1.8rem}
+.panel > p{color:var(--muted);font-size:.94rem}
+.panel ul{margin:0;padding-left:1.1rem;color:var(--muted);font-size:.92rem;display:grid;gap:.25rem}
+.panel address{font-style:normal;font-size:.94rem;display:grid;gap:.15rem}
+.form{display:grid;gap:.85rem}
+.form .btn{margin-top:.2rem}
+.form-row{display:grid;gap:.85rem;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+.err-msg{color:#B3261E;font-size:.78rem;font-weight:600}
+:root[data-theme="dark"] .err-msg{color:#FFB4AB}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .err-msg{color:#FFB4AB}}
+.field input[aria-invalid="true"]{border-color:#B3261E}
+.ok-msg{color:var(--ok);font-weight:600;font-size:.9rem;display:flex;gap:.4rem;align-items:flex-start}
+.demo-note{font-size:.76rem;color:var(--muted);border-left:3px solid var(--line);padding-left:.65rem}
+
+/* 11. Pie ------------------------------------------------------------------ */
+footer{background:var(--deep-2);color:var(--deep-ink);padding-block:clamp(2.2rem,5vw,3rem) calc(2.2rem + 76px)}
+.fgrid2{display:grid;gap:2rem;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+footer h4{font-family:var(--f-display);text-transform:uppercase;font-size:1.1rem;margin:0 0 .6rem;letter-spacing:.05em}
+footer p,footer li{color:var(--deep-muted);font-size:.9rem}
+footer .foot-brand{font-family:var(--f-display);font-size:1.5rem;text-transform:uppercase;color:var(--deep-ink);margin-bottom:.4rem}
+footer ul{list-style:none;padding:0;margin:0;display:grid;gap:.4rem}
+footer a{text-decoration:none}
+footer a:hover{color:var(--deep-ink);text-decoration:underline;text-underline-offset:3px}
+.legal{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--deep-line);font-size:.79rem;color:var(--deep-muted);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.legal p{max-width:78ch}
+.data-note{margin-top:1.2rem;font-size:.8rem;color:var(--muted);max-width:84ch;line-height:1.5}
+.art .photo-btn:focus-within{outline:3px solid var(--accent);outline-offset:2px}
+
+/* 12. Comparador ----------------------------------------------------------- */
+.cmp-bar{
+  position:fixed;inset:auto 0 0;z-index:60;
+  background:var(--deep);color:var(--deep-ink);border-top:3px solid var(--accent);
+  padding:.65rem var(--gutter) calc(.65rem + env(safe-area-inset-bottom,0px));
+}
+.cmp-inner{max-width:var(--maxw);margin:0 auto;display:flex;gap:.7rem;align-items:center;flex-wrap:wrap}
+.cmp-items{display:flex;gap:.4rem;flex-wrap:wrap;flex:1 1 260px;min-width:0}
+.cmp-chip{display:inline-flex;align-items:center;gap:.25rem;background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:.15rem .2rem .15rem .7rem;font-weight:700;font-size:.82rem;max-width:100%}
+.cmp-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:22ch}
+.cmp-chip button{display:grid;place-items:center;width:22px;height:22px;border:0;border-radius:50%;background:rgba(0,0,0,.16);color:inherit}
+.cmp-chip button:hover{background:rgba(0,0,0,.35)}
+.cmp-bar .btn{flex:0 0 auto}
+
+/* 13. Diálogos ------------------------------------------------------------- */
+.modal{
+  position:fixed;inset:0;z-index:90;background:var(--shade);
+  display:flex;justify-content:center;align-items:flex-start;overflow-y:auto;overscroll-behavior:contain;
+  padding:clamp(12px,3vw,28px) 12px;
+  padding-top:calc(clamp(12px,3vw,28px) + env(safe-area-inset-top,0px));
+  padding-bottom:calc(clamp(12px,3vw,28px) + env(safe-area-inset-bottom,0px));
+}
+.modal-box{
+  width:min(980px,100%);background:var(--surface);color:var(--ink);
+  border-radius:var(--radius);padding:clamp(1rem,3vw,1.6rem);
+  box-shadow:0 30px 70px -24px rgba(0,0,0,.55);margin-block:auto;
+}
+@media (prefers-reduced-motion:no-preference){
+  .modal{animation:fade .16s ease-out}
+  .modal-box{animation:rise .2s cubic-bezier(.2,.7,.3,1)}
+}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.modal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1rem;padding-bottom:.8rem;border-bottom:1px solid var(--line-soft);position:sticky;top:0;background:var(--surface);z-index:2}
+.modal-head h2{font-size:clamp(1.6rem,4vw,2.2rem)}
+.modal-close{flex:0 0 auto}
+.detail{display:grid;grid-template-columns:1fr;gap:1.4rem;align-items:start}
+@media (min-width:760px){.detail{grid-template-columns:1fr 1fr}}
+.detail .art{border-radius:var(--radius-sm);aspect-ratio:4/3}
+.detail .dside{display:grid;gap:.8rem;min-width:0;align-content:start}
+.detail-price{display:grid;gap:.2rem}
+.detail-price .price{font-size:2.3rem}
+.dl{display:grid;grid-template-columns:auto 1fr;gap:.4rem 1.2rem;margin:.4rem 0 0;font-variant-numeric:tabular-nums;font-size:.92rem}
+.dl dt{color:var(--muted);font-size:.85rem}
+.dl dd{margin:0;font-weight:700;text-align:right}
+.detail .actions{display:flex;gap:.6rem;flex-wrap:wrap}
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line-soft);border-radius:var(--radius-sm)}
+.tbl table{border-collapse:collapse;width:100%;min-width:560px;font-variant-numeric:tabular-nums}
+.tbl th,.tbl td{text-align:left;padding:.7rem .8rem;border-bottom:1px solid var(--line-soft);font-size:.9rem;vertical-align:top}
+.tbl tbody th{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;width:34%;position:sticky;left:0;background:var(--surface)}
+.tbl thead th{font-family:var(--f-display);font-size:1.25rem;text-transform:uppercase;letter-spacing:.01em;color:var(--ink);font-weight:700}
+.tbl thead .cmp-brand{display:block;font-family:var(--f-body);font-size:.68rem;letter-spacing:.12em;color:var(--muted);font-weight:700;margin-bottom:.1rem}
+.tbl thead .cmp-title{background:none;border:0;padding:0;font:inherit;text-transform:inherit;text-align:left;color:inherit}
+.tbl thead .cmp-title:hover{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.tbl .best{color:var(--ok);font-weight:700}
+.tbl .best::after{content:" ★";font-size:.8em}
+.tbl tr:last-child th,.tbl tr:last-child td{border-bottom:0}
+
+/* 14. Avisos y arranque ---------------------------------------------------- */
+.toast{
+  position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));
+  transform:translateX(-50%);z-index:120;
+  display:flex;align-items:center;gap:.5rem;
+  background:var(--ink);color:var(--bg);padding:.65rem 1rem;border-radius:999px;
+  font-weight:600;font-size:.86rem;max-width:min(92vw,540px);box-shadow:var(--shadow-md);
+}
+.toast svg{flex:0 0 auto}
+.boot-error{max-width:56ch;margin:12vh auto;padding:1.5rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);text-align:center}
+.boot-error h2{font-size:1.7rem;margin:0 0 .5rem}
+.noscript h2{font-size:1.5rem;margin:0 0 .5rem}
+.noscript{max-width:56ch;margin:12vh auto;padding:1.5rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+html[data-js="on"] .noscript{display:none}
+
+/* 15. Adaptación ----------------------------------------------------------- */
+@media (max-width:900px){
+  .nav{order:3;flex-basis:100%;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:.15rem}
+  .nav::-webkit-scrollbar{display:none}
+  .nav .pill-btn{margin-left:0}
+  .top-actions{order:2}
+  .hero-art{opacity:.09;width:82vw;right:-25%}
+  .toolbar .count{margin-right:0;width:100%}
+}
+@media (max-width:560px){
+  .hero-art{display:none}
+  .grid{grid-template-columns:1fr}
+  .stats{gap:1rem 1.6rem}
+  .stats strong{font-size:1.7rem}
+  .modal{padding-inline:0}
+  .modal-box{border-radius:0;min-height:100%}
+  .legal{flex-direction:column}
+}
+@media (hover:none){
+  .card:hover{transform:none}
+}
+@media print{
+  .top,.cmp-bar,.modal,.toast,.hero-art,.art .photo-btn,.art .heart{display:none!important}
+  body{background:#fff;color:#000}
+  .card{break-inside:avoid;box-shadow:none}
+}
 </style>
-
+</head>
+<body>
+<a class="skip-link" href="#catalogo">Saltar al catálogo</a>
+<noscript>
+  <div class="noscript">
+    <h2>Necesitas activar JavaScript</h2>
+    <p>Este catálogo usa JavaScript para filtrar, comparar y calcular cuotas. Actívalo en tu navegador para verlo completo.</p>
+  </div>
+</noscript>
 <div id="root"></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<div id="boot-error" class="boot-error" hidden>
+  <h2>No se pudo cargar el catálogo</h2>
+  <p>Revisa tu conexión: la página necesita descargar React desde el CDN. Si el problema continúa, escríbenos y te enviamos la lista de precios.</p>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
 <script>
+/* Moto Altiplano — catálogo interactivo. Depende de React 18 (UMD). */
 (function(){
-var h=React.createElement, useState=React.useState, useEffect=React.useEffect, useMemo=React.useMemo;
+'use strict';
+if(!window.React||!window.ReactDOM) return;
+var h=React.createElement;
+var useState=React.useState, useEffect=React.useEffect, useMemo=React.useMemo, useRef=React.useRef;
 
-/* Datos: marca, modelo, año, tipo, cc, potencia, precio, moneda, estilo.
-   Precios y modelos tomados del catálogo público de Somos Moto (nov 2026). La moneda es la del listado original. */
+/* --- Datos del catálogo ---------------------------------------------------
+   marca, modelo, año, tipo, cilindrada, potencia, precio, moneda, estilo.
+   Precios referenciales del catálogo público (noviembre 2026); se conserva la
+   moneda del listado original y se convierte con el tipo de cambio editable. */
 var D=[
 ['Honda','Dio',2025,'Scooter',110,null,1870,'USD','ciudad'],
 ['Honda','Elite 125',2026,'Scooter',124,null,2369,'USD','ejecutivo'],
@@ -227,27 +604,74 @@ var D=[
 ];
 var KIND={'Scooter':'scooter','Cub':'cub','Utilitaria':'cub','Pistera':'naked','Naked':'naked','Deportiva':'sport','Cruiser':'cruiser','Doble propósito':'dual','Café Racer':'naked','Touring':'dual'};
 var BCOL={'Honda':'#C8321E','Yamaha':'#1E4DB0','Bajaj':'#D4A017','KTM':'#E8650A','Royal Enfield':'#3C5A4A','Suzuki':'#2E6FB7','RTM':'#2B2B30','Ronco':'#7A2E2E','Ssenda':'#2E8C6A','Sonlink':'#5E6B78','Lifan':'#B8312F'};
-var MOTOS=D.map(function(r,i){return {id:i+1,brand:r[0],model:r[1],year:r[2],type:r[3],cc:r[4],pw:r[5],price:r[6],cur:r[7],style:r[8],color:BCOL[r[0]]||'#555',kind:KIND[r[3]]||'naked'}});
+var MOTOS=D.map(function(r,i){
+  return {id:i+1,brand:r[0],model:r[1],year:r[2],type:r[3],cc:r[4],pw:r[5],price:r[6],cur:r[7],style:r[8],color:BCOL[r[0]]||'#555',kind:KIND[r[3]]||'naked'};
+});
+var BYID={}; MOTOS.forEach(function(m){BYID[m.id]=m});
 var STYLES=[
-  {k:'trabajo',n:'Full Chamba',d:'Máxima economía para largas jornadas'},
+  {k:'trabajo',n:'Full chamba',d:'Máxima economía para largas jornadas'},
   {k:'ciudad',n:'Callejero',d:'El tráfico no existe para ti'},
   {k:'ejecutivo',n:'Ejecutivo',d:'Muévete cómodo y con presencia'},
   {k:'aventura',n:'Aventurero',d:'Para salir de la ruta conocida'},
   {k:'clasica',n:'Clásico',d:'Carácter de siempre, motor de hoy'},
   {k:'deportiva',n:'Deportivo',d:'Sé el primero en llegar'}
 ];
-var STYLE_NAME={};STYLES.forEach(function(s){STYLE_NAME[s.k]=s.n});
-var PAGE=12, MAXP=36000;
+var STYLE_NAME={}; STYLES.forEach(function(s){STYLE_NAME[s.k]=s.n});
+var CC_OPTS=[
+  {v:'all',l:'Sin preferencia'},{v:'0-125',l:'Hasta 125 cc'},{v:'126-200',l:'126 a 200 cc'},
+  {v:'201-400',l:'201 a 400 cc'},{v:'401-1000',l:'Más de 400 cc'}
+];
+var SORTS=[
+  {v:'price-asc',l:'Precio: menor a mayor'},{v:'price-desc',l:'Precio: mayor a menor'},
+  {v:'cc-desc',l:'Cilindrada: mayor a menor'},{v:'year-desc',l:'Modelos más nuevos'},{v:'name',l:'Marca y modelo (A-Z)'}
+];
+var RATE0=3.7, TEA0=35, PAGE=12, MAXP=36000;
 
-/* utilidades */
-function lsGet(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
-function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
-function conv(m,cur,rate){ if(m.cur===cur) return m.price; return cur==='PEN'?m.price*rate:m.price/rate }
-function money(v,cur){ return (cur==='PEN'?'S/ ':'US$ ')+Math.round(v).toLocaleString('es-PE') }
-function cuota(monto,tea,n){ var i=Math.pow(1+tea/100,1/12)-1; return i===0?monto/n:monto*i/(1-Math.pow(1+i,-n)) }
-function ccBand(cc,v){ if(v==='all') return true; var p=v.split('-'); return cc>=+p[0]&&cc<=+p[1] }
+/* --- Utilidades ----------------------------------------------------------- */
+function lsGet(k,d){try{var v=window.localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}}
+function lsSet(k,v){try{window.localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
+function conv(m,cur,rate){return m.cur===cur?m.price:(cur==='PEN'?m.price*rate:m.price/rate)}
+function nf(v){return Math.round(v).toLocaleString('es-PE')}
+function money(v,cur){return (cur==='PEN'?'S/ ':'US$ ')+nf(v)}
+function cuota(monto,tea,n){
+  if(!(n>0)) return 0;
+  var i=Math.pow(1+Math.max(0,tea)/100,1/12)-1;
+  if(i<=0) return monto/n;
+  return monto*i/(1-Math.pow(1+i,-n));
+}
+function monthly(m,cur,rate){return cuota(conv(m,cur,rate)*0.8,TEA0,24)}
+function norm(s){
+  s=String(s).toLowerCase();
+  return s.normalize?s.normalize('NFD').replace(/[\u0300-\u036f]/g,''):s;
+}
+function ccBand(cc,v){if(v==='all')return true;var p=String(v).split('-');return cc>=+p[0]&&cc<=+p[1]}
+function reduced(){return !!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)}
+function goto(id){var el=document.getElementById(id);if(el)el.scrollIntoView({behavior:reduced()?'auto':'smooth',block:'start'})}
 
-/* ilustración vectorial cuando no hay foto */
+/* --- Iconos --------------------------------------------------------------- */
+function Icon(p){
+  var paths=(p.d||[]).map(function(d,i){return h('path',{key:i,d:d})});
+  return h('svg',{viewBox:'0 0 24 24',width:p.size||20,height:p.size||20,fill:'none',stroke:'currentColor',strokeWidth:p.w||2,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':'true',focusable:'false'},paths);
+}
+var P={
+  arrow:'M5 12h14M13 6l6 6-6 6',
+  check:'M20 6 9 17l-5-5',
+  plus:'M12 5v14M5 12h14',
+  close:'M6 6l12 12M18 6 6 18',
+  camera:'M4 8h3l1.6-2h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z M12 16.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
+  compare:'M3 20h18M7 20v-6M12 20V8M17 20v-9',
+  heart:'M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z',
+  bike:'M5 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM8 15h8l-3-6H8m5 0h3l2 6'
+};
+function themeIcon(t){
+  if(t==='light') return h(Icon,{d:['M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8','M12 2v2','M12 20v2','M2 12h2','M20 12h2','M4.9 4.9l1.4 1.4','M17.7 17.7l1.4 1.4','M19.1 4.9l-1.4 1.4','M6.3 17.7l-1.4 1.4']});
+  if(t==='dark') return h(Icon,{d:['M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z']});
+  return h('svg',{viewBox:'0 0 24 24',width:20,height:20,'aria-hidden':'true',focusable:'false'},
+    h('circle',{cx:12,cy:12,r:9,fill:'none',stroke:'currentColor',strokeWidth:2}),
+    h('path',{d:'M12 3a9 9 0 0 1 0 18z',fill:'currentColor'}));
+}
+
+/* --- Ilustración vectorial (cuando no hay foto) --------------------------- */
 function bikeInner(m){
   var c=m.color,k=m.kind,ink='var(--ink)';
   var w='<g fill="none" stroke="'+ink+'" stroke-width="7"><circle cx="78" cy="138" r="30"/><circle cx="262" cy="138" r="30"/></g><g fill="'+ink+'"><circle cx="78" cy="138" r="7"/><circle cx="262" cy="138" r="7"/></g>';
@@ -260,257 +684,632 @@ function bikeInner(m){
   else b='<path d="M78 138 L124 104 L202 104 L244 74 L262 138" fill="none" stroke="'+ink+'" stroke-width="6" stroke-linejoin="round"/><path d="M128 102 C142 74 192 72 210 92 L208 104 L130 108Z" fill="'+c+'"/><path d="M90 96 C108 88 132 90 146 98 L142 106 L92 106Z" fill="'+ink+'"/><circle cx="170" cy="120" r="12" fill="'+ink+'" opacity=".85"/><path d="M240 72 L254 58 L270 60" fill="none" stroke="'+ink+'" stroke-width="6" stroke-linecap="round"/>';
   return w+b;
 }
-function Illus(p){ return h('svg',{viewBox:'0 0 340 180',role:'img','aria-label':'Ilustración de '+p.m.brand+' '+p.m.model,dangerouslySetInnerHTML:{__html:bikeInner(p.m)}}) }
+function Illustration(p){
+  return h('svg',{viewBox:'0 0 340 180',role:'img','aria-label':'Ilustración de '+p.m.brand+' '+p.m.model,dangerouslySetInnerHTML:{__html:bikeInner(p.m)}});
+}
 
+/* --- Componentes ---------------------------------------------------------- */
 function Heart(p){
-  return h('button',{className:'heart',type:'button','aria-pressed':p.on,'aria-label':p.on?'Quitar de favoritas':'Agregar a favoritas',onClick:function(e){e.stopPropagation();p.onClick()}},
-    h('svg',{viewBox:'0 0 24 24',fill:p.on?'currentColor':'none',stroke:'currentColor',strokeWidth:2,'aria-hidden':true},
-      h('path',{d:'M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z'})));
+  return h('button',{
+    className:'heart',type:'button','aria-pressed':p.on,'aria-label':(p.on?'Quitar ':'Agregar ')+(p.label||'esta moto')+(p.on?' de favoritas':' a favoritas'),
+    title:p.on?'Quitar de favoritas':'Agregar a favoritas',
+    onClick:function(e){e.stopPropagation();p.onClick()}
+  },h('svg',{viewBox:'0 0 24 24',width:20,height:20,fill:p.on?'currentColor':'none',stroke:'currentColor',strokeWidth:2,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':'true',focusable:'false'},h('path',{d:P.heart})));
 }
 
-function Photo(p){
-  var m=p.m, src=p.photos[m.id];
-  return h('div',{className:'art'},
-    src?h('img',{src:src,alt:m.brand+' '+m.model,loading:'lazy'}):h(Illus,{m:m}),
+function Art(p){
+  var m=p.m, src=p.src;
+  return h('div',{className:'art'+(p.large?' art-lg':'')},
+    src
+      ? h('img',{src:src,alt:'Foto de '+m.brand+' '+m.model,decoding:'async',loading:'lazy'})
+      : h(Illustration,{m:m}),
     h('span',{className:'tag'},m.type),
-    p.onFav&&h(Heart,{on:p.fav,onClick:p.onFav}),
-    h('label',{className:'photo-btn'},src?'Cambiar foto':'Subir foto',
-      h('input',{type:'file',accept:'image/*',style:{display:'none'},onChange:function(e){var f=e.target.files&&e.target.files[0];if(f)p.onUpload(m.id,f);e.target.value=''}})));
+    p.onFav?h(Heart,{on:p.fav,label:m.brand+' '+m.model,onClick:p.onFav}):null,
+    p.onUpload?h('label',{className:'photo-btn',title:'Sube una foto de esta moto; se guarda en tu navegador'},
+      h(Icon,{d:[P.camera],size:14}),
+      h('span',null,src?'Cambiar':'Foto'),
+      h('input',{type:'file',accept:'image/*',onChange:function(e){var file=e.target.files&&e.target.files[0];if(file)p.onUpload(m.id,file);e.target.value=''}})
+    ):null
+  );
 }
 
-/* ---------- app ---------- */
-function App(){
-  var _c=useState(lsGet('ma_cur','PEN')),cur=_c[0],setCur=_c[1];
-  var _r=useState(3.7),rate=_r[0],setRate=_r[1];
-  var _f=useState({max:MAXP,cc:'all',type:'all',text:'',style:null,brand:null,favs:false}),f=_f[0],setF=_f[1];
-  var _s=useState('price-asc'),sort=_s[0],setSort=_s[1];
-  var _n=useState(PAGE),shown=_n[0],setShown=_n[1];
-  var _fv=useState(lsGet('ma_favs',[])),favs=_fv[0],setFavs=_fv[1];
-  var _cm=useState([]),cmp=_cm[0],setCmp=_cm[1];
-  var _d=useState(null),detail=_d[0],setDetail=_d[1];
-  var _cp=useState(false),cmpOpen=_cp[0],setCmpOpen=_cp[1];
-  var _ph=useState(lsGet('ma_photos',{})),photos=_ph[0],setPhotos=_ph[1];
-  var _t=useState(null),toast=_t[0],setToast=_t[1];
-  var _sm=useState({id:1,pct:20,n:24,tea:35}),sim=_sm[0],setSim=_sm[1];
-
-  useEffect(function(){ if(!toast) return; var t=setTimeout(function(){setToast(null)},2400); return function(){clearTimeout(t)} },[toast]);
+/* Diálogo accesible: foco atrapado, Escape, bloqueo de scroll y foco devuelto. */
+function Modal(p){
+  var box=useRef(null);
   useEffect(function(){
-    function k(e){ if(e.key==='Escape'){setDetail(null);setCmpOpen(false)} }
-    document.addEventListener('keydown',k); return function(){document.removeEventListener('keydown',k)};
-  },[]);
-  useEffect(function(){ lsSet('ma_cur',cur) },[cur]);
+    if(!p.open) return;
+    var node=box.current, previous=document.activeElement;
+    var sel='a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+    function onKey(e){
+      if(e.key==='Escape'){e.preventDefault();p.onClose();return}
+      if(e.key!=='Tab'||!node) return;
+      var items=Array.prototype.filter.call(node.querySelectorAll(sel),function(el){return el.getClientRects().length>0});
+      if(!items.length) return;
+      var first=items[0], last=items[items.length-1];
+      if(e.shiftKey&&(document.activeElement===first||!node.contains(document.activeElement))){e.preventDefault();last.focus()}
+      else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+    }
+    document.addEventListener('keydown',onKey,true);
+    document.body.classList.add('no-scroll');
+    var t=setTimeout(function(){var f=node&&node.querySelector(sel);if(f)f.focus()},0);
+    return function(){
+      clearTimeout(t);
+      document.removeEventListener('keydown',onKey,true);
+      document.body.classList.remove('no-scroll');
+      if(previous&&previous.focus) previous.focus();
+    };
+  },[p.open]);
+  if(!p.open) return null;
+  return h('div',{className:'modal',onMouseDown:function(e){if(e.target===e.currentTarget)p.onClose()}},
+    h('div',{className:'modal-box',ref:box,role:'dialog','aria-modal':'true','aria-labelledby':p.titleId},
+      h('div',{className:'modal-head'},
+        h('h2',{id:p.titleId},p.title),
+        h('button',{className:'icon-btn modal-close',type:'button','aria-label':'Cerrar','onClick':p.onClose},h(Icon,{d:[P.close]}))),
+      p.children));
+}
 
-  function upd(patch){ setF(Object.assign({},f,patch)); setShown(PAGE) }
-  function toggleFav(id){ var n=favs.indexOf(id)>-1?favs.filter(function(x){return x!==id}):favs.concat([id]); setFavs(n); lsSet('ma_favs',n) }
+/* --- Aplicación ----------------------------------------------------------- */
+function App(){
+  var _cur=useState(lsGet('ma_cur','PEN')==='USD'?'USD':'PEN'), cur=_cur[0], setCur=_cur[1];
+  var _r=useState(function(){var r=lsGet('ma_rate',RATE0);return typeof r==='number'&&isFinite(r)&&r>=1&&r<=12?r:RATE0}), rate=_r[0], setRate=_r[1];
+  var _rt=useState(String(rate)), rateTxt=_rt[0], setRateTxt=_rt[1];
+  var _th=useState(lsGet('ma_theme','auto')), theme=_th[0], setTheme=_th[1];
+  var _f=useState({max:MAXP,cc:'all',type:'all',text:'',style:null,brand:null,favs:false}), f=_f[0], setF=_f[1];
+  var _s=useState('price-asc'), sort=_s[0], setSort=_s[1];
+  var _n=useState(PAGE), shown=_n[0], setShown=_n[1];
+  var _fv=useState(function(){
+    var v=lsGet('ma_favs',[]);
+    return Array.isArray(v)?v.filter(function(id){return !!BYID[id]}):[];
+  }), favs=_fv[0], setFavs=_fv[1];
+  var _cm=useState([]), cmp=_cm[0], setCmp=_cm[1];
+  var _d=useState(null), detail=_d[0], setDetail=_d[1];
+  var _co=useState(false), cmpOpen=_co[0], setCmpOpen=_co[1];
+  var _ph=useState(function(){var v=lsGet('ma_photos',{});return v&&typeof v==='object'?v:{}}), photos=_ph[0], setPhotos=_ph[1];
+  var _t=useState(null), toast=_t[0], setToast=_t[1];
+  var _sm=useState({id:1,pct:20,n:24,tea:TEA0}), sim=_sm[0], setSim=_sm[1];
+  var _tt=useState(String(TEA0)), teaTxt=_tt[0], setTeaTxt=_tt[1];
+  var _so=useState({name:'',phone:''}), soat=_so[0], setSoat=_so[1];
+  var _se=useState({}), soatErr=_se[0], setSoatErr=_se[1];
+  var _sok=useState(''), soatOk=_sok[0], setSoatOk=_sok[1];
+  var _ml=useState(''), mail=_ml[0], setMail=_ml[1];
+  var _mle=useState(''), mailErr=_mle[0], setMailErr=_mle[1];
+  var _mlok=useState(''), mailOk=_mlok[0], setMailOk=_mlok[1];
+
+  useEffect(function(){lsSet('ma_cur',cur)},[cur]);
+  useEffect(function(){lsSet('ma_favs',favs)},[favs]);
+  useEffect(function(){
+    var root=document.documentElement;
+    if(theme==='light'||theme==='dark') root.setAttribute('data-theme',theme);
+    else root.removeAttribute('data-theme');
+    lsSet('ma_theme',theme);
+  },[theme]);
+  /* La cabecera cambia de alto al envolver la navegación: medimos para que los
+     enlaces a secciones no queden ocultos debajo de ella. */
+  useEffect(function(){
+    function measure(){
+      var el=document.querySelector('header.top');
+      if(el) document.documentElement.style.setProperty('--header-real',el.offsetHeight+'px');
+    }
+    measure();
+    window.addEventListener('resize',measure);
+    if(document.fonts&&document.fonts.ready) document.fonts.ready.then(measure,function(){});
+    return function(){window.removeEventListener('resize',measure)};
+  },[]);
+  useEffect(function(){
+    if(!toast) return;
+    var t=setTimeout(function(){setToast(null)},2800);
+    return function(){clearTimeout(t)};
+  },[toast]);
+
+  function upd(patch){setF(function(prev){return Object.assign({},prev,patch)});setShown(PAGE)}
+  function resetFilters(){setF({max:MAXP,cc:'all',type:'all',text:'',style:null,brand:null,favs:false});setShown(PAGE)}
+  function toggleFav(id){
+    setFavs(function(prev){return prev.indexOf(id)>-1?prev.filter(function(x){return x!==id}):prev.concat([id])});
+  }
   function toggleCmp(id){
-    if(cmp.indexOf(id)>-1){ setCmp(cmp.filter(function(x){return x!==id})); return }
-    if(cmp.length>=3){ setToast('Puedes comparar hasta 3 motos'); return }
+    if(cmp.indexOf(id)>-1){setCmp(cmp.filter(function(x){return x!==id}));return}
+    if(cmp.length>=3){setToast('Puedes comparar hasta 3 motos a la vez');return}
     setCmp(cmp.concat([id]));
   }
+  function openDetail(id){setCmpOpen(false);setDetail(id)}
+  function openCompare(){if(cmp.length<2){setToast('Marca al menos 2 motos para comparar');return}setCmpOpen(true)}
+  function cycleTheme(){setTheme(function(t){return t==='auto'?'light':t==='light'?'dark':'auto'})}
+
   function upload(id,file){
+    if(!file.type||file.type.indexOf('image/')!==0){setToast('Ese archivo no es una imagen');return}
+    if(file.size>12*1024*1024){setToast('La imagen supera los 12 MB');return}
     var rd=new FileReader();
+    rd.onerror=function(){setToast('No se pudo leer la imagen')};
     rd.onload=function(){
       var img=new Image();
       img.onload=function(){
-        var s=Math.min(1,900/Math.max(img.width,img.height));
-        var cv=document.createElement('canvas'); cv.width=Math.round(img.width*s); cv.height=Math.round(img.height*s);
-        cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
-        var data=cv.toDataURL('image/jpeg',.82);
-        var n=Object.assign({},photos); n[id]=data; setPhotos(n);
-        setToast(lsSet('ma_photos',n)?'Foto guardada en este navegador':'Foto cargada, pero no cabe en el almacenamiento del navegador');
+        var scale=Math.min(1,900/Math.max(img.width,img.height));
+        var cv=document.createElement('canvas');
+        cv.width=Math.max(1,Math.round(img.width*scale));
+        cv.height=Math.max(1,Math.round(img.height*scale));
+        var ctx=cv.getContext('2d');
+        ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);
+        ctx.drawImage(img,0,0,cv.width,cv.height);
+        var data;try{data=cv.toDataURL('image/jpeg',.8)}catch(e){setToast('No se pudo procesar la imagen');return}
+        var next=Object.assign({},photos);next[id]=data;setPhotos(next);
+        setToast(lsSet('ma_photos',next)?'Foto guardada en este navegador':'La foto no cabe en el almacenamiento del navegador');
       };
-      img.onerror=function(){setToast('No se pudo leer esa imagen')};
+      img.onerror=function(){setToast('No se pudo leer la imagen')};
       img.src=rd.result;
     };
     rd.readAsDataURL(file);
   }
-  function removePhoto(id){ var n=Object.assign({},photos); delete n[id]; setPhotos(n); lsSet('ma_photos',n) }
-  function goto(id){ var el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth'}) }
+  function removePhoto(id){
+    var next=Object.assign({},photos);delete next[id];setPhotos(next);lsSet('ma_photos',next);
+  }
 
+  function onRate(v){
+    setRateTxt(v);
+    var n=parseFloat(String(v).replace(',','.'));
+    if(isFinite(n)&&n>=1&&n<=12){setRate(n);lsSet('ma_rate',n)}
+  }
+  function onRateBlur(){
+    var n=parseFloat(String(rateTxt).replace(',','.'));
+    setRateTxt(isFinite(n)&&n>=1&&n<=12?String(n):String(rate));
+  }
+  function setS(patch){setSim(function(prev){return Object.assign({},prev,patch)})}
+  function onTea(v){
+    setTeaTxt(v);
+    var n=parseFloat(String(v).replace(',','.'));
+    if(isFinite(n)&&n>=0&&n<=120) setS({tea:n});
+  }
+  function onTeaBlur(){
+    var n=parseFloat(String(teaTxt).replace(',','.'));
+    setTeaTxt(isFinite(n)&&n>=0&&n<=120?String(n):String(sim.tea));
+  }
+
+  /* --- Datos derivados --------------------------------------------------- */
   var list=useMemo(function(){
-    var t=f.text.trim().toLowerCase();
-    var r=MOTOS.filter(function(m){
-      return conv(m,'PEN',rate)<=f.max && ccBand(m.cc,f.cc) && (f.type==='all'||m.type===f.type)
-        && (!f.style||m.style===f.style) && (!f.brand||m.brand===f.brand)
-        && (!f.favs||favs.indexOf(m.id)>-1) && (!t||(m.brand+' '+m.model).toLowerCase().indexOf(t)>-1);
+    var q=norm(f.text).split(/\s+/).filter(Boolean);
+    var out=MOTOS.filter(function(m){
+      if(conv(m,'PEN',rate)>f.max) return false;
+      if(!ccBand(m.cc,f.cc)) return false;
+      if(f.type!=='all'&&m.type!==f.type) return false;
+      if(f.style&&m.style!==f.style) return false;
+      if(f.brand&&m.brand!==f.brand) return false;
+      if(f.favs&&favs.indexOf(m.id)<0) return false;
+      if(q.length){
+        var hay=norm(m.brand+' '+m.model+' '+m.type+' '+STYLE_NAME[m.style]+' '+m.year+' '+m.cc+'cc');
+        for(var i=0;i<q.length;i++){if(hay.indexOf(q[i])<0) return false}
+      }
+      return true;
     });
-    r.sort(function(a,b){
+    out.sort(function(a,b){
       if(sort==='price-asc') return conv(a,'PEN',rate)-conv(b,'PEN',rate);
       if(sort==='price-desc') return conv(b,'PEN',rate)-conv(a,'PEN',rate);
       if(sort==='cc-desc') return b.cc-a.cc;
-      return (a.brand+a.model).localeCompare(b.brand+b.model);
+      if(sort==='year-desc') return (b.year-a.year)||a.brand.localeCompare(b.brand,'es');
+      return (a.brand+' '+a.model).localeCompare(b.brand+' '+b.model,'es');
     });
-    return r;
+    return out;
   },[f,sort,rate,favs]);
 
-  var types=useMemo(function(){var t=[];MOTOS.forEach(function(m){if(t.indexOf(m.type)<0)t.push(m.type)});return t.sort()},[]);
+  var types=useMemo(function(){
+    var t=[];MOTOS.forEach(function(m){if(t.indexOf(m.type)<0)t.push(m.type)});return t.sort();
+  },[]);
   var brandCount=useMemo(function(){var c={};MOTOS.forEach(function(m){c[m.brand]=(c[m.brand]||0)+1});return c},[]);
-  var brands=Object.keys(brandCount).sort();
-  function byId(id){return MOTOS.filter(function(m){return m.id===id})[0]}
-  function price(m){return money(conv(m,cur,rate),cur)}
-  function cuotaOf(m,pct,n,tea){ var p=conv(m,cur,rate); return cuota(p*(1-pct/100),tea,n) }
+  var brands=useMemo(function(){return Object.keys(brandCount).sort(function(a,b){return a.localeCompare(b,'es')})},[brandCount]);
+  var styleCount=useMemo(function(){var c={};MOTOS.forEach(function(m){c[m.style]=(c[m.style]||0)+1});return c},[]);
+  var minCuota=useMemo(function(){return Math.min.apply(null,MOTOS.map(function(m){return monthly(m,cur,rate)}))},[cur,rate]);
 
-  /* simulador principal */
-  var sm=byId(sim.id), sp=conv(sm,cur,rate), si=sp*sim.pct/100, smonto=sp-si, sc=cuota(smonto,sim.tea||0,sim.n);
+  function priceOf(m){return money(conv(m,cur,rate),cur)}
+  function limitLabel(){return f.max>=MAXP?'Sin límite':money(cur==='PEN'?f.max:f.max/rate,cur)}
+  function ccLabel(v){var o=CC_OPTS.filter(function(x){return x.v===v})[0];return o?o.l:v}
 
-  /* ---- vistas ---- */
-  var header=h('header',{className:'top'},h('div',{className:'wrap'},
-    h('a',{className:'logo',href:'#inicio'},h('i'),'Moto Altiplano'),
-    h('nav',{'aria-label':'Principal'},
-      h('a',{href:'#catalogo'},'Catálogo'),h('a',{href:'#financiamiento'},'Financiamiento'),h('a',{href:'#soat'},'SOAT'),h('a',{href:'#tiendas'},'Tiendas'),
-      h('button',{className:'pillbtn',type:'button',onClick:function(){upd({favs:!f.favs});goto('catalogo')}},'Favoritas ',h('b',null,favs.length)),
-      h('button',{className:'pillbtn',type:'button',onClick:function(){cmp.length<2?setToast('Marca al menos 2 motos para comparar'):setCmpOpen(true)}},'Comparador ',h('b',null,cmp.length)),
-      h('div',{className:'cur',role:'group','aria-label':'Moneda'},
-        h('button',{type:'button','aria-pressed':cur==='PEN',onClick:function(){setCur('PEN')}},'S/'),
-        h('button',{type:'button','aria-pressed':cur==='USD',onClick:function(){setCur('USD')}},'US$')))));
+  /* Términos activos del filtro, cada uno removible. */
+  var chips=[];
+  function addChip(key,label,clear){chips.push({key:key,label:label,clear:clear})}
+  if(f.text.trim()) addChip('text','«'+f.text.trim()+'»',function(){upd({text:''})});
+  if(f.brand) addChip('brand',f.brand,function(){upd({brand:null})});
+  if(f.style) addChip('style',STYLE_NAME[f.style],function(){upd({style:null})});
+  if(f.type!=='all') addChip('type',f.type,function(){upd({type:'all'})});
+  if(f.cc!=='all') addChip('cc',ccLabel(f.cc),function(){upd({cc:'all'})});
+  if(f.max<MAXP) addChip('max','Hasta '+limitLabel(),function(){upd({max:MAXP})});
+  if(f.favs) addChip('favs','Solo favoritas',function(){upd({favs:false})});
+  var hasFilters=chips.length>0;
 
-  var hero=h('div',{className:'hero',id:'inicio'},
-    h('div',{className:'hero-art','aria-hidden':true},h(Illus,{m:{brand:'',model:'',color:'#fff',kind:'naked'}})),
-    h('div',{className:'wrap'},
+  /* --- Formularios ------------------------------------------------------- */
+  function submitSoat(e){
+    e.preventDefault();
+    var errs={};
+    var name=soat.name.trim();
+    var phone=soat.phone.replace(/[^\d]/g,'');
+    if(name.length<3) errs.name='Escribe tu nombre completo.';
+    if(!/^9\d{8}$/.test(phone)) errs.phone='Ingresa 9 dígitos, empezando por 9.';
+    setSoatErr(errs);
+    if(Object.keys(errs).length){setSoatOk('');return}
+    setSoatOk('Gracias, '+name.split(' ')[0]+'. Registramos tu solicitud en esta demostración; todavía no se envía a ningún servidor.');
+    setSoat({name:'',phone:''});
+  }
+  function submitMail(e){
+    e.preventDefault();
+    var value=mail.trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)){setMailErr('Escribe un correo válido, por ejemplo nombre@correo.com.');setMailOk('');return}
+    setMailErr('');
+    setMailOk('Listo. En esta demostración el correo no sale del navegador.');
+    setMail('');
+  }
+
+  var sm=BYID[sim.id]||MOTOS[0];
+  var sp=conv(sm,cur,rate), si=sp*sim.pct/100, smonto=sp-si;
+  var sc=cuota(smonto,sim.tea,sim.n);
+  var tema=(Math.pow(1+sim.tea/100,1/12)-1)*100;
+
+  /* --- Cabecera ---------------------------------------------------------- */
+  var THEME_LABEL={auto:'sistema',light:'claro',dark:'oscuro'};
+  var header=h('header',{className:'top'},
+    h('div',{className:'wrap top-inner'},
+      h('a',{className:'logo',href:'#inicio','aria-label':'Moto Altiplano, ir al inicio'},
+        h('span',{className:'logo-mark','aria-hidden':'true'}),'Moto Altiplano'),
+      h('nav',{className:'nav','aria-label':'Principal'},
+        h('a',{href:'#catalogo'},'Catálogo'),
+        h('a',{href:'#estilos'},'Estilos'),
+        h('a',{href:'#financiamiento'},'Financiamiento'),
+        h('a',{href:'#soat'},'SOAT'),
+        h('button',{className:'pill-btn',type:'button','aria-pressed':!!f.favs,onClick:function(){upd({favs:!f.favs});goto('catalogo')}},
+          h('svg',{viewBox:'0 0 24 24',width:16,height:16,fill:f.favs?'currentColor':'none',stroke:'currentColor',strokeWidth:2,'aria-hidden':'true',focusable:'false'},h('path',{d:P.heart})),
+          'Favoritas ',h('b',null,favs.length)),
+        h('button',{className:'pill-btn',type:'button',onClick:openCompare,'aria-label':'Abrir comparador con '+cmp.length+' motos'},
+          h(Icon,{d:[P.compare],size:16}),'Comparar ',h('b',null,cmp.length))),
+      h('div',{className:'top-actions'},
+        h('button',{className:'icon-btn',type:'button',onClick:cycleTheme,title:'Tema: '+THEME_LABEL[theme],'aria-label':'Tema '+THEME_LABEL[theme]+'. Cambiar tema'},themeIcon(theme)),
+        h('div',{className:'cur',role:'group','aria-label':'Moneda de los precios'},
+          h('button',{type:'button','aria-pressed':cur==='PEN',onClick:function(){setCur('PEN')},title:'Mostrar precios en soles'},'S/'),
+          h('button',{type:'button','aria-pressed':cur==='USD',onClick:function(){setCur('USD')},title:'Mostrar precios en dólares'},'US$')))
+    ));
+
+  /* --- Portada ----------------------------------------------------------- */
+  var heroShell=function(finderEl){return h('section',{className:'hero',id:'inicio'},
+    h('div',{className:'hero-art','aria-hidden':'true'},h(Illustration,{m:{brand:'moto',model:'deportiva',color:'#fff',kind:'naked'}})),
+    h('div',{className:'wrap hero-inner'},
+      h('p',{className:'eyebrow'},'Motos nuevas en Juliaca'),
       h('h1',null,'La moto que buscas, ',h('em',null,'la tenemos')),
-      h('p',{className:'sub'},'Conócela, cómprala o finánciala. '+MOTOS.length+' modelos de '+brands.length+' marcas con precio, ficha y cuota estimada.'),
-      h('div',{className:'pills'},h('span',null,'Fácil y rápido'),h('span',null,'100% gratuito'),h('span',null,'Imparcial e independiente')),
-      h('form',{className:'finder','aria-label':'Buscador de motos',onSubmit:function(e){e.preventDefault();goto('catalogo')}},
-        h('h2',null,'Completa los filtros y encuentra tu moto ideal'),
-        h('div',{className:'fgrid'},
-          h('div',{className:'field'},h('label',{htmlFor:'fPrice'},'Precio máximo: ',h('output',null,f.max>=MAXP?'Sin límite':money(f.max*(cur==='PEN'?1:1/rate),cur))),
-            h('input',{id:'fPrice',type:'range',min:3000,max:MAXP,step:500,value:f.max,onChange:function(e){upd({max:+e.target.value})}})),
-          h('div',{className:'field'},h('label',{htmlFor:'fCc'},'Cilindrada'),
-            h('select',{id:'fCc',value:f.cc,onChange:function(e){upd({cc:e.target.value})}},
-              h('option',{value:'all'},'Sin preferencia'),h('option',{value:'0-125'},'Hasta 125 cc'),h('option',{value:'126-200'},'126 a 200 cc'),h('option',{value:'201-400'},'201 a 400 cc'),h('option',{value:'401-1000'},'Más de 400 cc'))),
-          h('div',{className:'field'},h('label',{htmlFor:'fType'},'Tipo de moto'),
-            h('select',{id:'fType',value:f.type,onChange:function(e){upd({type:e.target.value})}},
-              [h('option',{key:'all',value:'all'},'Sin preferencia')].concat(types.map(function(t){return h('option',{key:t,value:t},t)}))))),
-        h('div',{className:'finder-bottom'},
-          h('div',{className:'field'},h('label',{htmlFor:'fText'},'¿Tienes una moto en mente? Búscala aquí'),
-            h('input',{id:'fText',type:'text',placeholder:'Escribe modelo o marca',autoComplete:'off',value:f.text,onChange:function(e){upd({text:e.target.value})}})),
-          h('button',{className:'btn',type:'submit'},'Buscar motos')))));
+      h('p',{className:'sub'},'Precio, ficha técnica y cuota estimada en un solo lugar. '+MOTOS.length+' modelos de '+brands.length+' marcas para elegir con calma y sin vueltas.'),
+      h('ul',{className:'stats'},
+        h('li',null,h('strong',null,MOTOS.length),h('span',null,'modelos')),
+        h('li',null,h('strong',null,brands.length),h('span',null,'marcas')),
+        h('li',null,h('strong',null,money(minCuota,cur)),h('span',null,'cuota desde'))),
+      h('div',{className:'hero-cta'},
+        h('a',{className:'btn',href:'#catalogo'},'Ver catálogo'),
+        h('a',{className:'btn on-deep',href:'#financiamiento'},'Calcular mi cuota')),
+      finderEl
+    ));};
 
+  /* --- Buscador de la portada ------------------------------------------- */
+  var finder=h('form',{className:'finder','aria-labelledby':'finderTitle',onSubmit:function(e){e.preventDefault();goto('catalogo')}},
+    h('div',null,
+      h('h2',{id:'finderTitle'},'Encuentra tu moto ideal'),
+      h('p',{className:'note'},'Ajusta el presupuesto, la cilindrada o el tipo y te mostramos solo lo que encaja.')),
+    h('div',{className:'fgrid'},
+      h('div',{className:'field'},
+        h('label',{htmlFor:'fPrice'},'Precio máximo: ',h('output',{htmlFor:'fPrice'},limitLabel())),
+        h('input',{id:'fPrice',type:'range',min:3000,max:MAXP,step:500,value:f.max,onChange:function(e){upd({max:+e.target.value})}}),
+        h('p',{className:'hint'},'Arrastra para ajustar el presupuesto.')),
+      h('div',{className:'field'},
+        h('label',{htmlFor:'fCc'},'Cilindrada'),
+        h('select',{id:'fCc',value:f.cc,onChange:function(e){upd({cc:e.target.value})}},
+          CC_OPTS.map(function(o){return h('option',{key:o.v,value:o.v},o.l)}))),
+      h('div',{className:'field'},
+        h('label',{htmlFor:'fType'},'Tipo de moto'),
+        h('select',{id:'fType',value:f.type,onChange:function(e){upd({type:e.target.value})}},
+          [h('option',{key:'all',value:'all'},'Sin preferencia')].concat(
+            types.map(function(t){return h('option',{key:t,value:t},t)}))))),
+    h('div',{className:'finder-actions'},
+      h('div',{className:'field'},
+        h('label',{htmlFor:'fText'},'Buscar por marca, modelo o tipo'),
+        h('div',{className:'search-wrap'},
+          h('input',{id:'fText',type:'text',placeholder:'Ej. XR190L, Royal Enfield, scooter',autoComplete:'off',value:f.text,onChange:function(e){upd({text:e.target.value})}}),
+          f.text.trim()?h('button',{className:'search-clear',type:'button','aria-label':'Borrar búsqueda',onClick:function(){upd({text:''})}},h(Icon,{d:[P.close],size:16})):null)),
+      h('button',{className:'btn',type:'submit'},'Buscar motos ',h(Icon,{d:[P.arrow],size:16}))));
+
+  /* --- Estilos ----------------------------------------------------------- */
   var stylesSec=h('section',{id:'estilos'},h('div',{className:'wrap'},
-    h('div',{className:'sec-head'},h('h2',null,'Busca tu moto por estilo')),
+    h('div',{className:'sec-head'},
+      h('div',null,h('p',{className:'eyebrow'},'Por estilo'),h('h2',null,'¿Cómo te gusta rodar?')),
+      h('p',{className:'note'},'Elige un estilo y el catálogo se filtra al instante. Vuelve a pulsarlo para quitar el filtro.')),
     h('div',{className:'styles'},STYLES.map(function(s){
-      return h('button',{key:s.k,type:'button',className:'style-btn','aria-pressed':f.style===s.k,onClick:function(){upd({style:f.style===s.k?null:s.k});goto('catalogo')}},h('strong',null,s.n),h('small',null,s.d));
+      return h('button',{key:s.k,type:'button',className:'style-btn','aria-pressed':f.style===s.k,onClick:function(){upd({style:f.style===s.k?null:s.k});goto('catalogo')}},
+        h('span',{className:'count','aria-hidden':'true'},styleCount[s.k]||0),
+        h('strong',null,s.n),
+        h('small',null,s.d));
     }))));
 
+  /* --- Marcas ------------------------------------------------------------ */
   var brandsSec=h('section',{id:'marcas',style:{paddingTop:0}},h('div',{className:'wrap'},
-    h('div',{className:'sec-head'},h('h2',null,'Busca tu moto por marca')),
+    h('div',{className:'sec-head'},
+      h('div',null,h('p',{className:'eyebrow'},'Por marca'),h('h2',null,'Las '+brands.length+' marcas del catálogo')),
+      hasFilters?h('button',{className:'link-btn',type:'button',onClick:resetFilters},'Limpiar filtros'):null),
     h('div',{className:'brands'},brands.map(function(b){
-      return h('button',{key:b,type:'button',className:'chip','aria-pressed':f.brand===b,onClick:function(){upd({brand:f.brand===b?null:b});goto('catalogo')}},b,h('small',null,brandCount[b]));
+      return h('button',{key:b,type:'button',className:'chip','aria-pressed':f.brand===b,onClick:function(){upd({brand:f.brand===b?null:b});goto('catalogo')}},
+        b,h('small',null,brandCount[b]));
     }))));
 
+  /* --- Tarjeta de moto --------------------------------------------------- */
   function card(m){
     var isFav=favs.indexOf(m.id)>-1, inCmp=cmp.indexOf(m.id)>-1;
     return h('article',{className:'card',key:m.id},
-      h(Photo,{m:m,photos:photos,fav:isFav,onFav:function(){toggleFav(m.id)},onUpload:upload}),
+      h(Art,{m:m,src:photos[m.id],fav:isFav,onFav:function(){toggleFav(m.id)},onUpload:upload}),
       h('div',{className:'body'},
-        h('div',null,h('div',{className:'brand'},m.brand+' · '+m.year),h('h3',null,m.model)),
-        h('div',{className:'specs'},h('span',null,m.cc+' cc'),m.pw&&h('span',null,m.pw),h('span',null,STYLE_NAME[m.style])),
-        h('div',null,h('div',{className:'price'},price(m)),h('div',{className:'cuota'},'Desde '+money(cuotaOf(m,20,24,35),cur)+' al mes')),
+        h('p',{className:'brand-line'},m.brand,h('span',{'aria-hidden':'true'},'·'),m.year),
+        h('h3',null,h('button',{type:'button',onClick:function(){openDetail(m.id)},'aria-label':'Ver la ficha de '+m.brand+' '+m.model},m.model)),
+        h('div',{className:'specs'},
+          h('span',null,m.cc+' cc'),
+          m.pw?h('span',null,m.pw):null,
+          h('span',null,STYLE_NAME[m.style])),
+        h('div',{className:'price-block'},
+          h('p',{className:'price'},priceOf(m),h('small',null,'precio de lista')),
+          h('p',{className:'cuota'},'Desde '+money(monthly(m,cur,rate),cur)+' al mes'),
+          h('p',{className:'note'},'20% inicial · 24 meses · TEA '+TEA0+'%')),
         h('div',{className:'actions'},
-          h('label',{className:'cmp-check'},h('input',{type:'checkbox',checked:inCmp,onChange:function(){toggleCmp(m.id)}}),'Agregar al comparador'),
-          h('button',{className:'btn',type:'button',onClick:function(){setDetail(m.id)}},'Ver ficha'))));
+          h('button',{className:'btn sm',type:'button',onClick:function(){openDetail(m.id)}},'Ver ficha'),
+          h('button',{className:'cmp-toggle',type:'button','aria-pressed':inCmp,onClick:function(){toggleCmp(m.id)},
+            'aria-label':(inCmp?'Quitar ':'Agregar ')+m.brand+' '+m.model+(inCmp?' del comparador':' al comparador')},
+            h(Icon,{d:[inCmp?P.check:P.plus],size:15}),
+            h('span',null,inCmp?'En comparación':'Comparar')))));
   }
 
+  /* --- Catálogo ---------------------------------------------------------- */
   var catalog=h('section',{id:'catalogo',style:{paddingTop:0}},h('div',{className:'wrap'},
-    h('div',{className:'sec-head'},h('div',null,h('p',{className:'eyebrow'},'Catálogo'),h('h2',null,f.favs?'Tus favoritas':'Mira todos los modelos'))),
+    h('div',{className:'sec-head'},
+      h('div',null,
+        h('p',{className:'eyebrow'},'Catálogo'),
+        h('h2',null,f.favs?'Tus favoritas':hasFilters?'Resultados':'Todos los modelos')),
+      h('p',{className:'note'},'Precios referenciales del catálogo público (noviembre 2026). Confirma disponibilidad y precio final con el concesionario.')),
+    hasFilters?h('div',{className:'active-filters'},
+      h('span',{className:'af-label',id:'afLabel'},'Filtros activos:'),
+      chips.map(function(c){
+        return h('span',{className:'af-chip',key:c.key},
+          h('span',null,c.label),
+          h('button',{className:'x',type:'button','aria-label':'Quitar filtro '+c.label,onClick:c.clear},h(Icon,{d:[P.close],size:13})));
+      }),
+      h('button',{className:'link-btn',type:'button',onClick:resetFilters},'Limpiar todo')):null,
     h('div',{className:'toolbar'},
-      h('span',{className:'count','aria-live':'polite'},list.length+(list.length===1?' moto encontrada':' motos encontradas')),
-      h('label',{className:'note',htmlFor:'sort'},'Ordenar'),
-      h('select',{id:'sort',value:sort,onChange:function(e){setSort(e.target.value)}},
-        h('option',{value:'price-asc'},'Precio: menor a mayor'),h('option',{value:'price-desc'},'Precio: mayor a menor'),h('option',{value:'cc-desc'},'Cilindrada: mayor a menor'),h('option',{value:'name'},'Marca y modelo')),
-      h('label',{className:'note',htmlFor:'tc'},'Tipo de cambio'),
-      h('input',{id:'tc',type:'number',step:'0.01',min:'1',value:rate,onChange:function(e){var v=parseFloat(e.target.value);if(v>0)setRate(v)}}),
-      h('button',{className:'clear',type:'button',onClick:function(){setF({max:MAXP,cc:'all',type:'all',text:'',style:null,brand:null,favs:false});setShown(PAGE)}},'Limpiar filtros')),
+      h('p',{className:'count','aria-live':'polite','aria-atomic':'true'},h('strong',null,list.length),' ',list.length===1?'moto encontrada':'motos encontradas'),
+      h('div',{className:'tool'},h('label',{htmlFor:'sort'},'Ordenar por'),
+        h('select',{id:'sort',value:sort,onChange:function(e){setSort(e.target.value);setShown(PAGE)}},SORTS.map(function(o){return h('option',{key:o.v,value:o.v},o.l)}))),
+      h('div',{className:'tool'},h('label',{htmlFor:'tc'},'Tipo de cambio'),
+        h('div',{className:'rate-box'},h('span',{'aria-hidden':'true'},'1 US$ ='),
+          h('input',{id:'tc',type:'text',inputMode:'decimal',value:rateTxt,onChange:function(e){onRate(e.target.value)},onBlur:onRateBlur,'aria-describedby':'tcHelp'}),
+          h('span',{'aria-hidden':'true'},'S/')),
+        h('span',{id:'tcHelp',className:'sr-only'},'Valor en soles de un dólar. Se usa para convertir los precios.')),
+      hasFilters?h('button',{className:'link-btn',type:'button',onClick:resetFilters},'Limpiar filtros'):null),
     h('div',{className:'grid'},
-      list.length?list.slice(0,shown).map(card):h('div',{className:'empty'},h('h3',null,'No hay motos con esos filtros'),h('p',null,'Sube el precio máximo o quita algún filtro para ver más opciones.'))),
-    list.length>shown&&h('div',{className:'more'},h('button',{className:'btn ghost',type:'button',style:{color:'var(--ink)'},onClick:function(){setShown(shown+PAGE)}},'Ver más motos ('+(list.length-shown)+')')),
-    h('p',{className:'note',style:{marginTop:'1rem'}},'Precios referenciales según el catálogo de Somos Moto (noviembre 2026), en la moneda del listado original y convertidos con el tipo de cambio editable. Confirma disponibilidad y precio final con el concesionario. Las fichas técnicas se completan con datos del fabricante cuando el listado no los trae.')));
+      list.length?list.slice(0,shown).map(card):h('div',{className:'empty'},
+        h('h3',null,f.favs?'Todavía no tienes favoritas':'No hay motos con esos filtros'),
+        h('p',null,f.favs?'Toca el corazón de una moto para guardarla aquí: queda guardada en este navegador.':'Prueba subir el precio máximo, quitar una marca o buscar otro modelo.'),
+        h('div',{className:'actions'},
+          f.favs?h('button',{className:'btn ghost',type:'button',onClick:function(){upd({favs:false})}},'Ver todas las motos'):null,
+          hasFilters?h('button',{className:'btn',type:'button',onClick:resetFilters},'Limpiar filtros'):null))),
+    list.length>shown?h('div',{className:'more'},
+      h('button',{className:'btn ghost',type:'button',onClick:function(){setShown(shown+PAGE)}},'Ver más motos ('+(list.length-shown)+')')):null,
+    h('p',{className:'data-note'},'Las fichas técnicas se completan con datos del fabricante cuando el listado público no los trae. La cuota es informativa y no incluye seguros ni gastos de la financiera.') ));
 
-  function setS(p){ setSim(Object.assign({},sim,p)) }
+  /* --- Financiamiento ---------------------------------------------------- */
   var fin=h('section',{className:'fin',id:'financiamiento'},h('div',{className:'wrap fin-grid'},
-    h('div',null,h('p',{className:'eyebrow'},'Financiamiento'),h('h2',null,'Tú sí puedes tener una moto nueva'),
-      h('p',{className:'lead'},'Calcula el valor aproximado de tu cuota antes de pedir el crédito. Elige la moto, la inicial y el plazo.')),
-    h('div',{className:'sim',role:'group','aria-label':'Simulador de crédito'},
+    h('div',null,
+      h('p',{className:'eyebrow'},'Financiamiento'),
+      h('h2',null,'Tú sí puedes tener una moto nueva'),
+      h('p',{className:'lead'},'Calcula la cuota mensual antes de ir al concesionario. Elige la moto, la inicial y el plazo; la tasa queda a la vista y la puedes cambiar.'),
+      h('ul',{className:'benefits'},
+        h('li',null,h(Icon,{d:[P.check],size:18}),h('span',null,'Ves la cuota, los intereses y el total antes de decidir.')),
+        h('li',null,h(Icon,{d:[P.check],size:18}),h('span',null,'Funciona con soles o dólares y con el tipo de cambio que elijas.')),
+        h('li',null,h(Icon,{d:[P.check],size:18}),h('span',null,'Puedes simular desde la ficha de cualquier moto del catálogo.')))),
+    h('div',{className:'sim',role:'group','aria-labelledby':'simTitle'},
+      h('h3',{className:'sim-title',id:'simTitle'},'Simulador de cuota'),
       h('div',{className:'field'},h('label',{htmlFor:'sMoto'},'Moto'),
-        h('select',{id:'sMoto',value:sim.id,onChange:function(e){setS({id:+e.target.value})}},MOTOS.map(function(m){return h('option',{key:m.id,value:m.id},m.brand+' '+m.model+' · '+price(m))}))),
+        h('select',{id:'sMoto',value:sim.id,onChange:function(e){setS({id:+e.target.value})}},
+          brands.map(function(b){
+            return h('optgroup',{key:b,label:b},MOTOS.filter(function(m){return m.brand===b}).map(function(m){
+              return h('option',{key:m.id,value:m.id},m.model+' · '+priceOf(m));
+            }));
+          }))),
       h('div',{className:'sim-row'},
-        h('div',{className:'field'},h('label',{htmlFor:'sIni'},'Inicial: ',h('output',null,sim.pct+'%')),h('input',{id:'sIni',type:'range',min:10,max:50,step:5,value:sim.pct,onChange:function(e){setS({pct:+e.target.value})}})),
-        h('div',{className:'field'},h('label',{htmlFor:'sPlazo'},'Plazo'),h('select',{id:'sPlazo',value:sim.n,onChange:function(e){setS({n:+e.target.value})}},[12,18,24,36,48].map(function(n){return h('option',{key:n,value:n},n+' meses')}))),
-        h('div',{className:'field'},h('label',{htmlFor:'sTea'},'Tasa anual (TEA, %)'),h('input',{id:'sTea',type:'number',min:1,max:120,step:.5,value:sim.tea,onChange:function(e){setS({tea:e.target.value===''?'':+e.target.value})}}))),
+        h('div',{className:'field'},h('label',{htmlFor:'sIni'},'Inicial: ',h('output',{htmlFor:'sIni'},sim.pct+'%')),
+          h('input',{id:'sIni',type:'range',min:10,max:50,step:5,value:sim.pct,onChange:function(e){setS({pct:+e.target.value})}})),
+        h('div',{className:'field'},h('label',{htmlFor:'sPlazo'},'Plazo'),
+          h('select',{id:'sPlazo',value:sim.n,onChange:function(e){setS({n:+e.target.value})}},
+            [12,18,24,36,48].map(function(n){return h('option',{key:n,value:n},n+' meses')}))),
+        h('div',{className:'field'},h('label',{htmlFor:'sTea'},'Tasa anual (TEA %)'),
+          h('input',{id:'sTea',type:'text',inputMode:'decimal',value:teaTxt,onChange:function(e){onTea(e.target.value)},onBlur:onTeaBlur,'aria-describedby':'sTeaHelp'}),
+          h('span',{id:'sTeaHelp',className:'sr-only'},'Tasa efectiva anual entre 0 y 120 por ciento.'))),
       h('div',{className:'result','aria-live':'polite'},
-        h('span',{className:'note'},'Cuota mensual aproximada'),h('span',{className:'big'},money(sc,cur)),
-        h('dl',null,h('dt',null,'Precio de la moto'),h('dd',null,money(sp,cur)),h('dt',null,'Inicial'),h('dd',null,money(si,cur)),h('dt',null,'Monto a financiar'),h('dd',null,money(smonto,cur)),h('dt',null,'Total de intereses'),h('dd',null,money(sc*sim.n-smonto,cur)))),
-      h('p',{className:'note'},'Simulación referencial con cuotas fijas. No incluye seguros ni gastos de la entidad financiera.'))));
+        h('span',{className:'note'},'Cuota mensual aproximada'),
+        h('span',{className:'big'},money(sc,cur)),
+        h('dl',null,
+          h('dt',null,'Precio de la moto'),h('dd',null,money(sp,cur)),
+          h('dt',null,'Inicial ('+sim.pct+'%)'),h('dd',null,money(si,cur)),
+          h('dt',null,'Monto a financiar'),h('dd',null,money(smonto,cur)),
+          h('dt',null,'Intereses totales'),h('dd',null,money(Math.max(0,sc*sim.n-smonto),cur)),
+          h('dt',null,'Total a pagar'),h('dd',null,money(si+sc*sim.n,cur))),
+        h('p',{className:'note',style:{marginTop:'.5rem'}},'TEM equivalente: '+tema.toFixed(2)+'%. Simulación referencial con cuotas fijas; no incluye seguros ni gastos de la entidad financiera.')),
+      h('p',{className:'note'},'La tasa de referencia del catálogo es '+TEA0+'% anual; ajústala al valor real que te ofrezca la financiera.'))));
 
-  var _sf=useState(null),soatMsg=_sf[0],setSoatMsg=_sf[1];
-  var _nl=useState(null),nlMsg=_nl[0],setNlMsg=_nl[1];
-  var soat=h('section',{id:'soat'},h('div',{className:'wrap two'},
-    h('div',{className:'panel'},h('p',{className:'eyebrow'},'Seguro obligatorio'),h('h3',null,'SOAT para motos'),
-      h('p',null,'Ten tu SOAT digital listo el día que recojas tu moto. Déjanos tus datos y te contactamos con las opciones.'),
-      h('form',{className:'form',onSubmit:function(e){e.preventDefault();var n=e.target.elements.cName.value.trim();setSoatMsg('Gracias, '+n+'. Registramos tu solicitud en esta página de ejemplo. Conecta el formulario a tu WhatsApp o correo para recibirla.');e.target.reset()}},
-        h('div',{className:'field'},h('label',{htmlFor:'cName'},'Nombre'),h('input',{id:'cName',name:'cName',type:'text',required:true,autoComplete:'name'})),
-        h('div',{className:'field'},h('label',{htmlFor:'cPhone'},'Celular'),h('input',{id:'cPhone',name:'cPhone',type:'text',inputMode:'tel',required:true,placeholder:'9XX XXX XXX'})),
-        h('button',{className:'btn',type:'submit'},'Quiero mi SOAT'),
-        soatMsg&&h('p',{className:'ok-msg'},soatMsg))),
-    h('div',{className:'panel',id:'tiendas'},h('p',{className:'eyebrow'},'Nuestras tiendas'),h('h3',null,'Encuéntranos'),
-      h('p',null,h('strong',null,'Sede Juliaca'),h('br'),'Dirección de ejemplo, Juliaca, Puno, Perú',h('br'),h('span',{className:'note'},'Lunes a sábado, 9:00 a 18:00')),
-      h('ul',null,h('li',null,'Prueba de manejo con cita previa'),h('li',null,'Entrega con placa y SOAT'),h('li',null,'Taller autorizado y repuestos originales')),
-      h('p',{className:'note'},'Reemplaza estos datos con la dirección y el horario reales de tu negocio.')),
-    h('div',{className:'panel'},h('p',{className:'eyebrow'},'Ofertas'),h('h3',null,'Recibe las mejores ofertas'),
-      h('p',null,'Escribe tu correo y te avisamos cuando bajen los precios de tus motos favoritas.'),
-      h('form',{className:'form',onSubmit:function(e){e.preventDefault();setNlMsg('Listo, registramos tu correo en esta página de ejemplo.');e.target.reset()}},
-        h('div',{className:'field'},h('label',{htmlFor:'nlMail'},'Correo electrónico'),h('input',{id:'nlMail',type:'email',required:true,autoComplete:'email'})),
-        h('button',{className:'btn',type:'submit'},'Suscribirme'),
-        nlMsg&&h('p',{className:'ok-msg'},nlMsg)))));
+  /* --- Servicios -------------------------------------------------------- */
+  var panels=h('section',{id:'soat'},h('div',{className:'wrap'},
+    h('div',{className:'sec-head'},
+      h('div',null,h('p',{className:'eyebrow'},'Servicios'),h('h2',null,'SOAT, tienda y novedades')),
+      h('p',{className:'note'},'Tres formas de seguir con tu compra sin salir de la página.')),
+    h('div',{className:'panels'},
+      h('div',{className:'panel'},
+        h('p',{className:'eyebrow'},'Seguro obligatorio'),
+        h('h3',null,'SOAT para motos'),
+        h('p',null,'Déjanos tus datos y te contactamos con las opciones de SOAT para que recojas tu moto con todo en regla.'),
+        h('form',{className:'form',onSubmit:submitSoat,noValidate:true},
+          h('div',{className:'field'},
+            h('label',{htmlFor:'cName'},'Nombre completo'),
+            h('input',{id:'cName',name:'cName',type:'text',autoComplete:'name',value:soat.name,'aria-invalid':!!soatErr.name,'aria-describedby':soatErr.name?'cNameErr':undefined,
+              onChange:function(e){setSoat(Object.assign({},soat,{name:e.target.value}))}}),
+            soatErr.name?h('p',{className:'err-msg',id:'cNameErr'},soatErr.name):null),
+          h('div',{className:'field'},
+            h('label',{htmlFor:'cPhone'},'Celular'),
+            h('input',{id:'cPhone',name:'cPhone',type:'tel',inputMode:'tel',autoComplete:'tel',placeholder:'9XX XXX XXX',value:soat.phone,'aria-invalid':!!soatErr.phone,'aria-describedby':soatErr.phone?'cPhoneErr':'cPhoneHelp',
+              onChange:function(e){setSoat(Object.assign({},soat,{phone:e.target.value}))}}),
+            soatErr.phone?h('p',{className:'err-msg',id:'cPhoneErr'},soatErr.phone):h('p',{className:'hint',id:'cPhoneHelp'},'9 dígitos, sin espacios ni guiones.')),
+          h('button',{className:'btn',type:'submit'},'Quiero mi SOAT'),
+          soatOk?h('p',{className:'ok-msg',role:'status'},h(Icon,{d:[P.check],size:16}),soatOk):null,
+          h('p',{className:'demo-note'},'Demostración: el formulario valida y confirma en la página, pero no envía datos a ningún servidor.'))),
+      h('div',{className:'panel',id:'tiendas'},
+        h('p',{className:'eyebrow'},'Nuestras tiendas'),
+        h('h3',null,'Encuéntranos'),
+        h('address',null,
+          h('strong',null,'Sede Juliaca'),
+          h('span',null,'Jirón Ejemplo 123, Juliaca'),
+          h('span',null,'Puno, Perú'),
+          h('span',{className:'note'},'Lunes a sábado, 9:00 a 18:00')),
+        h('ul',null,
+          h('li',null,'Prueba de manejo con cita previa'),
+          h('li',null,'Entrega con placa y SOAT'),
+          h('li',null,'Taller autorizado y repuestos originales')),
+        h('p',{className:'demo-note'},'Reemplaza la dirección y el horario por los de tu negocio antes de publicar.')),
+      h('div',{className:'panel'},
+        h('p',{className:'eyebrow'},'Novedades'),
+        h('h3',null,'Recibe las mejores ofertas'),
+        h('p',null,'Te avisamos cuando bajen de precio las motos que estás mirando.'),
+        h('form',{className:'form',onSubmit:submitMail,noValidate:true},
+          h('div',{className:'field'},
+            h('label',{htmlFor:'nlMail'},'Correo electrónico'),
+            h('input',{id:'nlMail',type:'email',autoComplete:'email',value:mail,'aria-invalid':!!mailErr,'aria-describedby':mailErr?'nlMailErr':undefined,
+              onChange:function(e){setMail(e.target.value)}}),
+            mailErr?h('p',{className:'err-msg',id:'nlMailErr'},mailErr):null),
+          h('button',{className:'btn',type:'submit'},'Suscribirme'),
+          mailOk?h('p',{className:'ok-msg',role:'status'},h(Icon,{d:[P.check],size:16}),mailOk):null,
+          h('p',{className:'demo-note'},'Demostración: el correo no sale del navegador.'))))));
 
+  /* --- Pie -------------------------------------------------------------- */
   var footer=h('footer',null,h('div',{className:'wrap'},
     h('div',{className:'fgrid2'},
-      h('div',null,h('h4',null,'Nosotros'),h('p',null,'Portal de motos nuevas con ficha clara de modelos, precios referenciales y financiamiento.')),
-      h('div',null,h('h4',null,'Soporte'),h('ul',null,h('li',null,h('a',{href:'#catalogo'},'Catálogo')),h('li',null,h('a',{href:'#financiamiento'},'Simulador de crédito')),h('li',null,h('a',{href:'#soat'},'SOAT')))),
-      h('div',null,h('h4',null,'Contacto'),h('p',null,'Juliaca, Puno, Perú'))),
-    h('p',{className:'legal'},'© 2026 Moto Altiplano. Sitio de ejemplo inspirado en el formato de los portales de motos. Las marcas pertenecen a sus dueños.')));
+      h('div',null,
+        h('p',{className:'foot-brand'},'Moto Altiplano'),
+        h('p',null,'Catálogo de motos nuevas con ficha clara, precios referenciales y financiamiento. Hecho en Juliaca, Puno.')),
+      h('div',null,h('h4',null,'Explorar'),h('ul',null,
+        h('li',null,h('a',{href:'#catalogo'},'Catálogo completo')),
+        h('li',null,h('a',{href:'#estilos'},'Buscar por estilo')),
+        h('li',null,h('a',{href:'#marcas'},'Buscar por marca')),
+        h('li',null,h('button',{className:'link-btn',type:'button',style:{color:'inherit',padding:0},onClick:openCompare},'Comparador' )))),
+      h('div',null,h('h4',null,'Servicios'),h('ul',null,
+        h('li',null,h('a',{href:'#financiamiento'},'Simulador de crédito')),
+        h('li',null,h('a',{href:'#soat'},'SOAT')),
+        h('li',null,h('a',{href:'#tiendas'},'Tiendas y horarios')))),
+      h('div',null,h('h4',null,'Contacto'),
+        h('p',null,'Juliaca, Puno, Perú'),
+        h('p',null,'Lunes a sábado, 9:00 a 18:00'),
+        h('p',null,h('a',{href:'#inicio'},'Volver arriba')))),
+    h('div',{className:'legal'},
+      h('p',null,'© 2026 Moto Altiplano. Las marcas y modelos pertenecen a sus respectivos dueños.'),
+      h('p',null,'Sitio de demostración. Precios referenciales y sujetos a cambio sin previo aviso.'))));
 
-  /* ficha */
-  var dm=detail?byId(detail):null, _dd=null;
-  var detailView=dm&&h('div',{className:'modal',role:'dialog','aria-modal':true,'aria-labelledby':'dTitle',onClick:function(e){if(e.target===e.currentTarget)setDetail(null)}},
-    h('div',{className:'modal-box'},
-      h('div',{className:'modal-head'},h('h2',{id:'dTitle'},dm.brand+' '+dm.model),h('button',{className:'btn ghost',type:'button',onClick:function(){setDetail(null)}},'Cerrar')),
-      h('div',{className:'detail'},
-        h('div',{className:'dside'},
-          h(Photo,{m:dm,photos:photos,fav:favs.indexOf(dm.id)>-1,onFav:function(){toggleFav(dm.id)},onUpload:upload}),
-          photos[dm.id]&&h('button',{className:'btn ghost',type:'button',style:{color:'var(--ink)'},onClick:function(){removePhoto(dm.id)}},'Quitar foto'),
-          h('p',{className:'note'},'Sube tu propia foto de esta moto. Se guarda solo en este navegador.')),
-        h('div',{className:'dside'},
-          h('div',null,h('div',{className:'price'},price(dm)),h('div',{className:'cuota'},'Desde '+money(cuotaOf(dm,20,24,35),cur)+' al mes (20% de inicial, 24 meses)')),
-          h('dl',{className:'dl'},
-            h('dt',null,'Marca'),h('dd',null,dm.brand),h('dt',null,'Modelo'),h('dd',null,dm.model+' '+dm.year),h('dt',null,'Tipo'),h('dd',null,dm.type),
-            h('dt',null,'Cilindrada'),h('dd',null,dm.cc+' cc'),h('dt',null,'Potencia'),h('dd',null,dm.pw||'Consultar al concesionario'),
-            h('dt',null,'Estilo'),h('dd',null,STYLE_NAME[dm.style]),h('dt',null,'Precio de lista'),h('dd',null,money(dm.price,dm.cur)+(dm.cur==='USD'?' (dólares)':' (soles)'))),
-          h('div',{className:'actions'},
-            h('button',{className:'btn',type:'button',onClick:function(){setS({id:dm.id});setDetail(null);goto('financiamiento')}},'Simular crédito'),
-            h('button',{className:'btn ghost',type:'button',style:{color:'var(--ink)'},onClick:function(){toggleCmp(dm.id)}},cmp.indexOf(dm.id)>-1?'Quitar del comparador':'Comparar'))))));
+  /* --- Ficha de la moto -------------------------------------------------- */
+  var dm=detail?BYID[detail]:null;
+  var dmBody=dm?h('div',{className:'detail'},
+      h('div',{className:'dside'},
+        h(Art,{m:dm,src:photos[dm.id],large:true,fav:favs.indexOf(dm.id)>-1,onFav:function(){toggleFav(dm.id)},onUpload:upload}),
+        photos[dm.id]?h('button',{className:'btn ghost sm',type:'button',style:{flex:'0 0 auto',alignSelf:'flex-start'},onClick:function(){removePhoto(dm.id)}},'Quitar foto'):null,
+        h('p',{className:'note'},'La foto que subas se guarda solo en este navegador: no se envía a ningún servidor.'),
+        h('p',{className:'note'},'Toca el corazón para guardar esta moto en favoritas.')),
+      h('div',{className:'dside'},
+        h('div',{className:'detail-price'},
+          h('p',{className:'price'},priceOf(dm),h('small',null,'precio de lista')),
+          h('p',{className:'cuota'},'Desde '+money(monthly(dm,cur,rate),cur)+' al mes'),
+          h('p',{className:'note'},'20% de inicial, 24 meses, TEA '+TEA0+'%.')),
+        h('dl',{className:'dl'},
+          h('dt',null,'Marca'),h('dd',null,dm.brand),
+          h('dt',null,'Modelo'),h('dd',null,dm.model+' '+dm.year),
+          h('dt',null,'Tipo'),h('dd',null,dm.type),
+          h('dt',null,'Cilindrada'),h('dd',null,dm.cc+' cc'),
+          h('dt',null,'Potencia'),h('dd',null,dm.pw||'Consultar'),
+          h('dt',null,'Estilo'),h('dd',null,STYLE_NAME[dm.style]),
+          h('dt',null,'Precio de lista'),h('dd',null,money(dm.price,dm.cur)+(dm.cur==='USD'?' (dólares)':' (soles)'))),
+        h('div',{className:'actions'},
+          h('button',{className:'btn',type:'button',onClick:function(){setS({id:dm.id});setDetail(null);goto('financiamiento')}},'Simular crédito'),
+          h('button',{className:'btn ghost',type:'button',onClick:function(){toggleCmp(dm.id)}},cmp.indexOf(dm.id)>-1?'Quitar del comparador':'Agregar al comparador'),
+          h('button',{className:'btn ghost',type:'button',onClick:function(){toggleFav(dm.id)}},favs.indexOf(dm.id)>-1?'Quitar de favoritas':'Guardar en favoritas')))):null;
+  var detailView=h(Modal,{open:!!dm,onClose:function(){setDetail(null)},titleId:'dTitle',title:dm?dm.brand+' '+dm.model:''},dmBody);
 
-  /* comparador */
-  var cmpView=cmpOpen&&cmp.length>=2&&h('div',{className:'modal',role:'dialog','aria-modal':true,'aria-labelledby':'cTitle',onClick:function(e){if(e.target===e.currentTarget)setCmpOpen(false)}},
-    h('div',{className:'modal-box'},
-      h('div',{className:'modal-head'},h('h2',{id:'cTitle'},'Comparador'),h('button',{className:'btn ghost',type:'button',onClick:function(){setCmpOpen(false)}},'Cerrar')),
-      h('div',{className:'tbl'},(function(){
-        var ms=cmp.map(byId);
-        var rows=[['Tipo',function(m){return m.type}],['Año',function(m){return m.year}],['Cilindrada',function(m){return m.cc+' cc'}],['Potencia',function(m){return m.pw||'—'}],['Estilo',function(m){return STYLE_NAME[m.style]}],['Precio',function(m){return price(m)}],['Cuota (20%, 24 meses)',function(m){return money(cuotaOf(m,20,24,35),cur)}]];
-        return h('table',null,h('thead',null,h('tr',null,h('th'),ms.map(function(m){return h('td',{key:m.id},m.brand,h('br'),m.model)}))),
-          h('tbody',null,rows.map(function(r){return h('tr',{key:r[0]},h('th',{scope:'row'},r[0]),ms.map(function(m){return h('td',{key:m.id},r[1](m))}))})));
-      })())));
+  /* --- Comparador -------------------------------------------------------- */
+  function comparisonTable(){
+    var ms=cmp.map(function(id){return BYID[id]});
+    var rows=[
+      {l:'Precio',f:function(m){return priceOf(m)},best:'min',v:function(m){return conv(m,cur,rate)}},
+      {l:'Cuota estimada',f:function(m){return money(monthly(m,cur,rate),cur)+' /mes'},best:'min',v:function(m){return monthly(m,cur,rate)}},
+      {l:'Cilindrada',f:function(m){return m.cc+' cc'},best:'max',v:function(m){return m.cc}},
+      {l:'Potencia',f:function(m){return m.pw||'Consultar'}},
+      {l:'Tipo',f:function(m){return m.type}},
+      {l:'Estilo',f:function(m){return STYLE_NAME[m.style]}},
+      {l:'Año',f:function(m){return m.year},best:'max',v:function(m){return m.year}}
+    ];
+    return h('table',null,
+      h('caption',{className:'sr-only'},'Comparación de las motos seleccionadas'),
+      h('thead',null,h('tr',null,
+        h('td'),
+        ms.map(function(m){
+          return h('th',{key:m.id,scope:'col'},
+            h('span',{className:'cmp-brand'},m.brand),
+            h('button',{className:'cmp-title',type:'button',onClick:function(){openDetail(m.id)}},m.model));
+        }))),
+      h('tbody',null,rows.map(function(row){
+        var vals=row.best?ms.map(row.v):null;
+        var best=null;
+        if(vals&&vals.length>1&&vals.some(function(x){return x!==vals[0]})){
+          best=row.best==='min'?Math.min.apply(null,vals):Math.max.apply(null,vals);
+        }
+        return h('tr',{key:row.l},
+          h('th',{scope:'row'},row.l),
+          ms.map(function(m){
+            var isBest=best!==null&&row.v(m)===best;
+            return h('td',{key:m.id,className:isBest?'best':undefined},row.f(m),isBest?h('span',{className:'sr-only'},' (mejor valor)'):null);
+          }));
+      })));
+  }
 
-  var bar=cmp.length>0&&h('div',{className:'cmp-bar'},
-    h('div',{className:'items'},cmp.map(function(id){var m=byId(id);return h('span',{key:id},m.brand+' '+m.model)})),
-    h('button',{className:'btn',type:'button',disabled:cmp.length<2,onClick:function(){setCmpOpen(true)}},'Comparar'),
-    h('button',{className:'btn ghost',type:'button',onClick:function(){setCmp([])}},'Vaciar'));
+  var cmpView=h(Modal,{open:!!cmpOpen&&cmp.length>=2,onClose:function(){setCmpOpen(false)},titleId:'cTitle',title:'Comparador'},
+    cmp.length>=2?h('div',null,
+      h('p',{className:'note',style:{marginBottom:'.9rem'}},'Comparando '+cmp.length+' motos. La estrella marca el mejor valor de cada fila; toca un modelo para abrir su ficha.'),
+      h('div',{className:'tbl'},comparisonTable()),
+      h('div',{className:'actions',style:{marginTop:'1rem',display:'flex',gap:'.6rem',flexWrap:'wrap'}},
+        h('button',{className:'btn ghost',type:'button',onClick:function(){setCmp([]);setCmpOpen(false)}},'Vaciar comparador'))):null);
 
-  return h(React.Fragment,null,header,h('main',null,hero,stylesSec,brandsSec,catalog,fin,soat),footer,bar,detailView,cmpView,toast&&h('div',{className:'toast',role:'status'},toast));
+  /* --- Barra y avisos ---------------------------------------------------- */
+  var bar=cmp.length?h('div',{className:'cmp-bar','aria-label':'Motos en el comparador'},
+    h('div',{className:'cmp-inner'},
+      h('div',{className:'cmp-items'},cmp.map(function(id){
+        var m=BYID[id];
+        return h('span',{className:'cmp-chip',key:id},
+          h('span',null,m.brand+' '+m.model),
+          h('button',{type:'button','aria-label':'Quitar '+m.brand+' '+m.model+' del comparador',onClick:function(){toggleCmp(id)}},h(Icon,{d:[P.close],size:13})));
+      })),
+      h('button',{className:'btn',type:'button',disabled:cmp.length<2,onClick:openCompare},'Comparar ('+cmp.length+')'),
+      h('button',{className:'btn on-deep',type:'button',onClick:function(){setCmp([])}},'Vaciar'))):null;
+
+  var toastEl=toast?h('div',{className:'toast',role:'status'},h(Icon,{d:[P.check],size:18}),h('span',null,toast)):null;
+
+  var modalOpen=!!dm||(!!cmpOpen&&cmp.length>=2);
+  return h(React.Fragment,null,
+    h('div',{inert:modalOpen?'':undefined,'aria-hidden':modalOpen?'true':undefined},
+      header,
+      h('main',null,heroShell(finder),stylesSec,brandsSec,catalog,fin,panels),
+      footer,
+      bar),
+    detailView,
+    cmpView,
+    toastEl);
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(h(App));
 })();
 </script>
-
-</body></html>
+<script>
+  document.documentElement.dataset.js = 'on';
+  (function(){
+    var root = document.getElementById('root');
+    if (window.React && window.ReactDOM) return;
+    document.getElementById('boot-error').hidden = false;
+    if (root) root.hidden = true;
+  })();
+</script>
+</body>
+</html>
