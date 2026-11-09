@@ -1,3 +1,4 @@
+import mimetypes
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -6,6 +7,10 @@ from fastapi.staticfiles import StaticFiles
 from .database import Base, engine
 from .routers import admin, auth, motos, pedidos
 from .seed import seed
+
+# En Windows el registro puede devolver tipos MIME erróneos y el navegador bloquea el CSS/JS.
+mimetypes.add_type("text/css", ".css")
+mimetypes.add_type("application/javascript", ".js")
 
 Base.metadata.create_all(engine)
 seed()
