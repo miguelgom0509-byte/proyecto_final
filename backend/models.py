@@ -1,13 +1,7 @@
 from datetime import datetime, timezone
-
 from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
 from .database import Base
-
-ROLES = ("admin", "trabajador", "cliente")
-ESTADOS = ("pendiente", "en_proceso", "entregado", "cancelado")
-
 
 class Usuario(Base):
     __tablename__ = "usuarios"
@@ -21,7 +15,6 @@ class Usuario(Base):
     def public(self):
         return {"id": self.id, "nombre": self.nombre, "email": self.email, "rol": self.rol, "activo": self.activo}
 
-
 class Moto(Base):
     __tablename__ = "motos"
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -34,10 +27,10 @@ class Moto(Base):
     moneda: Mapped[str] = mapped_column(String(3), default="PEN")
     stock: Mapped[int] = mapped_column(Integer, default=0)
     activo: Mapped[bool] = mapped_column(Boolean, default=True)
+    imagen: Mapped[str] = mapped_column(String(500), default="") # <-- NUEVO CAMPO
 
     def public(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
 
 class Pedido(Base):
     __tablename__ = "pedidos"

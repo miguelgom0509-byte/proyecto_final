@@ -8,7 +8,7 @@ from .database import Base, engine
 from .routers import admin, auth, motos, pedidos
 from .seed import seed
 
-# 1. IMPORTANTE: Arregla el problema de MIME types en Windows (CSS/JS no cargan)
+# IMPORTANTE: Arregla el problema de MIME types en Windows (CSS/JS no cargan)
 mimetypes.add_type("text/css", ".css")
 mimetypes.add_type("application/javascript", ".js")
 
@@ -17,7 +17,7 @@ seed()
 
 app = FastAPI(title="Moto Altiplano API", version="1.0.0")
 
-# 2. Middleware CORS
+# Middleware CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -33,5 +33,5 @@ for r in (auth, motos, pedidos, admin):
 def health():
     return {"ok": True}
 
-# 3. Montar la carpeta frontend
+# Montar la carpeta frontend
 app.mount("/", StaticFiles(directory=Path(__file__).resolve().parent.parent / "frontend", html=True), name="web")

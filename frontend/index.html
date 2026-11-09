@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Moto Altiplano · Tienda Oficial</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap">
+    <link rel="stylesheet" href="assets/css/panel.css">
+    <style>
+        /* Estilos específicos para la Landing Page */
+        .hero {
+            grid-column: 1 / -1;
+            height: 60vh;
+            background: linear-gradient(rgba(8, 16, 22, 0.6), rgba(8, 16, 22, 0.9)), url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1920&auto=format&fit=crop') center/cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #fff;
+            padding: 2rem;
+        }
+        .hero h1 { font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 1rem; text-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        .hero p { font-size: 1.2rem; max-width: 600px; margin-bottom: 2rem; color: #CBD5E1; }
+        .navbar { position: absolute; top: 0; width: 100%; padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+        .navbar .brand { color: #fff; }
+        .landing-catalog { grid-column: 1 / -1; padding: 4rem 3rem; max-width: 1400px; margin: 0 auto; }
+    </style>
+</head>
+<body style="display:block; background:var(--bg);">
+    <div class="navbar">
+        <div class="brand"><i></i>Moto Altiplano</div>
+        <a href="login.html" class="btn">Iniciar Sesión</a>
+    </div>
+
+    <header class="hero">
+        <h1>Encuentra tu próxima aventura</h1>
+        <p>Explora nuestro catálogo de motocicletas de las mejores marcas. Calidad, potencia y estilo en un solo lugar.</p>
+        <a href="login.html?comprar=true" class="btn" style="font-size: 1.1rem; padding: 1rem 2rem;">Ver Catálogo y Comprar</a>
+    </header>
+
+    <main class="landing-catalog">
+        <h2 style="text-align:center; font-size:2rem; margin-bottom:2rem;">Modelos Destacados</h2>
+        <div class="gallery" id="public-gallery">
+            <p class="muted" style="text-align:center; grid-column: 1/-1;">Cargando catálogo...</p>
+        </div>
+    </main>
+
+    <script src="assets/js/core.js"></script>
+    <script>
+        // Cargar motos públicamente
+        async function loadPublicCatalog() {
+            try {
+                const ms = await api('/motos');
+                const gallery = document.getElementById('public-gallery');
+                if(ms.length === 0) return gallery.innerHTML = '<p class="muted">No hay motos disponibles.</p>';
+
+                gallery.innerHTML = ms.slice(0, 4).map(m => `
+                    <article class="card moto-card" style="padding:0; overflow:hidden; display:flex; flex-direction:column;">
+                        <div class="moto-img-container" style="height:220px;">
+                            <img src="${m.imagen || 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600&auto=format&fit=crop'}" class="moto-img" alt="${m.modelo}">
+                        </div>
+                        <div style="padding: 1.5rem; display:flex; flex-direction:column; gap:0.4rem; flex:1;">
+                            <span class="muted" style="font-size:0.8rem; text-transform:uppercase; letter-spacing:1px; font-weight:700;">${m.marca}</span>
+                            <h2 style="margin:0; font-size:1.3rem;">${m.modelo}</h2>
+                            <span class="price" style="margin-top:auto;">${money(m.precio, m.moneda)}</span>
+                            <a href="login.html?comprar=true" class="btn" style="width:100%; text-align:center; margin-top:0.5rem;">Comprar ahora</a>
+                        </div>
+                    </article>
+                `).join('');
+            } catch (e) { console.error(e); }
+        }
+        loadPublicCatalog();
+    </script>
+</body>
+</html>

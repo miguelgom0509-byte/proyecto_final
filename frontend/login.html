@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Ingresar · Moto Altiplano</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap">
-    <!-- Ruta relativa correcta -->
     <link rel="stylesheet" href="assets/css/panel.css">
 </head>
 <body class="login-body">
     
-    <!-- Fondo de pantalla completo e interactivo -->
     <div class="login-bg"></div>
     <div class="login-overlay"></div>
 
@@ -54,7 +52,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const vieneAComprar = urlParams.get('comprar') === 'true';
 
-        // Mostrar mensaje especial si viene del catálogo
         if (vieneAComprar) {
             document.getElementById('subtitle').innerHTML = '<b style="color:var(--gold)">¡Estás a un paso!</b><br>Inicia sesión para solicitar tu moto.';
         }
@@ -82,7 +79,6 @@
                 const d = await api(reg ? '/auth/registro' : '/auth/login', { method: 'POST', body: formData(e.target) });
                 session.set(d.token, d.usuario); 
                 
-                // Si venía a comprar y es cliente, lo devolvemos al catálogo
                 if (vieneAComprar && d.usuario.rol === 'cliente') {
                     location.href = '/cliente/';
                 } else {
