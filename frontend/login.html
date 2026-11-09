@@ -1,0 +1,27 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ingresar · Moto Altiplano</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/panel.css"></head>
+<body><main class="login"><div class="card">
+  <div class="brand"><i></i>Moto Altiplano</div>
+  <h1 id="t" style="margin:0">Ingresa a tu cuenta</h1>
+  <form id="f" class="grid" style="grid-template-columns:1fr" novalidate>
+    <label id="nom" hidden>Nombre completo<input name="nombre" autocomplete="name"></label>
+    <label>Correo electrónico<input name="email" type="email" autocomplete="email" required></label>
+    <label>Contraseña<input name="password" type="password" autocomplete="current-password" minlength="8" required></label>
+    <p id="msg" class="err" role="alert"></p>
+    <button class="btn" id="go">Ingresar</button>
+  </form>
+  <button class="btn ghost" id="sw" type="button">Crear cuenta de cliente</button>
+</div></main><div id="toast"></div>
+<script src="/assets/js/core.js"></script>
+<script>
+let reg=false;
+if(session.user&&session.token)location.href=HOME[session.user.rol];
+$('#sw').onclick=()=>{reg=!reg;$('#nom').hidden=!reg;$('#t').textContent=reg?'Crea tu cuenta':'Ingresa a tu cuenta';
+  $('#go').textContent=reg?'Crear cuenta':'Ingresar';$('#sw').textContent=reg?'Ya tengo cuenta':'Crear cuenta de cliente'};
+$('#f').onsubmit=async e=>{e.preventDefault();$('#msg').textContent='';
+  try{const d=await api(reg?'/auth/registro':'/auth/login',{method:'POST',body:formData(e.target)});
+    session.set(d.token,d.usuario);location.href=HOME[d.usuario.rol]}
+  catch(x){$('#msg').textContent=x.message}};
+</script></body></html>
