@@ -243,36 +243,61 @@ input:focus, select:focus {
 .tag.en_proceso { background: rgba(212, 163, 42, 0.15); color: var(--gold-h); }
 .tag.pendiente { background: rgba(100, 116, 139, 0.15); color: var(--muted); }
 
-/* --- GALLERY --- */
+/* --- GALLERY & ANIMACIONES --- */
 .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-.gallery .card { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.5rem; }
-.gallery .card:hover { transform: translateY(-4px); }
-.price { font-size: 1.6rem; font-weight: 700; color: var(--gold-h); margin: 0.5rem 0; }
 
-/* --- LOGIN (Glassmorphism) --- */
-.login {
-  grid-column: 1 / -1;
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  background: radial-gradient(circle at top left, #1A2530, #081016);
-  padding: 1rem;
+.moto-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
 }
-.login .card {
-  width: min(440px, 100%);
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.2);
-  padding: 2.5rem;
-  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+
+.moto-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
-@media(prefers-color-scheme:dark) {
-  .login .card { background: rgba(21, 31, 43, 0.95); }
+
+.moto-img-container {
+  position: relative;
+  height: 190px;
+  width: 100%;
+  overflow: hidden;
+  background: #1A2530;
 }
-.login .brand { color: var(--ink); align-items: center; margin-bottom: 1.5rem; }
-.login .brand small { color: var(--muted); }
-.login h1 { text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; }
-.login .btn { width: 100%; margin-top: 0.5rem; }
+
+.moto-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.moto-card:hover .moto-img {
+  transform: scale(1.1);
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+.stock-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.1);
+  z-index: 10;
+}
+
+.price { font-size: 1.6rem; font-weight: 700; color: var(--gold-h); margin: 0.5rem 0; }
 
 /* --- TOAST --- */
 #toast {
@@ -293,6 +318,128 @@ input:focus, select:focus {
   z-index: 1000;
 }
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ========================================= */
+/* --- LOGIN PREMIUM CON IMAGEN --- */
+/* ========================================= */
+.login-body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #0B1117;
+  overflow: hidden;
+}
+
+.login-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat;
+  z-index: -2;
+}
+
+.login-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(135deg, rgba(8, 16, 22, 0.95) 0%, rgba(16, 27, 37, 0.7) 100%);
+  z-index: -1;
+  backdrop-filter: blur(4px);
+}
+
+.login-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1;
+}
+
+.login-card {
+  width: min(440px, 100%);
+  background: rgba(21, 31, 43, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  color: #F1F5F9;
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-card .brand {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 2rem;
+  color: #fff;
+  font-size: 1.4rem;
+}
+
+.login-card .brand i {
+  margin-bottom: 0;
+  width: 20px;
+  height: 28px;
+  background: var(--gold);
+  box-shadow: 0 0 15px rgba(212, 163, 42, 0.5);
+}
+
+.login-card .brand small {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  color: #94A3B8;
+  margin-top: 0.1rem;
+}
+
+.login-card h1 {
+  text-align: center;
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.login-card .muted { color: #94A3B8; }
+.login-card label { color: #CBD5E1; }
+
+.login-card input {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.login-card input:focus {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(212, 163, 42, 0.2);
+}
+
+.login-footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.login-footer .btn.ghost {
+  color: #CBD5E1;
+  border-color: rgba(255, 255, 255, 0.2);
+  width: 100%;
+}
+
+.login-footer .btn.ghost:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
 
 /* --- RESPONSIVE --- */
 @media(max-width: 860px) {

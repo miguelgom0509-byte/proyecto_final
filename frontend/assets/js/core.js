@@ -1,7 +1,19 @@
 const $ = (s, r = document) => r.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const money = (v, c = 'PEN') => (c === 'PEN' ? 'S/ ' : 'US$ ') + Math.round(v).toLocaleString('es-PE');
-const fecha = d => new Date(d + 'Z').toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
+
+// CORRECCIÓN DE FECHA: Evita que la página se rompa si el formato es distinto
+const fecha = d => {
+    if (!d) return '—';
+    try {
+        // Si la fecha ya incluye zona horaria (Z o +), no le agregamos otra
+        const str = d.endsWith('Z') || d.includes('+') ? d : d + 'Z';
+        return new Date(str).toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
+    } catch (e) {
+        return 'Fecha inválida';
+    }
+};
+
 const ESTADOS = { pendiente: 'Pendiente', en_proceso: 'En proceso', entregado: 'Entregado', cancelado: 'Cancelado' };
 const HOME = { admin: '/admin/', trabajador: '/trabajador/', cliente: '/cliente/' };
 
@@ -38,12 +50,16 @@ async function api(path, { method = 'GET', body } = {}) {
 }
 
 function toast(msg) {
-  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
-  clearTimeout(toast.id); toast.id = setTimeout(() => t.classList.remove('show'), 2600);
+  const t = $('#toast'); 
+  if(!t) return;
+  t.textContent = msg; 
+  t.classList.add('show');
+  clearTimeout(toast.id); 
+  toast.id = setTimeout(() => t.classList.remove('show'), 2600);
 }
 
 function table(cols, rows, vacio = 'Aún no hay registros.') {
-  if (!rows.length) return `<p class="muted">${vacio}</p>`;
+  if (!rows || !rows.length) return `<p class="muted">${vacio}</p>`;
   return `<div class="tbl"><table><thead><tr>${cols.map(c => `<th>${c[0]}</th>`).join('')}</tr></thead><tbody>${
     rows.map(r => `<tr>${cols.map(c => `<td>${c[1](r)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
@@ -52,12 +68,27 @@ const field = (name, label, type = 'text', extra = '') => `<label>${label}<input
 const formData = f => Object.fromEntries(new FormData(f));
 
 async function run(fn, ok, again) {
-  try { await fn(); toast(ok); await again(); } catch (e) { toast(e.message); }
+  try { 
+    await fn(); 
+    toast(ok); 
+    await again(); 
+  } catch (e) { 
+    toast(e.message); 
+  }
 }
 
 function mountPanel({ rol, title, sections }) {
   const u = session.user;
-  if (!session.token || !u || u.rol !== rol) { location.href = '/login.html'; return; }
+  
+  // Validación de seguridad
+  if (!session.token || !u || u.rol !== rol) { 
+      if (rol === 'cliente') {
+          location.href = '/login.html?comprar=true';
+      } else {
+          location.href = '/login.html'; 
+      }
+      return; 
+  }
   
   const iconos = { resumen: '📊', motos: '🏍️', pedidos: '📦', usuarios: '👥', catalogo: '🛒', inventario: '📋' };
 
@@ -78,7 +109,14 @@ function mountPanel({ rol, title, sections }) {
     document.querySelectorAll('.side nav a').forEach(a => a.classList.toggle('on', a.dataset.id === s.id));
     $('#ttl').textContent = s.label;
     const v = $('#view'); v.innerHTML = '<p class="muted">Cargando…</p>';
-    try { await s.render(v, () => go()); } catch (e) { v.innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+    
+    try { 
+        await s.render(v, () => go()); 
+    } catch (e) { 
+        v.innerHTML = `<p class="err" style="background:rgba(239,68,68,0.1); padding:1rem; border-radius:8px;">${esc(e.message)}</p>`; 
+    }
   };
-  addEventListener('hashchange', go); go();
+  
+  addEventListener('hashchange', go); 
+  go(); // Arranca la primera vista
 }
