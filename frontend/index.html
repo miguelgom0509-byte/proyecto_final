@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap">
     <link rel="stylesheet" href="assets/css/panel.css">
     <style>
-        /* Estilos específicos para la Landing Page */
+        /* Estilos exclusivos de la Landing Page */
         .hero {
             grid-column: 1 / -1;
-            height: 60vh;
-            background: linear-gradient(rgba(8, 16, 22, 0.6), rgba(8, 16, 22, 0.9)), url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1920&auto=format&fit=crop') center/cover;
+            height: 70vh;
+            background: linear-gradient(rgba(8, 16, 22, 0.6), rgba(8, 16, 22, 0.95)), url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1920&auto=format&fit=crop') center/cover;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -20,39 +20,58 @@
             color: #fff;
             padding: 2rem;
         }
-        .hero h1 { font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 1rem; text-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-        .hero p { font-size: 1.2rem; max-width: 600px; margin-bottom: 2rem; color: #CBD5E1; }
+        .hero h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 1rem; text-shadow: 0 4px 12px rgba(0,0,0,0.5); line-height: 1.1; }
+        .hero p { font-size: 1.2rem; max-width: 600px; margin-bottom: 2.5rem; color: #CBD5E1; }
         .navbar { position: absolute; top: 0; width: 100%; padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
-        .navbar .brand { color: #fff; }
-        .landing-catalog { grid-column: 1 / -1; padding: 4rem 3rem; max-width: 1400px; margin: 0 auto; }
+        .navbar .brand { color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+        .landing-catalog { grid-column: 1 / -1; padding: 4rem 3rem; max-width: 1400px; margin: 0 auto; width: 100%; }
+        footer { grid-column: 1 / -1; text-align: center; padding: 2rem; background: var(--side-bg); color: #94A3B8; font-size: 0.9rem; }
     </style>
 </head>
 <body style="display:block; background:var(--bg);">
+    
     <div class="navbar">
-        <div class="brand"><i></i>Moto Altiplano</div>
-        <a href="login.html" class="btn">Iniciar Sesión</a>
+        <div class="brand"><i style="width:14px;height:20px;background:var(--gold);transform:skewX(-18deg);border-radius:4px;display:inline-block"></i> Moto Altiplano</div>
+        <a href="/login.html" id="nav-btn" class="btn ghost" style="color:#fff; border-color:rgba(255,255,255,0.3);">Iniciar Sesión</a>
     </div>
 
     <header class="hero">
         <h1>Encuentra tu próxima aventura</h1>
         <p>Explora nuestro catálogo de motocicletas de las mejores marcas. Calidad, potencia y estilo en un solo lugar.</p>
-        <a href="login.html?comprar=true" class="btn" style="font-size: 1.1rem; padding: 1rem 2rem;">Ver Catálogo y Comprar</a>
+        
+        <!-- AQUÍ ESTÁ EL CAMBIO: Ahora apunta directo a /cliente/ -->
+        <a href="/cliente/" id="hero-btn" class="btn" style="font-size: 1.1rem; padding: 1rem 3rem; border-radius: 50px;">Ver Catálogo y Comprar</a>
     </header>
 
     <main class="landing-catalog">
-        <h2 style="text-align:center; font-size:2rem; margin-bottom:2rem;">Modelos Destacados</h2>
+        <h2 style="text-align:center; font-size:2.2rem; margin-bottom:2.5rem; color:var(--ink);">Modelos Destacados</h2>
         <div class="gallery" id="public-gallery">
             <p class="muted" style="text-align:center; grid-column: 1/-1;">Cargando catálogo...</p>
         </div>
     </main>
 
+    <footer>
+        &copy; 2026 Moto Altiplano. Todos los derechos reservados.
+    </footer>
+
     <script src="assets/js/core.js"></script>
     <script>
-        // Cargar motos públicamente
+        // Si el usuario ya está logueado, el botón lo lleva directo a SU panel (Admin, trabajador o cliente)
+        if (session.user && session.token) {
+            const rol = session.user.rol;
+            const panelUrl = HOME[rol]; // HOME está definido en core.js
+            document.getElementById('nav-btn').textContent = `Mi Panel`;
+            document.getElementById('nav-btn').href = panelUrl;
+            document.getElementById('hero-btn').textContent = 'Ir a mi cuenta';
+            document.getElementById('hero-btn').href = panelUrl;
+        }
+
+        // Cargar motos públicamente para mostrarlas en la portada
         async function loadPublicCatalog() {
             try {
-                const ms = await api('/motos');
+                const ms = await api('/motos'); // No requiere token
                 const gallery = document.getElementById('public-gallery');
+                
                 if(ms.length === 0) return gallery.innerHTML = '<p class="muted">No hay motos disponibles.</p>';
 
                 gallery.innerHTML = ms.slice(0, 4).map(m => `
@@ -63,13 +82,16 @@
                         <div style="padding: 1.5rem; display:flex; flex-direction:column; gap:0.4rem; flex:1;">
                             <span class="muted" style="font-size:0.8rem; text-transform:uppercase; letter-spacing:1px; font-weight:700;">${m.marca}</span>
                             <h2 style="margin:0; font-size:1.3rem;">${m.modelo}</h2>
-                            <span class="price" style="margin-top:auto;">${money(m.precio, m.moneda)}</span>
-                            <a href="login.html?comprar=true" class="btn" style="width:100%; text-align:center; margin-top:0.5rem;">Comprar ahora</a>
+                            <span class="price" style="margin-top:auto; color:var(--gold-h)">${money(m.precio, m.moneda)}</span>
+                            
+                            <!-- AQUÍ TAMBIÉN CAMBIAMOS LAS TARJETAS PARA QUE VAYAN A /cliente/ -->
+                            <a href="/cliente/" class="btn" style="width:100%; text-align:center; margin-top:0.5rem;">Comprar ahora</a>
                         </div>
                     </article>
                 `).join('');
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Error cargando catálogo:", e); }
         }
+        
         loadPublicCatalog();
     </script>
 </body>

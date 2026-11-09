@@ -1,17 +1,12 @@
 const $ = (s, r = document) => r.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const money = (v, c = 'PEN') => (c === 'PEN' ? 'S/ ' : 'US$ ') + Math.round(v).toLocaleString('es-PE');
-
-// CORRECCIÓN DE FECHA: Evita que la página se rompa si el formato es distinto
 const fecha = d => {
     if (!d) return '—';
     try {
-        // Si la fecha ya incluye zona horaria (Z o +), no le agregamos otra
         const str = d.endsWith('Z') || d.includes('+') ? d : d + 'Z';
         return new Date(str).toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
-    } catch (e) {
-        return 'Fecha inválida';
-    }
+    } catch (e) { return 'Fecha inválida'; }
 };
 
 const ESTADOS = { pendiente: 'Pendiente', en_proceso: 'En proceso', entregado: 'Entregado', cancelado: 'Cancelado' };
@@ -31,9 +26,15 @@ async function api(path, { method = 'GET', body } = {}) {
     body: body && JSON.stringify(body),
   });
   
-  if (r.status === 401 && session.token) { 
+  // Si la API devuelve 401 (No autorizado), mandamos al login
+  if (r.status === 401) { 
     session.clear(); 
-    location.href = '/login.html'; 
+    if (location.pathname.includes('/cliente')) {
+        location.href = '/login.html?comprar=true'; 
+    } else {
+        location.href = '/login.html';
+    }
+    return;
   }
 
   const data = r.status === 204 ? null : await r.json().catch(() => null);
@@ -50,12 +51,9 @@ async function api(path, { method = 'GET', body } = {}) {
 }
 
 function toast(msg) {
-  const t = $('#toast'); 
-  if(!t) return;
-  t.textContent = msg; 
-  t.classList.add('show');
-  clearTimeout(toast.id); 
-  toast.id = setTimeout(() => t.classList.remove('show'), 2600);
+  const t = $('#toast'); if(!t) return;
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast.id); toast.id = setTimeout(() => t.classList.remove('show'), 2600);
 }
 
 function table(cols, rows, vacio = 'Aún no hay registros.') {
@@ -68,29 +66,32 @@ const field = (name, label, type = 'text', extra = '') => `<label>${label}<input
 const formData = f => Object.fromEntries(new FormData(f));
 
 async function run(fn, ok, again) {
-  try { 
-    await fn(); 
-    toast(ok); 
-    await again(); 
-  } catch (e) { 
-    toast(e.message); 
-  }
+  try { await fn(); toast(ok); await again(); } catch (e) { toast(e.message); }
 }
 
 function mountPanel({ rol, title, sections }) {
   const u = session.user;
   
-  // Validación de seguridad
-  if (!session.token || !u || u.rol !== rol) { 
-      if (rol === 'cliente') {
-          location.href = '/login.html?comprar=true';
-      } else {
-          location.href = '/login.html'; 
+  // PERMITIR ENTRAR COMO INVITADO AL CATÁLOGO DEL CLIENTE
+  if (rol === 'cliente') {
+      if (session.token && u && u.rol !== 'cliente') {
+          location.href = HOME[u.rol]; return;
       }
-      return; 
+  } else {
+      // Admin y Trabajador siguen requiriendo login estricto
+      if (!session.token || !u || u.rol !== rol) { 
+          location.href = '/login.html'; return; 
+      }
   }
   
   const iconos = { resumen: '📊', motos: '🏍️', pedidos: '📦', usuarios: '👥', catalogo: '🛒', inventario: '📋' };
+  
+  // Si no hay usuario, es un invitado
+  const esInvitado = !u;
+  const nombreUsuario = esInvitado ? 'Invitado (Visitante)' : u.nombre;
+  const botonSesion = esInvitado 
+      ? `<button id="out" class="btn" style="width:100%" onclick="location.href='/login.html?comprar=true'">Iniciar Sesión</button>`
+      : `<button id="out" class="btn ghost" type="button">Cerrar sesión</button>`;
 
   document.body.innerHTML = `
     <aside class="side">
@@ -98,11 +99,16 @@ function mountPanel({ rol, title, sections }) {
       <nav aria-label="Secciones">
         ${sections.map(s => `<a href="#${s.id}" data-id="${s.id}"><span style="font-size:1.2rem">${iconos[s.id] || '📌'}</span> ${s.label}</a>`).join('')}
       </nav>
-      <div class="me"><span>${esc(u.nombre)}</span><button id="out" class="btn ghost" type="button">Cerrar sesión</button></div>
+      <div class="me">
+        <span>${esc(nombreUsuario)}</span>
+        ${botonSesion}
+      </div>
     </aside>
     <main><h1 id="ttl"></h1><section id="view" aria-live="polite"></section></main><div id="toast" role="status"></div>`;
     
-  $('#out').onclick = () => { session.clear(); location.href = '/login.html'; };
+  if (!esInvitado) {
+      $('#out').onclick = () => { session.clear(); location.href = '/login.html'; };
+  }
   
   const go = async () => {
     const s = sections.find(x => x.id === location.hash.slice(1)) || sections[0];
@@ -110,13 +116,10 @@ function mountPanel({ rol, title, sections }) {
     $('#ttl').textContent = s.label;
     const v = $('#view'); v.innerHTML = '<p class="muted">Cargando…</p>';
     
-    try { 
-        await s.render(v, () => go()); 
-    } catch (e) { 
-        v.innerHTML = `<p class="err" style="background:rgba(239,68,68,0.1); padding:1rem; border-radius:8px;">${esc(e.message)}</p>`; 
-    }
+    try { await s.render(v, () => go()); } 
+    catch (e) { v.innerHTML = `<p class="err" style="background:rgba(239,68,68,0.1); padding:1rem; border-radius:8px;">${esc(e.message)}</p>`; }
   };
   
   addEventListener('hashchange', go); 
-  go(); // Arranca la primera vista
+  go();
 }

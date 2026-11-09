@@ -15,10 +15,9 @@ document.body.insertAdjacentHTML('beforeend', `
 let motoSeleccionada = null;
 let todasLasMotos = [];
 
-// Función para renderizar la galería (permite filtrar)
 function renderGallery(motosFiltradas, v) {
   if(motosFiltradas.length === 0) {
-    v.innerHTML = '<p class="muted" style="text-align:center; grid-column:1/-1;">No se encontraron motos con ese criterio.</p>';
+    v.innerHTML = '<p class="muted" style="text-align:center; grid-column:1/-1;">No se encontraron motos.</p>';
     return;
   }
 
@@ -49,7 +48,15 @@ function renderGallery(motosFiltradas, v) {
   }).join('')}</div>`;
 
   const modal = $('#modal-pedido');
+  
   v.querySelectorAll('[data-m]').forEach(b => b.onclick = () => {
+    // VALIDACIÓN: Si no está logueado, lo enviamos al login
+    if (!session.token) {
+        location.href = '/login.html?comprar=true';
+        return;
+    }
+
+    // Si está logueado, abrimos el modal
     motoSeleccionada = b.dataset.m;
     $('#modal-moto-nombre').textContent = `Estás solicitando: ${b.dataset.nombre}`;
     $('#modal-nota').value = '';
@@ -71,19 +78,18 @@ mountPanel({ rol: 'cliente', title: 'Mi cuenta', sections: [
     const galleryContainer = $('#gallery-container');
     renderGallery(todasLasMotos, galleryContainer);
 
-    // Filtro en tiempo real
     $('#search-moto').oninput = (e) => {
       const term = e.target.value.toLowerCase();
       const filtradas = todasLasMotos.filter(m => 
-        m.marca.toLowerCase().includes(term) || 
-        m.modelo.toLowerCase().includes(term) || 
-        m.tipo.toLowerCase().includes(term)
+        m.marca.toLowerCase().includes(term) || m.modelo.toLowerCase().includes(term) || m.tipo.toLowerCase().includes(term)
       );
       renderGallery(filtradas, galleryContainer);
     };
   } },
   
   { id: 'pedidos', label: 'Mis pedidos', async render(v) {
+    // Si un invitado entra a "Mis pedidos", el API lanzará un error 401
+    // y la función api() lo redirigirá automáticamente al login.
     const ps = await api('/pedidos/mios');
     v.innerHTML = table([
       ['N.º', p => `<b>#${p.id}</b>`], 
