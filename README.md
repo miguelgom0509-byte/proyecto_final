@@ -1,89 +1,95 @@
-# 🏍️ Moto Altiplano - Plataforma de E-commerce y Gestión
+# 🏍️ Moto Altiplano - Plataforma E-commerce y Dashboard
 
-Sistema web completo diseñado para la venta, gestión y administración de motocicletas. El proyecto cuenta con una Landing Page pública, un panel de cliente para compras, un panel de trabajador para logística y un dashboard administrativo con estadísticas y reportes.
+Sistema web integral para la venta y gestión de motocicletas. El proyecto está dividido en una Landing Page pública de alto impacto, un catálogo interactivo para clientes, un panel logístico para trabajadores y un completo Dashboard administrativo con estadísticas y reportes.
 
-Desarrollado con **Python (FastAPI)** en el backend y **HTML, CSS y JavaScript puro (Vanilla)** en el frontend.
-
----
-
-## 🔐 Cuentas de Acceso y Roles del Sistema
-
-El sistema cuenta con **3 roles principales** con diferentes niveles de acceso. Las cuentas iniciales se crean automáticamente al arrancar el servidor por primera vez (mediante el archivo `seed.py`).
-
-### 1. 👤 Administrador (Acceso Total)
-Gestiona el inventario, los usuarios y visualiza las estadísticas del negocio.
-- **Correo:** `admin@motoaltiplano.pe`
-- **Contraseña:** `Admin12345`
-- **Permisos:**
-  - Ver Dashboard con gráficos estadísticos (Chart.js).
-  - Crear, editar y dar de baja motos (Inventario).
-  - Registrar nuevos usuarios (Admins, Trabajadores, Clientes).
-  - Exportar reportes a Excel/CSV (Pedidos, Inventario y Usuarios).
-
-### 2. 🔧 Trabajador (Gestión Logística)
-Encargado del despacho y control del stock físico.
-- **Correo:** `trabajador@motoaltiplano.pe`
-- **Contraseña:** `Trabajo12345`
-- **Permisos:**
-  - Ver el panel de resumen de pedidos pendientes.
-  - Cambiar el estado de los pedidos (Pendiente ➔ En Proceso ➔ Entregado).
-  - Actualizar el stock de las motos manualmente.
-  - *(Nota: Al marcar un pedido como "Entregado", el sistema descuenta automáticamente 1 unidad del stock).*
-
-### 3. 🛒 Cliente (Comprador)
-Usuario final que explora el catálogo y realiza solicitudes de compra.
-- **Correo:** `cliente@motoaltiplano.pe`
-- **Contraseña:** `Cliente12345`
-- **Permisos:**
-  - Explorar catálogo con filtros por tipo, buscador y ordenamiento.
-  - Ver la ficha técnica detallada de cada moto.
-  - Guardar motos en "Mis Favoritos" (se guarda en el navegador).
-  - Solicitar una moto y hacer seguimiento a sus pedidos.
-  - *(Los clientes nuevos también pueden registrarse desde el Login).*
+Desarrollado con **Python (FastAPI)** en el backend y **HTML, CSS y JavaScript puro (Vanilla)** en el frontend, sin depender de frameworks pesados.
 
 ---
 
-## 🌟 Características Principales por Módulo
+## 🔐 Cuentas de Acceso y Roles
 
-### 🌐 Landing Page (Público)
-- Diseño moderno (Dark Mode) con animaciones de scroll (Intersection Observer).
-- Buscador principal que redirige al catálogo con el filtro aplicado.
-- Sección de categorías (Scooter, Naked, Deportiva, etc.).
-- Carrusel de motos destacadas cargado desde la API.
-- Sección de financiamiento con tarjeta de simulación animada.
+El sistema cuenta con 3 roles definidos. Las cuentas de prueba se generan automáticamente al iniciar el servidor por primera vez (archivo `seed.py`).
+
+| Rol | Correo Electrónico | Contraseña | Permisos Principales |
+| :--- | :--- | :--- | :--- |
+| **Administrador** | `admin@motoaltiplano.pe` | `Admin12345` | Dashboard con gráficos, CRUD de inventario, gestión de usuarios, exportación a Excel. |
+| **Trabajador** | `trabajador@motoaltiplano.pe` | `Trabajo12345` | Ver pedidos, actualizar estados de envío y modificar stock. |
+| **Cliente** | `cliente@motoaltiplano.pe` | `Cliente12345` | Explorar catálogo, ver fichas técnicas, guardar favoritos y solicitar motos. |
+
+---
+
+## ✨ Características Principales
+
+### 🌐 Landing Page (Público General)
+- **Diseño Premium:** Interfaz moderna con animaciones de scroll (Intersection Observer) y efectos visuales.
+- **Buscador Global:** Permite buscar por marca o modelo y redirige al catálogo filtrado.
+- **Secciones Interactivas:** Carrusel de modelos destacados, categorías visuales y sección de simulación de financiamiento.
 
 ### 🛒 Panel de Cliente
-- **Catálogo Interactivo:** Filtros dinámicos y ordenamiento por precio.
-- **Ficha Técnica (Modal):** Muestra especificaciones detalladas (Potencia, Torque, Rendimiento) generadas dinámicamente.
-- **Lista de Deseos:** Botón de corazón para guardar favoritos localmente.
-- **Mis Pedidos:** Tabla con el estado en tiempo real de sus solicitudes.
+- **Catálogo Interactivo:** Filtros por tipo de moto, ordenamiento por precio/año y buscador en tiempo real.
+- **Ficha Técnica del Producto:** Vista detallada de la moto con especificaciones técnicas generadas dinámicamente (Potencia, Torque, Rendimiento).
+- **Lista de Deseos (Favoritos):** Guarda motos de interés usando `localStorage` (persistencia en el navegador).
+- **Historial de Pedidos:** Seguimiento en tiempo real del estado de las solicitudes.
 
 ### 📊 Panel de Administrador
-- **Dashboard Interactivo:** Gráficos de dona y barras para visualizar pedidos y usuarios.
-- **Alertas de Stock:** Tarjetas visuales con motos que tienen 3 o menos unidades.
-- **Módulo de Exportación:** Generación de archivos `.csv` con codificación UTF-8 (compatible con Excel y acentos).
-- **Manejo de Imágenes:** Los administradores pueden asignar una URL de imagen a cada moto.
+- **Dashboard Estadístico:** Integración con **Chart.js** para visualizar gráficos de dona (pedidos) y barras (usuarios).
+- **Gestión Completa:** Creación y baja de motos (con soporte para URLs de imágenes), y gestión de usuarios del sistema.
+- **Exportación a Excel:** Generación de archivos `.csv` (compatibles con Excel y acentos) para Pedidos, Inventario y Usuarios.
 
 ### 🔧 Panel de Trabajador
-- Tabla de pedidos con selectores de estado en línea.
-- Módulo de inventario rápido para ajustar stock.
+- **Gestión de Pedidos:** Actualización del estado (Pendiente ➔ En Proceso ➔ Entregado). Al marcarlo como "Entregado", el stock se descuenta automáticamente.
+- **Control de Inventario:** Ajuste rápido del stock disponible de cada moto.
 
 ---
 
 ## 🛠️ Tecnologías Utilizadas
 
-- **Backend:** Python 3.10+, FastAPI, SQLAlchemy, PyJWT (Autenticación), Pydantic (Validación).
-- **Base de Datos:** SQLite (por defecto, fácil de migrar a PostgreSQL).
-- **Frontend:** HTML5, CSS3 (Variables, Flexbox, Grid), JavaScript ES6+.
-- **Librerías Frontend:** Chart.js (Gráficos), Google Fonts (Montserrat).
+**Backend:**
+- [FastAPI](https://fastapi.tiangolo.com/) - Framework web de alto rendimiento.
+- [SQLAlchemy](https://www.sqlalchemy.org/) - ORM para base de datos.
+- [SQLite](https://www.sqlite.org/) - Base de datos relacional (fácil de migrar a PostgreSQL).
+- [PyJWT](https://pyjwt.readthedocs.io/) - Autenticación mediante Tokens JWT.
+- [Pydantic](https://docs.pydantic.dev/) - Validación estricta de datos.
+
+**Frontend:**
+- HTML5, CSS3 (Variables, Flexbox, Grid, Glassmorphism).
+- JavaScript (Vanilla) - Lógica del lado del cliente y manejo de rutas (SPA).
+- [Chart.js](https://www.chartjs.org/) - Para los gráficos del Dashboard.
+- [Google Fonts](https://fonts.google.com/) - Tipografía Montserrat.
 
 ---
 
-## 🚀 Instalación y Despliegue Local
+## 📂 Estructura del Proyecto
 
-> **⚠️ Requisito:** Se recomienda usar **Python 3.10, 3.11 o 3.12**. Evita Python 3.13 o 3.15 ya que algunas librerías (como Pydantic) pueden fallar al compilar.
-
-### Paso 1: Clonar el repositorio
-```bash
-git clone <url-del-repositorio>
-cd proyecto_final
+```text
+proyecto_final/
+│
+├── backend/                  # Servidor (FastAPI)
+│   ├── main.py               # Arranque, CORS y archivos estáticos
+│   ├── config.py             # Variables de entorno
+│   ├── database.py           # Conexión SQLAlchemy
+│   ├── models.py             # Tablas (Usuario, Moto, Pedido)
+│   ├── schemas.py            # Validación de datos
+│   ├── security.py           # Encriptación y JWT
+│   ├── seed.py               # Datos iniciales
+│   └── routers/              # Endpoints de la API (admin, auth, motos, pedidos)
+│
+├── frontend/                 # Interfaz de Usuario
+│   ├── index.html            # Landing Page (Pública)
+│   ├── login.html            # Login Premium (Split-Screen)
+│   ├── admin/index.html      # Contenedor del Dashboard
+│   ├── trabajador/index.html # Contenedor del Panel Trabajador
+│   ├── cliente/index.html    # Contenedor del Catálogo
+│   └── assets/
+│       ├── css/
+│       │   ├── landing.css   # Estilos de la Landing Page
+│       │   └── panel.css     # Estilos globales (Login, Paneles, Catálogo)
+│       └── js/
+│           ├── core.js       # Lógica central (API, sesión, utilidades)
+│           ├── admin.js      # Lógica del Dashboard y gráficos
+│           ├── trabajador.js # Lógica del Panel Trabajador
+│           └── cliente.js    # Lógica del Catálogo y Ficha Técnica
+│
+├── .env                      # Variables de entorno
+├── requirements.txt          # Dependencias de Python
+└── moto_altiplano.db         # Base de datos SQLite (Autogenerada)
