@@ -19,7 +19,15 @@ const session = {
   clear() { localStorage.removeItem('ma_token'); localStorage.removeItem('ma_user'); },
 };
 
-async function api(path, { method = 'GET', body } = {}) {
+// true  = usa el backend FastAPI (uvicorn backend.main:app)
+// false = modo Firebase Hosting: todo se guarda en el navegador (localStorage)
+const USAR_BACKEND = false;
+
+async function api(path, opts = {}) {
+  return USAR_BACKEND ? apiRemota(path, opts) : apiLocal(path, opts);
+}
+
+async function apiRemota(path, { method = 'GET', body } = {}) {
   const r = await fetch('/api' + path, {
     method,
     headers: { 'Content-Type': 'application/json', ...(session.token && { Authorization: 'Bearer ' + session.token }) },
@@ -37,6 +45,194 @@ async function api(path, { method = 'GET', body } = {}) {
     throw new Error(msg);
   }
   return data;
+}
+
+// ===================================================================
+// BACKEND LOCAL (para Firebase Hosting): imita la API con localStorage
+// Los datos viven solo en el navegador de quien usa la página.
+// Para reiniciar los datos: localStorage.removeItem('ma_db_v1')
+// ===================================================================
+const DB_KEY = 'ma_db_v1';
+const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
+const sha256 = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))]
+  .map(b => b.toString(16).padStart(2, '0')).join('');
+
+async function semilla() {
+  const I = 'https://images.unsplash.com/';
+  const usr = async (id, nombre, email, pwd, rol) => ({ id, nombre, email, password_hash: await sha256(pwd), rol, activo: true });
+  const moto = (id, marca, modelo, anio, tipo, cc, precio, moneda, stock, foto) =>
+    ({ id, marca, modelo, anio, tipo, cc, precio, moneda, stock, activo: true, imagen: I + foto + '?q=80&w=800&auto=format&fit=crop' });
+  return {
+    seq: { usuarios: 3, motos: 5, pedidos: 0 },
+    usuarios: [
+      await usr(1, 'Administrador', 'admin@motoaltiplano.pe', 'Admin12345', 'admin'),
+      await usr(2, 'Carlos Quispe', 'trabajador@motoaltiplano.pe', 'Trabajo12345', 'trabajador'),
+      await usr(3, 'Lucía Mamani', 'cliente@motoaltiplano.pe', 'Cliente12345', 'cliente'),
+    ],
+    motos: [
+      moto(1, 'Honda', 'Elite 125', 2026, 'Scooter', 124, 2369, 'USD', 6, 'photo-1558981403-c5f9899a28bc'),
+      moto(2, 'Yamaha', 'FZS 4.0 ABS Deluxe', 2026, 'Naked', 150, 3399, 'USD', 4, 'photo-1568772585407-9361f9bf3a87'),
+      moto(3, 'Bajaj', 'Boxer 150X UG Disc', 2026, 'Utilitaria', 150, 5432, 'PEN', 10, 'photo-1591637333184-19aa84b3e01f'),
+      moto(4, 'Bajaj', 'Dominar 250', 2026, 'Naked', 250, 15593, 'PEN', 3, 'photo-1558980664-10ea292d4342'),
+      moto(5, 'Hero', 'Hunk 160R 4V', 2027, 'Pistera', 163, 2899, 'USD', 5, 'photo-1558981403-c5f9899a28bc'),
+    ],
+    pedidos: [],
+  };
+}
+
+const guardarDB = d => localStorage.setItem(DB_KEY, JSON.stringify(d));
+let semillaPromise = null;
+async function cargarDB() {
+  const leer = () => { try { return JSON.parse(localStorage.getItem(DB_KEY)); } catch { return null; } };
+  let d = leer();
+  if (!d) {
+    semillaPromise ??= semilla().then(s => { if (!leer()) guardarDB(s); return s; });
+    await semillaPromise;
+    d = leer();
+  }
+  return d;
+}
+
+function validarMoto(d) {
+  const ok = d && d.marca?.length >= 2 && d.modelo?.length >= 1 && d.anio >= 2000 && d.anio <= 2100 &&
+    d.tipo?.length >= 2 && d.cc > 0 && d.cc <= 3000 && d.precio > 0 &&
+    ['PEN', 'USD'].includes(d.moneda || 'PEN') && (d.stock ?? 0) >= 0;
+  if (!ok) throw new Error('Revisa los datos ingresados');
+  return { marca: d.marca.trim(), modelo: d.modelo.trim(), anio: +d.anio, tipo: d.tipo.trim(), cc: +d.cc,
+           precio: +d.precio, moneda: d.moneda || 'PEN', stock: +(d.stock ?? 0), imagen: String(d.imagen || '').slice(0, 500) };
+}
+
+async function apiLocal(path, { method = 'GET', body } = {}) {
+  const db = await cargarDB();
+  const [ruta, qs] = path.split('?');
+  const q = new URLSearchParams(qs || '');
+  const [a, b, c, d] = ruta.split('/').filter(Boolean);
+  const guardar = () => guardarDB(db);
+
+  const token = session.token || '';
+  const yo = token.startsWith('local-') ? db.usuarios.find(u => u.id === +token.slice(6) && u.activo) : null;
+  const exigir = (...roles) => {
+    if (!yo) { session.clear(); location.href = '/login.html'; throw new Error('Inicia sesión para continuar'); }
+    if (!roles.includes(yo.rol)) throw new Error('No tienes permisos para esta acción');
+  };
+
+  const pub = u => ({ id: u.id, nombre: u.nombre, email: u.email, rol: u.rol, activo: u.activo });
+  const pedidoPub = x => {
+    const cli = db.usuarios.find(u => u.id === x.cliente_id), mo = db.motos.find(m => m.id === x.moto_id);
+    return { id: x.id, estado: x.estado, nota: x.nota, creado: x.creado, cliente: cli?.nombre ?? '—',
+             moto: mo ? `${mo.marca} ${mo.modelo}` : '—', moto_id: x.moto_id };
+  };
+  const contar = (arr, k) => arr.reduce((o, x) => (o[x[k]] = (o[x[k]] || 0) + 1, o), {});
+  const crearUsuario = async (datos, rol) => {
+    const nombre = String(datos?.nombre || '').trim(), email = String(datos?.email || '').trim().toLowerCase(),
+          pwd = String(datos?.password || '');
+    if (nombre.length < 3 || !EMAIL_RE.test(email) || pwd.length < 8) throw new Error('Revisa los datos ingresados');
+    if (db.usuarios.some(u => u.email === email)) throw new Error('Ese correo ya está registrado');
+    return { id: ++db.seq.usuarios, nombre, email, password_hash: await sha256(pwd), rol, activo: true };
+  };
+
+  // ---------------------------------------------------------------- auth
+  if (a === 'auth' && b === 'login' && method === 'POST') {
+    const email = String(body?.email || '').trim().toLowerCase();
+    const u = db.usuarios.find(x => x.email === email);
+    if (!u || !u.activo || u.password_hash !== await sha256(String(body?.password || '')))
+      throw new Error('Correo o contraseña incorrectos');
+    return { token: 'local-' + u.id, usuario: pub(u) };
+  }
+  if (a === 'auth' && b === 'registro' && method === 'POST') {
+    const u = await crearUsuario(body, 'cliente');
+    db.usuarios.push(u); guardar();
+    return { token: 'local-' + u.id, usuario: pub(u) };
+  }
+  if (a === 'auth' && b === 'me') { exigir('admin', 'trabajador', 'cliente'); return pub(yo); }
+
+  // ---------------------------------------------------------------- motos
+  if (a === 'motos') {
+    if (!b && method === 'GET') {
+      const todas = q.get('todas') === 'true';
+      return db.motos.filter(m => todas || m.activo)
+        .sort((x, y) => x.marca.localeCompare(y.marca) || x.modelo.localeCompare(y.modelo)).map(m => ({ ...m }));
+    }
+    if (!b && method === 'POST') {
+      exigir('admin');
+      const m = { id: ++db.seq.motos, ...validarMoto(body), activo: true };
+      db.motos.push(m); guardar(); return { ...m };
+    }
+    if (b) {
+      exigir(...(c === 'stock' ? ['admin', 'trabajador'] : ['admin']));
+      const m = db.motos.find(x => x.id === +b);
+      if (!m) throw new Error('Moto no encontrada');
+      if (method === 'PATCH' && c === 'stock') {
+        const s = Number(body?.stock);
+        if (!Number.isInteger(s) || s < 0) throw new Error('Revisa los datos ingresados');
+        m.stock = s; guardar(); return { ...m };
+      }
+      if (method === 'PUT') { Object.assign(m, validarMoto(body)); guardar(); return { ...m }; }
+      if (method === 'DELETE') { m.activo = false; guardar(); return null; }  // baja lógica
+    }
+  }
+
+  // -------------------------------------------------------------- pedidos
+  if (a === 'pedidos') {
+    if (!b && method === 'POST') {
+      exigir('cliente');
+      const m = db.motos.find(x => x.id === +body?.moto_id);
+      if (!m || !m.activo) throw new Error('Moto no disponible');
+      if (m.stock < 1) throw new Error('Esta moto no tiene stock por ahora');
+      const x = { id: ++db.seq.pedidos, cliente_id: yo.id, moto_id: m.id, estado: 'pendiente',
+                  nota: String(body.nota || '').trim().slice(0, 300), creado: new Date().toISOString() };
+      db.pedidos.push(x); guardar(); return pedidoPub(x);
+    }
+    if (b === 'mios') {
+      exigir('cliente');
+      return db.pedidos.filter(x => x.cliente_id === yo.id).sort((x, y) => y.id - x.id).map(pedidoPub);
+    }
+    if (!b && method === 'GET') {
+      exigir('admin', 'trabajador');
+      const est = q.get('estado');
+      return db.pedidos.filter(x => !est || x.estado === est).sort((x, y) => y.id - x.id).map(pedidoPub);
+    }
+    if (c === 'estado' && method === 'PATCH') {
+      exigir('admin', 'trabajador');
+      const x = db.pedidos.find(r => r.id === +b);
+      if (!x) throw new Error('Pedido no encontrado');
+      const est = body?.estado;
+      if (!Object.hasOwn(ESTADOS, est)) throw new Error('Revisa los datos ingresados');
+      const m = db.motos.find(r => r.id === x.moto_id);
+      if (est === 'entregado' && x.estado !== 'entregado') {
+        if (m.stock < 1) throw new Error('No hay stock para entregar esta moto');
+        m.stock -= 1;
+      } else if (x.estado === 'entregado' && est !== 'entregado') {
+        m.stock += 1;  // se revierte la entrega
+      }
+      x.estado = est; guardar(); return pedidoPub(x);
+    }
+  }
+
+  // ---------------------------------------------------------------- admin
+  if (a === 'admin') {
+    exigir('admin');
+    if (b === 'stats') return {
+      motos: db.motos.filter(m => m.activo).length,
+      unidades: db.motos.reduce((s, m) => s + m.stock, 0),
+      pedidos: contar(db.pedidos, 'estado'),
+      usuarios: contar(db.usuarios, 'rol'),
+    };
+    if (b === 'usuarios' && !c && method === 'GET') return db.usuarios.map(pub);
+    if (b === 'usuarios' && !c && method === 'POST') {
+      if (!['admin', 'trabajador', 'cliente'].includes(body?.rol)) throw new Error('Revisa los datos ingresados');
+      const u = await crearUsuario(body, body.rol);
+      db.usuarios.push(u); guardar(); return pub(u);
+    }
+    if (b === 'usuarios' && d === 'activo' && method === 'PATCH') {
+      const u = db.usuarios.find(x => x.id === +c);
+      if (!u) throw new Error('Usuario no encontrado');
+      if (u.id === yo.id) throw new Error('No puedes desactivar tu propia cuenta');
+      u.activo = !u.activo; guardar(); return pub(u);
+    }
+  }
+
+  throw new Error('Ruta no encontrada');
 }
 
 function toast(msg) {

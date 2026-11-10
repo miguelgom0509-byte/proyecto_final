@@ -15,7 +15,7 @@
     <header class="landing-navbar" id="navbar">
         <div class="nav-container">
             <a href="/" class="nav-brand">
-                <img src="/recursos/imagen/logo.jpeg" alt="Henvi" class="nav-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                <img src="/recursos/image/logo.jpeg" alt="Henvi" class="nav-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
                 <span style="display:none; font-size:1.8rem; font-weight:900; color:#fff; letter-spacing:-1px;">HENVI</span>
             </a>
             <nav class="nav-links">
@@ -250,7 +250,7 @@
                 }).join('');
             } catch (e) {
                 console.error("Error cargando destacados:", e);
-                gallery.innerHTML = '<p class="err">Error al cargar los modelos.</p>';
+                gallery.innerHTML = `<p class="err">Error al cargar los modelos: ${esc(e.message)}</p>`;
             }
         }
         cargarModelosDestacados();
