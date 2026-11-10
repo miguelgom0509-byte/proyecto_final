@@ -1,4 +1,4 @@
-const estadoTag = e => `<span class="tag ${e}">${ESTADOS[e]}</span>`;
+const estadoTag = e => `<span class="tag ${esc(e)}">${ESTADOS[e] || esc(e)}</span>`;
 
 let chartPedidos = null;
 let chartUsuarios = null;
@@ -121,7 +121,7 @@ mountPanel({ rol: 'admin', title: 'Admin', sections: [
                       : bajoStock.map(m => `
                           <div class="stock-alert-item">
                               <div style="display:flex; gap:1rem; align-items:center;">
-                                  ${m.imagen ? `<img src="${m.imagen}" style="width:40px; height:30px; object-fit:cover; border-radius:4px;">` : ''}
+                                  ${m.imagen ? `<img src="${esc(m.imagen)}" style="width:40px; height:30px; object-fit:cover; border-radius:4px;">` : ''}
                                   <div>
                                       <b style="display:block; font-size:0.9rem;">${esc(m.marca)} ${esc(m.modelo)}</b>
                                       <small class="muted">${esc(m.tipo)}</small>
@@ -140,6 +140,12 @@ mountPanel({ rol: 'admin', title: 'Admin', sections: [
         animarValor(el, 0, parseInt(el.dataset.target), 1000);
       });
 
+      // La vista pudo cambiar durante la espera, o Chart.js no cargó (sin internet)
+      if (!document.getElementById('chart-pedidos')) return;
+      if (typeof Chart === 'undefined') {
+        document.querySelectorAll('.chart-container').forEach(c => c.innerHTML = '<p class="muted">No se pudo cargar el gráfico (revisa tu conexión).</p>');
+        return;
+      }
       if (chartPedidos) chartPedidos.destroy();
       if (chartUsuarios) chartUsuarios.destroy();
 
@@ -218,7 +224,7 @@ mountPanel({ rol: 'admin', title: 'Admin', sections: [
     
     <div class="animate-up delay-1">` +
       table([
-        ['Foto', m => m.imagen ? `<div class="table-img-wrapper"><img src="${m.imagen}" class="table-img"></div>` : '—'],
+        ['Foto', m => m.imagen ? `<div class="table-img-wrapper"><img src="${esc(m.imagen)}" class="table-img"></div>` : '—'],
         ['Moto', m => `<b>${esc(m.marca)}</b> ${esc(m.modelo)} <br><small class="muted">${m.anio}</small>`], 
         ['Precio', m => `<b style="color:var(--gold-h)">${money(m.precio, m.moneda)}</b>`],
         ['Stock', m => `<span class="tag ${m.stock > 3 ? 'on' : (m.stock > 0 ? 'en_proceso' : 'off')}">${m.stock} un.</span>`], 

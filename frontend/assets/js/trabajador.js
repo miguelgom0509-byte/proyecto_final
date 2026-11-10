@@ -38,7 +38,7 @@ mountPanel({ rol: 'trabajador', title: 'Trabajador', sections: [
                     : bajoStock.map(m => `
                         <div class="stock-alert-item" style="display:flex; justify-content:space-between; align-items:center; padding:1rem; border-bottom:1px solid var(--line);">
                             <div style="display:flex; gap:1rem; align-items:center;">
-                                ${m.imagen ? `<img src="${m.imagen}" style="width:50px; height:35px; object-fit:cover; border-radius:6px;">` : ''}
+                                ${m.imagen ? `<img src="${esc(m.imagen)}" style="width:50px; height:35px; object-fit:cover; border-radius:6px;">` : ''}
                                 <div>
                                     <b style="display:block; font-size:0.95rem;">${esc(m.marca)} ${esc(m.modelo)}</b>
                                     <small class="muted">${esc(m.tipo)}</small>
@@ -91,7 +91,7 @@ mountPanel({ rol: 'trabajador', title: 'Trabajador', sections: [
     <div class="animate-up delay-1">` + table([
       ['Moto', m => `
         <div style="display:flex; align-items:center; gap:1rem;">
-            ${m.imagen ? `<img src="${m.imagen}" style="width:60px; height:40px; object-fit:cover; border-radius:6px;">` : ''}
+            ${m.imagen ? `<img src="${esc(m.imagen)}" style="width:60px; height:40px; object-fit:cover; border-radius:6px;">` : ''}
             <div>
                 <b>${esc(m.marca)}</b> ${esc(m.modelo)} <br>
                 <small class="muted">${esc(m.tipo)} · ${m.cc} cc</small>

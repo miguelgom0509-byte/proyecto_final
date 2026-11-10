@@ -3,257 +3,303 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Henvi · Encuentra tu moto ideal</title>
+    <title>Henvi · Motos nuevas, stock real y crédito simulado</title>
+    <meta name="description" content="Compara motos nuevas, revisa cuántas unidades hay en stock, simula tu cuota y pide la tuya en línea.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/landing.css">
 </head>
 <body class="landing-body">
+    <a class="skip" href="#modelos">Saltar al contenido</a>
 
     <header class="landing-navbar" id="navbar">
-        <div class="nav-container">
-            <a href="/" class="nav-brand">
+        <div class="wrap nav-container">
+            <a href="/" class="nav-brand" aria-label="Henvi, inicio">
                 <img src="/recursos/image/logo.jpeg" alt="Henvi" class="nav-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-                <span style="display:none; font-size:1.8rem; font-weight:900; color:#fff; letter-spacing:-1px;">HENVI</span>
+                <span class="nav-brand-fallback">HENVI</span>
             </a>
-            <nav class="nav-links">
-                <a href="#modelos">Catálogo</a>
-                <a href="#estilos">Estilos</a>
-                <a href="#financiamiento">Financiamiento</a>
+            <nav class="nav-links" aria-label="Principal">
+                <a href="#estilos">Tipos de moto</a>
+                <a href="#modelos">Modelos</a>
+                <a href="#simulador">Simulador</a>
             </nav>
             <div class="nav-actions" id="nav-actions"></div>
         </div>
     </header>
 
-    <section class="hero-section">
-        <div class="hero-bg"></div>
-        <div class="hero-overlay"></div>
-        <div class="hero-content reveal">
-            <div class="hero-badge">
-                <span class="badge-dot"></span> La mejor experiencia de compra
-            </div>
-            <h1>LA MOTO QUE BUSCAS,<br><span style="color: #3B82F6;">LA TENEMOS</span></h1>
-            <p>Encuentra, compara y compra tu nueva moto con las mejores opciones de financiamiento del mercado peruano.</p>
-            
-            <div class="hero-search">
-                <div class="search-input-wrapper">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <input type="text" id="hero-search-input" placeholder="Busca por marca, modelo o estilo...">
-                </div>
-                <button class="btn btn-primary" id="hero-search-btn">Buscar Moto</button>
-            </div>
-            
-            <div class="hero-tags">
-                <span>Populares:</span>
-                <a href="#" class="hero-tag" data-search="Honda">Honda</a>
-                <a href="#" class="hero-tag" data-search="Yamaha">Yamaha</a>
-                <a href="#" class="hero-tag" data-search="Bajaj">Bajaj</a>
-                <a href="#" class="hero-tag" data-search="Hero">Hero</a>
-            </div>
-        </div>
+    <main>
+        <section class="hero">
+            <img class="hero-bg" src="/recursos/image/fondo.jpeg" alt="Dos motos nuevas bajo luces azules: una deportiva Polux y una naked Bajaj Pulsar, con el letrero de Henvi al centro" fetchpriority="high">
+            <div class="hero-shade"></div>
 
-        <div class="trust-badges reveal delay-2">
-            <div class="trust-item">
-                <span class="trust-icon">🛡️</span>
+            <div class="wrap hero-main">
+                <div class="hero-inner">
+                    <h1>Encuentra tu&nbsp;moto.<br>Pídela hoy.</h1>
+                    <p class="hero-lead">Compara modelos, mira cuántas unidades hay en stock y envía tu solicitud sin salir de casa.</p>
+
+                    <form class="hero-search" id="hero-search" role="search">
+                        <label>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <span style="position:absolute;left:-999px;">Buscar moto</span>
+                            <input type="search" id="hero-search-input" placeholder="Marca, modelo o tipo" autocomplete="off">
+                        </label>
+                        <button class="btn" type="submit" id="hero-search-btn">Buscar moto</button>
+                    </form>
+
+                    <div class="hero-tags" id="hero-tags">
+                        <span>Marcas:</span>
+                        <button type="button" class="chip" data-search="Honda">Honda</button>
+                        <button type="button" class="chip" data-search="Yamaha">Yamaha</button>
+                        <button type="button" class="chip" data-search="Bajaj">Bajaj</button>
+                        <button type="button" class="chip" data-search="Hero">Hero</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wrap">
+                <div class="hero-facts">
+                    <div class="fact">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"/><polyline points="3.3 7 12 12 20.7 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>
+                        <div><b id="fact-stock">Stock actualizado</b><span id="fact-modelos">Catálogo en línea</span></div>
+                    </div>
+                    <div class="fact">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                        <div><b>Garantía oficial</b><span>En todas las motos nuevas</span></div>
+                    </div>
+                    <div class="fact">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                        <div><b>Financiamiento</b><span>Simula tu cuota antes de decidir</span></div>
+                    </div>
+                    <div class="fact">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                        <div><b>Servicio técnico</b><span>Mantenimiento especializado</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="estilos" class="section">
+            <div class="wrap">
+                <div class="section-head">
+                    <div>
+                        <h2>¿Qué tipo de moto buscas?</h2>
+                        <p>Elige un tipo y te llevamos al catálogo con ese filtro aplicado.</p>
+                    </div>
+                </div>
+                <ul class="style-list" id="style-list">
+                    <li><button class="style-row" type="button" data-tipo="Scooter"><span class="style-name">Scooter</span></button></li>
+                    <li><button class="style-row" type="button" data-tipo="Naked"><span class="style-name">Naked</span></button></li>
+                    <li><button class="style-row" type="button" data-tipo="Utilitaria"><span class="style-name">Utilitaria</span></button></li>
+                    <li><button class="style-row" type="button" data-tipo=""><span class="style-name">Ver todas</span></button></li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="modelos" class="section modelos">
+            <div class="wrap">
+                <div class="section-head">
+                    <div>
+                        <h2>Modelos disponibles ahora</h2>
+                        <p>Primero las que tienen stock. Toca una moto para ver su ficha técnica.</p>
+                    </div>
+                    <a href="/cliente/#catalogo" class="btn btn-line">Ver catálogo completo</a>
+                </div>
+                <div class="gallery" id="featured-gallery" aria-live="polite">
+                    <p class="vacio">Cargando catálogo...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="simulador" class="section sim">
+            <div class="wrap sim-grid">
                 <div>
-                    <b>Garantía Oficial</b>
-                    <small>En todas nuestras motos</small>
+                    <h2>Calcula tu cuota antes de pedir</h2>
+                    <p class="sim-intro">Elige la moto, cuánto puedes dar de inicial y en cuántos meses quieres pagar. La cuota se actualiza al instante.</p>
+                    <p class="sim-nota">Simulación referencial con TEA de 15 % y tipo de cambio de S/ 3.75 por dólar. No incluye seguros ni gastos administrativos. La cuota final la confirma el asesor.</p>
                 </div>
-            </div>
-            <div class="trust-item">
-                <span class="trust-icon">💳</span>
-                <div>
-                    <b>Financiamiento</b>
-                    <small>Cuotas a tu medida</small>
-                </div>
-            </div>
-            <div class="trust-item">
-                <span class="trust-icon">🔧</span>
-                <div>
-                    <b>Servicio Técnico</b>
-                    <small>Mantenimiento especializado</small>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section id="estilos" class="section-container">
-        <div class="section-header reveal">
-            <span class="section-subtitle">NUESTRAS CATEGORÍAS</span>
-            <h2>Encuentra tu estilo de conducción</h2>
-            <p class="muted">Selecciona el tipo de moto que mejor se adapte a tu día a día.</p>
-        </div>
-        <div class="style-grid reveal delay-1">
-            <a href="/cliente/#catalogo" class="style-card"><div class="style-icon-wrapper"><span class="style-icon">🛵</span></div><h3>Scooter</h3><p>Urbanas y ágiles</p></a>
-            <a href="/cliente/#catalogo" class="style-card"><div class="style-icon-wrapper"><span class="style-icon">🏍️</span></div><h3>Naked</h3><p>Potencia y estilo</p></a>
-            <a href="/cliente/#catalogo" class="style-card"><div class="style-icon-wrapper"><span class="style-icon">🏁</span></div><h3>Deportiva</h3><p>Velocidad y adrenalina</p></a>
-            <a href="/cliente/#catalogo" class="style-card"><div class="style-icon-wrapper"><span class="style-icon">⛰️</span></div><h3>Todo Terreno</h3><p>Para cualquier camino</p></a>
-            <a href="/cliente/#catalogo" class="style-card"><div class="style-icon-wrapper"><span class="style-icon">🛣️</span></div><h3>Cruiser</h3><p>Viajes largos</p></a>
-            <a href="/cliente/#catalogo" class="style-card"><div class="style-icon-wrapper"><span class="style-icon">✨</span></div><h3>Ver todas</h3><p>Explora el catálogo</p></a>
-        </div>
-    </section>
+                <div class="sim-panel">
+                    <form id="sim-form" onsubmit="return false">
+                        <label class="campo">
+                            <span>Moto</span>
+                            <select id="sim-moto" aria-label="Moto a financiar"><option>Cargando...</option></select>
+                        </label>
 
-    <section id="modelos" class="section-container bg-alt">
-        <div class="section-header reveal">
-            <span class="section-subtitle">CATÁLOGO DESTACADO</span>
-            <h2>Las motos más buscadas</h2>
-            <p class="muted">Calidad, rendimiento y el mejor precio garantizado.</p>
-        </div>
-        <div class="gallery reveal delay-1" id="featured-gallery">
-            <p class="muted" style="grid-column: 1/-1; text-align: center; padding: 3rem;">Cargando catálogo...</p>
-        </div>
-        <div class="reveal delay-2" style="text-align: center; margin-top: 3rem;">
-            <a href="/cliente/#catalogo" class="btn btn-outline">Ver catálogo completo</a>
-        </div>
-    </section>
+                        <label class="campo">
+                            <span>Cuota inicial <output id="sim-inicial-out">20 %</output></span>
+                            <input type="range" id="sim-inicial" min="10" max="60" step="5" value="20">
+                        </label>
 
-    <section id="financiamiento" class="section-container financing-section">
-        <div class="financing-content reveal">
-            <span class="section-subtitle">FINANCIAMIENTO FÁCIL</span>
-            <h2>Tú sí puedes tener una moto nueva</h2>
-            <p>No dejes que el presupuesto te detenga. Te ofrecemos planes de financiamiento flexibles, aprobación rápida y 100% digital.</p>
-            <ul class="financing-list">
-                <li><span class="check-icon">✓</span> Aprobación en minutos</li>
-                <li><span class="check-icon">✓</span> Cuotas fijas sin sorpresas</li>
-                <li><span class="check-icon">✓</span> Simula tu crédito sin compromiso</li>
-            </ul>
-            <a href="/login.html?comprar=true" class="btn btn-primary">Simular crédito ahora</a>
-        </div>
-        <div class="financing-visual reveal delay-1">
-            <div class="financing-image">
-                <!-- AQUÍ ESTÁ LA NUEVA IMAGEN DE LA BAJAJ -->
-                <img src="https://cuyomotor.com.ar/wp-content/uploads/2025/08/Bajaj-Rouser-NS400z-2025-003.jpg" alt="Financiamiento de motos">
-            </div>
-            <div class="floating-card">
-                <div class="fc-header">
-                    <span>Cuota estimada</span>
-                    <span class="fc-badge">Mensual</span>
-                </div>
-                <div class="fc-price">S/ 299<span>/mes</span></div>
-                <div class="fc-footer">
-                    <small>Hasta 36 meses</small>
-                    <small>TEA 15%</small>
+                        <fieldset class="campo" style="border:0;padding:0;margin:0 0 1.4rem;">
+                            <legend style="font-weight:600;font-size:.9rem;margin-bottom:.5rem;padding:0;">Plazo</legend>
+                            <div class="plazos" id="sim-plazos">
+                                <label><input type="radio" name="plazo" value="12"><span>12 meses</span></label>
+                                <label><input type="radio" name="plazo" value="24"><span>24 meses</span></label>
+                                <label><input type="radio" name="plazo" value="36" checked><span>36 meses</span></label>
+                                <label><input type="radio" name="plazo" value="48"><span>48 meses</span></label>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                    <div class="resultado" aria-live="polite">
+                        <small>Cuota mensual estimada</small>
+                        <div class="cuota" id="sim-cuota">S/ 0<span>al mes</span></div>
+                        <dl class="desglose">
+                            <div><dt>Inicial</dt><dd id="sim-r-inicial">S/ 0</dd></div>
+                            <div><dt>Monto a financiar</dt><dd id="sim-r-financiar">S/ 0</dd></div>
+                        </dl>
+                        <a href="/cliente/#catalogo" class="btn" id="sim-pedir">Pedir esta moto</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
     <footer class="landing-footer">
-        <div class="footer-grid">
-            <div class="footer-brand">
-                <h3 style="color:#fff; font-size:1.5rem; margin-bottom:1.5rem;">HENVI</h3>
-                <p>La plataforma digital que te ayuda a encontrar, comparar y comprar tu moto nueva en Perú.</p>
+        <div class="wrap">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>HENVI</h3>
+                    <p>Plataforma para encontrar, comparar y pedir tu moto nueva en Perú.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Navegación</h4>
+                    <a href="#estilos">Tipos de moto</a>
+                    <a href="#modelos">Modelos</a>
+                    <a href="#simulador">Simulador</a>
+                    <a href="/login.html">Ingresar</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Atención al cliente</h4>
+                    <a href="https://wa.me/51922681908" rel="noopener">WhatsApp +51 922 681 908</a>
+                    <a href="mailto:hola@henvi.pe">hola@henvi.pe</a>
+                    <span>Lunes a sábado, de 9 a. m. a 7 p. m.</span>
+                </div>
             </div>
-            <div class="footer-links">
-                <h4>Navegación</h4>
-                <a href="#modelos">Catálogo</a>
-                <a href="#estilos">Estilos</a>
-                <a href="#financiamiento">Financiamiento</a>
-            </div>
-            <div class="footer-links">
-                <h4>Atención al Cliente</h4>
-                <a href="#">WhatsApp: +51 922 681 908</a>
-                <a href="#">Email: hola@henvi.pe</a>
-                <a href="#">Lunes a Sábado: 9am - 7pm</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Henvi. Todos los derechos reservados.</p>
-            <div class="footer-legal">
-                <a href="#">Términos y Condiciones</a>
-                <a href="#">Política de Privacidad</a>
+            <div class="footer-bottom">
+                <p style="margin:0;">&copy; 2026 Henvi. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
 
     <script src="/assets/js/core.js"></script>
     <script>
-        window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) navbar.classList.add('scrolled');
-            else navbar.classList.remove('scrolled');
-        });
+        const TIPO_CAMBIO = 3.75;   // S/ por US$ (referencial)
+        const TEA = 0.15;           // tasa efectiva anual (referencial)
+        const IMG_FALLBACK = '/recursos/image/logo.jpeg';
+        const $id = id => document.getElementById(id);
 
-        const navActions = document.getElementById('nav-actions');
-        if (session.user && session.token) {
-            navActions.innerHTML = `<a href="${HOME[session.user.rol]}" class="btn btn-primary">Mi Panel</a>`;
-        } else {
-            navActions.innerHTML = `<a href="/login.html" class="btn btn-outline">Iniciar Sesión</a>`;
+        // --- Barra superior ---
+        const navActions = $id('nav-actions');
+        navActions.innerHTML = (session.user && session.token)
+            ? `<a href="${esc(HOME[session.user.rol] || '/login.html')}" class="btn btn-ghost btn-sm">Mi panel</a>`
+            : `<a href="/login.html" class="btn btn-ghost btn-sm">Ingresar</a>`;
+
+        const navbar = $id('navbar');
+        const alScroll = () => navbar.classList.toggle('scrolled', window.scrollY > 40);
+        window.addEventListener('scroll', alScroll, { passive: true });
+        alScroll();
+
+        // --- Ir al catálogo con una búsqueda ya aplicada ---
+        function irAlCatalogo(texto) {
+            const t = (texto || '').trim();
+            try { t ? sessionStorage.setItem('busqueda_inicial', t) : sessionStorage.removeItem('busqueda_inicial'); } catch { /* sin storage */ }
+            location.href = '/cliente/#catalogo';
         }
 
-        const heroSearchInput = document.getElementById('hero-search-input');
-        const heroSearchBtn = document.getElementById('hero-search-btn');
-        
-        function ejecutarBusqueda() {
-            const term = heroSearchInput.value.trim();
-            if (term) sessionStorage.setItem('busqueda_inicial', term);
-            location.href = `/cliente/#catalogo`; 
-        }
-
-        heroSearchBtn.onclick = ejecutarBusqueda;
-        heroSearchInput.onkeypress = (e) => { if (e.key === 'Enter') ejecutarBusqueda(); };
-
-        document.querySelectorAll('.hero-tag').forEach(tag => {
-            tag.onclick = (e) => {
-                e.preventDefault();
-                sessionStorage.setItem('busqueda_inicial', tag.dataset.search);
-                location.href = '/cliente/#catalogo';
-            };
+        $id('hero-search').onsubmit = e => { e.preventDefault(); irAlCatalogo($id('hero-search-input').value); };
+        document.addEventListener('click', e => {
+            const chip = e.target.closest('[data-search]');
+            if (chip) irAlCatalogo(chip.dataset.search);
+            const fila = e.target.closest('.style-row');
+            if (fila) irAlCatalogo(fila.dataset.tipo);
         });
 
-        const revealElements = document.querySelectorAll('.reveal');
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    revealObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-        revealElements.forEach(el => revealObserver.observe(el));
+        // --- Tarjeta de moto ---
+        function tarjeta(m) {
+            const flag = m.stock < 1 ? '<span class="moto-flag">Agotada</span>'
+                       : m.stock <= 3 ? `<span class="moto-flag poco">Quedan ${m.stock}</span>` : '';
+            return `
+            <a class="moto-card" href="/cliente/#ficha/${m.id}">
+                <div class="moto-media">
+                    ${flag}
+                    <img class="moto-img" src="${esc(m.imagen || IMG_FALLBACK)}" alt="${esc(m.marca)} ${esc(m.modelo)}" loading="lazy"
+                         onerror="this.onerror=null; this.src='${IMG_FALLBACK}'; this.classList.add('sin-foto');">
+                </div>
+                <div class="moto-body">
+                    <span class="moto-brand">${esc(m.marca)}, ${m.anio}</span>
+                    <h3 class="moto-model">${esc(m.modelo)}</h3>
+                    <p class="moto-specs">${esc(m.tipo)}, ${m.cc} cc</p>
+                    <span class="moto-price">${money(m.precio, m.moneda)}</span>
+                </div>
+            </a>`;
+        }
 
-        async function cargarModelosDestacados() {
-            const gallery = document.getElementById('featured-gallery');
-            const IMAGEN_FALLBACK = 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600&auto=format&fit=crop';
-            
+        // --- Simulador (sistema francés: cuota fija) ---
+        const enSoles = m => m.moneda === 'USD' ? m.precio * TIPO_CAMBIO : m.precio;
+        let catalogo = [];
+
+        function calcular() {
+            const m = catalogo.find(x => x.id === +$id('sim-moto').value);
+            if (!m) return;
+            const pct = +$id('sim-inicial').value / 100;
+            const n = +document.querySelector('input[name=plazo]:checked').value;
+            const precio = enSoles(m), inicial = precio * pct, financiar = precio - inicial;
+            const r = Math.pow(1 + TEA, 1 / 12) - 1;               // tasa mensual equivalente
+            const cuota = financiar * r / (1 - Math.pow(1 + r, -n));
+            $id('sim-inicial-out').textContent = Math.round(pct * 100) + ' %';
+            $id('sim-cuota').innerHTML = `${money(cuota)}<span>al mes</span>`;
+            $id('sim-r-inicial').textContent = money(inicial);
+            $id('sim-r-financiar').textContent = money(financiar);
+            $id('sim-pedir').href = `/cliente/#ficha/${m.id}`;
+        }
+
+        // --- Carga del catálogo real ---
+        async function iniciar() {
+            const galeria = $id('featured-gallery');
             try {
-                const motos = await api('/motos');
-                if (motos.length === 0) {
-                    gallery.innerHTML = '<p class="muted">No hay motos disponibles por ahora.</p>';
-                    return;
-                }
-                const destacadas = motos.slice(0, 4);
-                gallery.innerHTML = destacadas.map(m => {
-                    const imgUrl = m.imagen ? m.imagen : IMAGEN_FALLBACK;
-                    return `
-                    <article class="card moto-card" onclick="location.href='/cliente/#catalogo'">
-                        <div class="moto-img-container">
-                            <img src="${imgUrl}" class="moto-img" alt="${esc(m.marca)} ${esc(m.modelo)}" onerror="this.onerror=null; this.src='${IMAGEN_FALLBACK}';">
-                            <div class="moto-badge">${m.cc} cc</div>
-                        </div>
-                        <div class="moto-info">
-                            <div class="moto-header">
-                                <span class="moto-brand">${esc(m.marca)}</span>
-                                <span class="moto-year">${m.anio}</span>
-                            </div>
-                            <h3 class="moto-model">${esc(m.modelo)}</h3>
-                            <p class="moto-specs">${esc(m.tipo)}</p>
-                            <div class="moto-footer">
-                                <span class="moto-price">${money(m.precio, m.moneda)}</span>
-                                <span class="btn btn-buy">Ver más</span>
-                            </div>
-                        </div>
-                    </article>
-                    `;
-                }).join('');
+                catalogo = await api('/motos');
             } catch (e) {
-                console.error("Error cargando destacados:", e);
-                gallery.innerHTML = `<p class="err">Error al cargar los modelos: ${esc(e.message)}</p>`;
+                galeria.innerHTML = '<p class="vacio">No pudimos cargar el catálogo. Recarga la página para intentarlo de nuevo.</p>';
+                return;
             }
+            if (!catalogo.length) {
+                galeria.innerHTML = '<p class="vacio">Todavía no hay motos publicadas. Vuelve pronto.</p>';
+                $id('sim-moto').innerHTML = '<option>Sin motos disponibles</option>';
+                return;
+            }
+
+            // Datos en vivo de la barra del hero
+            const unidades = catalogo.reduce((t, m) => t + m.stock, 0);
+            $id('fact-stock').textContent = `${unidades} unidad${unidades === 1 ? '' : 'es'} en stock`;
+            $id('fact-modelos').textContent = `En ${catalogo.length} modelo${catalogo.length === 1 ? '' : 's'} disponibles`;
+
+            // Marcas reales
+            const marcas = [...new Set(catalogo.map(m => m.marca))].slice(0, 6);
+            $id('hero-tags').innerHTML = '<span>Marcas:</span>' +
+                marcas.map(x => `<button type="button" class="chip" data-search="${esc(x)}">${esc(x)}</button>`).join('');
+
+            // Tipos reales con cantidad de modelos
+            const porTipo = catalogo.reduce((o, m) => (o[m.tipo] = (o[m.tipo] || 0) + 1, o), {});
+            $id('style-list').innerHTML = Object.entries(porTipo).map(([t, n]) => `
+                <li><button class="style-row" type="button" data-tipo="${esc(t)}">
+                    <span class="style-name">${esc(t)}</span>
+                    <span class="style-count">${n} modelo${n === 1 ? '' : 's'}</span>
+                </button></li>`).join('') +
+                `<li><button class="style-row" type="button" data-tipo=""><span class="style-name">Ver todas</span><span class="style-count">${catalogo.length} modelos</span></button></li>`;
+
+            // Destacadas: primero las que tienen stock
+            const destacadas = [...catalogo].sort((a, b) => (b.stock > 0) - (a.stock > 0)).slice(0, 4);
+            galeria.innerHTML = destacadas.map(tarjeta).join('');
+
+            // Simulador
+            $id('sim-moto').innerHTML = catalogo.map(m =>
+                `<option value="${m.id}">${esc(m.marca)} ${esc(m.modelo)}, ${esc(money(m.precio, m.moneda))}</option>`).join('');
+            $id('sim-form').addEventListener('input', calcular);
+            calcular();
         }
-        cargarModelosDestacados();
+        iniciar();
     </script>
 </body>
 </html>

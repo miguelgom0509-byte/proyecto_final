@@ -20,7 +20,7 @@ const stockInfo = m =>
   m.stock <= 3 ? ['badge-warning', 'Últimas unidades'] :
   ['badge-success', 'Disponible'];
 
-const estadoTag = e => `<span class="tag ${e}">${ESTADOS[e] || esc(e)}</span>`;
+const estadoTag = e => `<span class="tag ${esc(e)}">${ESTADOS[e] || esc(e)}</span>`;
 
 function tarjeta(m) {
   const [clase, texto] = stockInfo(m);

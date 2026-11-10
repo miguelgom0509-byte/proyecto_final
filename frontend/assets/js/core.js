@@ -1,11 +1,13 @@
 const $ = (s, r = document) => r.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const money = (v, c = 'PEN') => (c === 'PEN' ? 'S/ ' : 'US$ ') + Math.round(v).toLocaleString('es-PE');
+const money = (v, c = 'PEN') => (c === 'PEN' ? 'S/ ' : 'US$ ') + Math.round(Number(v) || 0).toLocaleString('es-PE');
 const fecha = d => {
     if (!d) return '—';
     try {
         const str = d.endsWith('Z') || d.includes('+') ? d : d + 'Z';
-        return new Date(str).toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
+        const f = new Date(str);
+        if (isNaN(f)) return 'Fecha inválida';
+        return f.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
     } catch (e) { return 'Fecha inválida'; }
 };
 
@@ -13,10 +15,10 @@ const ESTADOS = { pendiente: 'Pendiente', en_proceso: 'En proceso', entregado: '
 const HOME = { admin: '/admin/', trabajador: '/trabajador/', cliente: '/cliente/' };
 
 const session = {
-  get token() { return localStorage.getItem('ma_token'); },
+  get token() { try { return localStorage.getItem('ma_token'); } catch { return null; } },
   get user() { try { return JSON.parse(localStorage.getItem('ma_user')); } catch { return null; } },
   set(t, u) { localStorage.setItem('ma_token', t); localStorage.setItem('ma_user', JSON.stringify(u)); },
-  clear() { localStorage.removeItem('ma_token'); localStorage.removeItem('ma_user'); },
+  clear() { try { localStorage.removeItem('ma_token'); localStorage.removeItem('ma_user'); } catch { /* sin acceso a storage */ } },
 };
 
 // true  = usa el backend FastAPI (uvicorn backend.main:app)
@@ -34,7 +36,10 @@ async function apiRemota(path, { method = 'GET', body } = {}) {
     body: body && JSON.stringify(body),
   });
   // Un 401 en el login es "credenciales incorrectas" (se muestra el error); en el resto, la sesión expiró
-  if (r.status === 401 && !path.startsWith('/auth/login')) { session.clear(); location.href = '/login.html'; return; }
+  if (r.status === 401 && !path.startsWith('/auth/login')) {
+    session.clear(); location.href = '/login.html';
+    throw new Error('Tu sesión expiró. Inicia sesión de nuevo');
+  }
   const data = r.status === 204 ? null : await r.json().catch(() => null);
   if (!r.ok) {
     let msg = 'Ocurrió un error inesperado';
@@ -54,8 +59,16 @@ async function apiRemota(path, { method = 'GET', body } = {}) {
 // ===================================================================
 const DB_KEY = 'ma_db_v1';
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
-const sha256 = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))]
-  .map(b => b.toString(16).padStart(2, '0')).join('');
+const sha256 = async s => {
+  // crypto.subtle solo existe en HTTPS/localhost; si no está, se usa un hash simple de respaldo
+  if (globalThis.crypto?.subtle) {
+    return [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))]
+      .map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  let h = 5381;
+  for (const ch of s) h = ((h << 5) + h + ch.charCodeAt(0)) >>> 0;
+  return 'x' + h.toString(16);
+};
 
 async function semilla() {
   const I = 'https://images.unsplash.com/';
@@ -86,20 +99,27 @@ async function cargarDB() {
   const leer = () => { try { return JSON.parse(localStorage.getItem(DB_KEY)); } catch { return null; } };
   let d = leer();
   if (!d) {
-    semillaPromise ??= semilla().then(s => { if (!leer()) guardarDB(s); return s; });
-    await semillaPromise;
-    d = leer();
+    semillaPromise ??= semilla().then(s => { if (!leer()) { try { guardarDB(s); } catch { /* sin storage */ } } return s; });
+    const s = await semillaPromise;
+    d = leer() ?? s;
   }
   return d;
 }
 
 function validarMoto(d) {
-  const ok = d && d.marca?.length >= 2 && d.modelo?.length >= 1 && d.anio >= 2000 && d.anio <= 2100 &&
-    d.tipo?.length >= 2 && d.cc > 0 && d.cc <= 3000 && d.precio > 0 &&
-    ['PEN', 'USD'].includes(d.moneda || 'PEN') && (d.stock ?? 0) >= 0;
+  const marca = String(d?.marca ?? '').trim(), modelo = String(d?.modelo ?? '').trim(), tipo = String(d?.tipo ?? '').trim();
+  const anio = Number(d?.anio), cc = Number(d?.cc), precio = Number(d?.precio), stock = Number(d?.stock ?? 0);
+  const moneda = d?.moneda || 'PEN';
+  const ok = marca.length >= 2 && modelo.length >= 1 && tipo.length >= 2 &&
+    Number.isInteger(anio) && anio >= 2000 && anio <= 2100 &&
+    Number.isFinite(cc) && cc > 0 && cc <= 3000 &&
+    Number.isFinite(precio) && precio > 0 &&
+    ['PEN', 'USD'].includes(moneda) && Number.isInteger(stock) && stock >= 0;
   if (!ok) throw new Error('Revisa los datos ingresados');
-  return { marca: d.marca.trim(), modelo: d.modelo.trim(), anio: +d.anio, tipo: d.tipo.trim(), cc: +d.cc,
-           precio: +d.precio, moneda: d.moneda || 'PEN', stock: +(d.stock ?? 0), imagen: String(d.imagen || '').slice(0, 500) };
+  const r = { marca, modelo, anio, tipo, cc, precio, moneda, stock };
+  // Si no se envía imagen, no se toca (así editar una moto no borra su foto)
+  if (d.imagen !== undefined) r.imagen = String(d.imagen || '').slice(0, 500);
+  return r;
 }
 
 async function apiLocal(path, { method = 'GET', body } = {}) {
@@ -149,26 +169,34 @@ async function apiLocal(path, { method = 'GET', body } = {}) {
   // ---------------------------------------------------------------- motos
   if (a === 'motos') {
     if (!b && method === 'GET') {
-      const todas = q.get('todas') === 'true';
+      // Las motos dadas de baja solo las ven admin y trabajador
+      const todas = q.get('todas') === 'true' && !!yo && ['admin', 'trabajador'].includes(yo.rol);
       return db.motos.filter(m => todas || m.activo)
         .sort((x, y) => x.marca.localeCompare(y.marca) || x.modelo.localeCompare(y.modelo)).map(m => ({ ...m }));
     }
     if (!b && method === 'POST') {
       exigir('admin');
-      const m = { id: ++db.seq.motos, ...validarMoto(body), activo: true };
+      const m = { id: ++db.seq.motos, imagen: '', ...validarMoto(body), activo: true };
       db.motos.push(m); guardar(); return { ...m };
     }
     if (b) {
-      exigir(...(c === 'stock' ? ['admin', 'trabajador'] : ['admin']));
-      const m = db.motos.find(x => x.id === +b);
-      if (!m) throw new Error('Moto no encontrada');
-      if (method === 'PATCH' && c === 'stock') {
-        const s = Number(body?.stock);
-        if (!Number.isInteger(s) || s < 0) throw new Error('Revisa los datos ingresados');
-        m.stock = s; guardar(); return { ...m };
+      if (c === 'stock') {
+        // El trabajador solo puede cambiar el stock, nada más
+        exigir('admin', 'trabajador');
+        const m = db.motos.find(x => x.id === +b);
+        if (!m) throw new Error('Moto no encontrada');
+        if (method === 'PATCH') {
+          const s = Number(body?.stock);
+          if (!Number.isInteger(s) || s < 0) throw new Error('Revisa los datos ingresados');
+          m.stock = s; guardar(); return { ...m };
+        }
+      } else if (!c) {
+        exigir('admin');
+        const m = db.motos.find(x => x.id === +b);
+        if (!m) throw new Error('Moto no encontrada');
+        if (method === 'PUT') { Object.assign(m, validarMoto(body)); guardar(); return { ...m }; }
+        if (method === 'DELETE') { m.activo = false; guardar(); return null; }  // baja lógica
       }
-      if (method === 'PUT') { Object.assign(m, validarMoto(body)); guardar(); return { ...m }; }
-      if (method === 'DELETE') { m.activo = false; guardar(); return null; }  // baja lógica
     }
   }
 
@@ -183,7 +211,7 @@ async function apiLocal(path, { method = 'GET', body } = {}) {
                   nota: String(body.nota || '').trim().slice(0, 300), creado: new Date().toISOString() };
       db.pedidos.push(x); guardar(); return pedidoPub(x);
     }
-    if (b === 'mios') {
+    if (b === 'mios' && method === 'GET') {
       exigir('cliente');
       return db.pedidos.filter(x => x.cliente_id === yo.id).sort((x, y) => y.id - x.id).map(pedidoPub);
     }
@@ -200,9 +228,10 @@ async function apiLocal(path, { method = 'GET', body } = {}) {
       if (!Object.hasOwn(ESTADOS, est)) throw new Error('Revisa los datos ingresados');
       const m = db.motos.find(r => r.id === x.moto_id);
       if (est === 'entregado' && x.estado !== 'entregado') {
+        if (!m) throw new Error('La moto de este pedido ya no existe');
         if (m.stock < 1) throw new Error('No hay stock para entregar esta moto');
         m.stock -= 1;
-      } else if (x.estado === 'entregado' && est !== 'entregado') {
+      } else if (x.estado === 'entregado' && est !== 'entregado' && m) {
         m.stock += 1;  // se revierte la entrega
       }
       x.estado = est; guardar(); return pedidoPub(x);
@@ -236,7 +265,7 @@ async function apiLocal(path, { method = 'GET', body } = {}) {
 }
 
 function toast(msg) {
-  const t = $('#toast'); if(!t) return;
+  const t = $('#toast'); if (!t) return;
   t.textContent = msg; t.classList.add('show');
   clearTimeout(toast.id); toast.id = setTimeout(() => t.classList.remove('show'), 2600);
 }
@@ -256,18 +285,18 @@ async function run(fn, ok, again) {
 
 function mountPanel({ rol, title, sections }) {
   const u = session.user;
-  
+
   if (rol === 'cliente') {
-      if (session.token && u && u.rol !== 'cliente') { location.href = HOME[u.rol]; return; }
+      if (session.token && u && u.rol !== 'cliente') { location.href = HOME[u.rol] || '/login.html'; return; }
   } else {
       if (!session.token || !u || u.rol !== rol) { location.href = '/login.html'; return; }
   }
-  
+
   const iconos = { resumen: '📊', motos: '🏍️', pedidos: '📦', usuarios: '👥', catalogo: '🛒', inventario: '📋', favoritos: '❤️' };
   const esInvitado = !u;
-  const nombreUsuario = esInvitado ? 'Invitado' : u.nombre;
-  const inicial = esInvitado ? 'I' : u.nombre.charAt(0).toUpperCase();
-  const botonSesion = esInvitado 
+  const nombreUsuario = esInvitado ? 'Invitado' : (u.nombre || 'Usuario');
+  const inicial = nombreUsuario.charAt(0).toUpperCase();
+  const botonSesion = esInvitado
       ? `<button class="btn sm" onclick="location.href='/login.html?comprar=true'">Iniciar Sesión</button>`
       : `<button id="out" class="btn ghost sm" type="button">Salir</button>`;
 
@@ -275,23 +304,23 @@ function mountPanel({ rol, title, sections }) {
     <aside class="side">
       <div class="brand">
         <img src="/recursos/image/logo.jpeg" alt="Henvi" class="brand-logo">
-        <small>${title}</small>
+        <small>${esc(title)}</small>
       </div>
       <nav aria-label="Secciones">
-        ${sections.map(s => `<a href="#${s.id}" data-id="${s.id}"><span style="font-size:1.2rem">${iconos[s.id] || '📌'}</span> ${s.label}</a>`).join('')}
+        ${sections.map(s => `<a href="#${esc(s.id)}" data-id="${esc(s.id)}"><span style="font-size:1.2rem">${iconos[s.id] || '📌'}</span> ${esc(s.label)}</a>`).join('')}
       </nav>
       <div class="me">
         <div class="user-info">
-            <div class="avatar">${inicial}</div>
+            <div class="avatar">${esc(inicial)}</div>
             <div>
                 <span style="display:block; font-size:0.9rem;">${esc(nombreUsuario)}</span>
-                <small style="color:#94A3B8; text-transform:capitalize; font-size:0.75rem;">${esInvitado ? 'Visitante' : u.rol}</small>
+                <small style="color:#94A3B8; text-transform:capitalize; font-size:0.75rem;">${esInvitado ? 'Visitante' : esc(u.rol)}</small>
             </div>
         </div>
         ${botonSesion}
       </div>
     </aside>
-    
+
     <div class="main-wrapper">
         <header class="topbar">
             <h1 id="ttl" style="margin:0; font-size:1.4rem;"></h1>
@@ -304,29 +333,32 @@ function mountPanel({ rol, title, sections }) {
         </main>
     </div>
     <div id="toast" role="status"></div>`;
-    
+
   if (!esInvitado) {
       $('#out').onclick = () => { session.clear(); location.href = '/login.html'; };
   }
-  
+
+  let ultimo = 0;  // evita que una vista lenta pise a una más reciente
   const go = async () => {
     const hash = location.hash.slice(1);
-    
+
     // Si es la ficha técnica, no interferir (la dibuja cliente.js)
     if (hash.startsWith('ficha/')) {
+        ultimo++;  // descarta cualquier vista lenta que siga pendiente
         document.querySelectorAll('.side nav a').forEach(a => a.classList.remove('on'));
         return;
     }
 
     const s = sections.find(x => x.id === hash) || sections[0];
+    const mio = ++ultimo;
     document.querySelectorAll('.side nav a').forEach(a => a.classList.toggle('on', a.dataset.id === s.id));
     $('#ttl').textContent = s.label;
-    const v = $('#view'); 
+    const v = $('#view');
     v.innerHTML = '<p class="muted animate-up">Cargando datos...</p>';
-    try { await s.render(v, () => go()); } 
-    catch (e) { v.innerHTML = `<p class="err" style="background:rgba(239,68,68,0.1); padding:1rem; border-radius:8px;">${esc(e.message)}</p>`; }
+    try { await s.render(v, () => go()); }
+    catch (e) { if (mio === ultimo) v.innerHTML = `<p class="err" style="background:rgba(239,68,68,0.1); padding:1rem; border-radius:8px;">${esc(e.message)}</p>`; }
   };
-  
-  addEventListener('hashchange', go); 
+
+  window.onhashchange = go;  // asignación directa: no se duplica si se vuelve a montar el panel
   go();
 }
