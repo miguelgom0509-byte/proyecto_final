@@ -29,11 +29,12 @@ seed()
 # =====================================================================
 app = FastAPI(title="Moto Altiplano API", version="1.0.0")
 
-# Configuración de CORS (permite peticiones desde otros puertos si es necesario)
+# Configuración de CORS (el JWT va en la cabecera Authorization, no en cookies,
+# por eso allow_credentials=False: con "*" no sería válido activarlo)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

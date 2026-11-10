@@ -25,7 +25,8 @@ async function api(path, { method = 'GET', body } = {}) {
     headers: { 'Content-Type': 'application/json', ...(session.token && { Authorization: 'Bearer ' + session.token }) },
     body: body && JSON.stringify(body),
   });
-  if (r.status === 401) { session.clear(); location.href = '/login.html'; return; }
+  // Un 401 en el login es "credenciales incorrectas" (se muestra el error); en el resto, la sesión expiró
+  if (r.status === 401 && !path.startsWith('/auth/login')) { session.clear(); location.href = '/login.html'; return; }
   const data = r.status === 204 ? null : await r.json().catch(() => null);
   if (!r.ok) {
     let msg = 'Ocurrió un error inesperado';
@@ -77,8 +78,7 @@ function mountPanel({ rol, title, sections }) {
   document.body.innerHTML = `
     <aside class="side">
       <div class="brand">
-        <!-- RUTA ACTUALIZADA AL ARCHIVO JPEG -->
-        <img src="/recursos/imagen/logo.jpeg" alt="Henvi" class="brand-logo">
+        <img src="/recursos/image/logo.jpeg" alt="Henvi" class="brand-logo">
         <small>${title}</small>
       </div>
       <nav aria-label="Secciones">
@@ -116,7 +116,7 @@ function mountPanel({ rol, title, sections }) {
   const go = async () => {
     const hash = location.hash.slice(1);
     
-    // Si es la ficha técnica, no interferir
+    // Si es la ficha técnica, no interferir (la dibuja cliente.js)
     if (hash.startsWith('ficha/')) {
         document.querySelectorAll('.side nav a').forEach(a => a.classList.remove('on'));
         return;
