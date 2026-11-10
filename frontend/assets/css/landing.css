@@ -62,15 +62,17 @@ body.landing-body {
 .hero-bg { 
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
     
-    /* AQUÍ ESTÁ LA IMAGEN DE LA BAJAJ ROUSER */
-    background: url('https://cuyomotor.com.ar/wp-content/uploads/2025/08/Bajaj-Rouser-NS400z-2025-003.jpg') center/cover no-repeat; 
+    /* ======================================================== */
+    /* 🚀 AQUÍ SE CARGA TU IMAGEN LOCAL                         */
+    /* ======================================================== */
+    background: url('/recursos/image/fondo.jpeg') center/cover no-repeat; 
     
     animation: slowZoom 20s ease-in-out infinite alternate; 
 }
 @keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.1); } }
 .hero-overlay { 
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-    background: radial-gradient(circle at center, rgba(8, 16, 22, 0.6) 0%, rgba(8, 16, 22, 0.95) 100%); 
+    background: radial-gradient(circle at center, rgba(8, 16, 22, 0.5) 0%, rgba(8, 16, 22, 0.95) 100%); 
 }
 .hero-content { position: relative; z-index: 2; max-width: 900px; padding: 0 2rem; color: #fff; margin-bottom: 4rem; }
 .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255, 255, 255, 0.1); color: #fff; padding: 0.5rem 1.2rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600; margin-bottom: 2rem; border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); }
