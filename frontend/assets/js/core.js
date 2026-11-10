@@ -76,7 +76,11 @@ function mountPanel({ rol, title, sections }) {
 
   document.body.innerHTML = `
     <aside class="side">
-      <div class="brand"><i></i>Moto Altiplano<small>${title}</small></div>
+      <div class="brand">
+        <!-- RUTA ACTUALIZADA AL ARCHIVO JPEG -->
+        <img src="/recursos/imagen/logo.jpeg" alt="Henvi" class="brand-logo">
+        <small>${title}</small>
+      </div>
       <nav aria-label="Secciones">
         ${sections.map(s => `<a href="#${s.id}" data-id="${s.id}"><span style="font-size:1.2rem">${iconos[s.id] || '📌'}</span> ${s.label}</a>`).join('')}
       </nav>
@@ -112,7 +116,7 @@ function mountPanel({ rol, title, sections }) {
   const go = async () => {
     const hash = location.hash.slice(1);
     
-    // Si la ruta es una ficha, NO HACEMOS NADA. Dejamos que cliente.js lo maneje.
+    // Si es la ficha técnica, no interferir
     if (hash.startsWith('ficha/')) {
         document.querySelectorAll('.side nav a').forEach(a => a.classList.remove('on'));
         return;
@@ -123,7 +127,6 @@ function mountPanel({ rol, title, sections }) {
     $('#ttl').textContent = s.label;
     const v = $('#view'); 
     v.innerHTML = '<p class="muted animate-up">Cargando datos...</p>';
-    
     try { await s.render(v, () => go()); } 
     catch (e) { v.innerHTML = `<p class="err" style="background:rgba(239,68,68,0.1); padding:1rem; border-radius:8px;">${esc(e.message)}</p>`; }
   };

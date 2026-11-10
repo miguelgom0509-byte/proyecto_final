@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Moto Altiplano · Encuentra tu moto ideal</title>
+    <title>Henvi · Encuentra tu moto ideal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -12,24 +12,21 @@
 </head>
 <body class="landing-body">
 
-    <!-- 1. NAVBAR INTELIGENTE -->
     <header class="landing-navbar" id="navbar">
         <div class="nav-container">
             <a href="/" class="nav-brand">
-                <i></i> Moto Altiplano
+                <img src="/recursos/imagen/logo.jpeg" alt="Henvi" class="nav-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                <span style="display:none; font-size:1.8rem; font-weight:900; color:#fff; letter-spacing:-1px;">HENVI</span>
             </a>
             <nav class="nav-links">
                 <a href="#modelos">Catálogo</a>
                 <a href="#estilos">Estilos</a>
                 <a href="#financiamiento">Financiamiento</a>
             </nav>
-            <div class="nav-actions" id="nav-actions">
-                <!-- Se llena con JS -->
-            </div>
+            <div class="nav-actions" id="nav-actions"></div>
         </div>
     </header>
 
-    <!-- 2. HERO SECTION -->
     <section class="hero-section">
         <div class="hero-bg"></div>
         <div class="hero-overlay"></div>
@@ -37,10 +34,9 @@
             <div class="hero-badge">
                 <span class="badge-dot"></span> La mejor experiencia de compra
             </div>
-            <h1>LA MOTO QUE BUSCAS,<br><span>LA TENEMOS</span></h1>
+            <h1>LA MOTO QUE BUSCAS,<br><span style="color: #3B82F6;">LA TENEMOS</span></h1>
             <p>Encuentra, compara y compra tu nueva moto con las mejores opciones de financiamiento del mercado peruano.</p>
             
-            <!-- Buscador Premium -->
             <div class="hero-search">
                 <div class="search-input-wrapper">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -58,7 +54,6 @@
             </div>
         </div>
 
-        <!-- Trust Badges flotantes -->
         <div class="trust-badges reveal delay-2">
             <div class="trust-item">
                 <span class="trust-icon">🛡️</span>
@@ -84,7 +79,6 @@
         </div>
     </section>
 
-    <!-- 3. SECCIÓN DE ESTILOS -->
     <section id="estilos" class="section-container">
         <div class="section-header reveal">
             <span class="section-subtitle">NUESTRAS CATEGORÍAS</span>
@@ -92,40 +86,15 @@
             <p class="muted">Selecciona el tipo de moto que mejor se adapte a tu día a día.</p>
         </div>
         <div class="style-grid reveal delay-1">
-            <a href="/cliente/#catalogo" class="style-card">
-                <div class="style-icon-wrapper"><span class="style-icon">🛵</span></div>
-                <h3>Scooter</h3>
-                <p>Urbanas y ágiles</p>
-            </a>
-            <a href="/cliente/#catalogo" class="style-card">
-                <div class="style-icon-wrapper"><span class="style-icon">🏍️</span></div>
-                <h3>Naked</h3>
-                <p>Potencia y estilo</p>
-            </a>
-            <a href="/cliente/#catalogo" class="style-card">
-                <div class="style-icon-wrapper"><span class="style-icon">🏁</span></div>
-                <h3>Deportiva</h3>
-                <p>Velocidad y adrenalina</p>
-            </a>
-            <a href="/cliente/#catalogo" class="style-card">
-                <div class="style-icon-wrapper"><span class="style-icon">⛰️</span></div>
-                <h3>Todo Terreno</h3>
-                <p>Para cualquier camino</p>
-            </a>
-            <a href="/cliente/#catalogo" class="style-card">
-                <div class="style-icon-wrapper"><span class="style-icon">🛣️</span></div>
-                <h3>Cruiser</h3>
-                <p>Viajes largos</p>
-            </a>
-            <a href="/cliente/#catalogo" class="style-card">
-                <div class="style-icon-wrapper"><span class="style-icon">✨</span></div>
-                <h3>Ver todas</h3>
-                <p>Explora el catálogo</p>
-            </a>
+            <a href="/cliente/#catalogo" class="style-card"><div class="style-icon-wrapper"><span class="style-icon">🛵</span></div><h3>Scooter</h3><p>Urbanas y ágiles</p></a>
+            <a href="/cliente/#catalogo" class="style-card"><div class="style-icon-wrapper"><span class="style-icon">🏍️</span></div><h3>Naked</h3><p>Potencia y estilo</p></a>
+            <a href="/cliente/#catalogo" class="style-card"><div class="style-icon-wrapper"><span class="style-icon">🏁</span></div><h3>Deportiva</h3><p>Velocidad y adrenalina</p></a>
+            <a href="/cliente/#catalogo" class="style-card"><div class="style-icon-wrapper"><span class="style-icon">⛰️</span></div><h3>Todo Terreno</h3><p>Para cualquier camino</p></a>
+            <a href="/cliente/#catalogo" class="style-card"><div class="style-icon-wrapper"><span class="style-icon">🛣️</span></div><h3>Cruiser</h3><p>Viajes largos</p></a>
+            <a href="/cliente/#catalogo" class="style-card"><div class="style-icon-wrapper"><span class="style-icon">✨</span></div><h3>Ver todas</h3><p>Explora el catálogo</p></a>
         </div>
     </section>
 
-    <!-- 4. MODELOS DESTACADOS -->
     <section id="modelos" class="section-container bg-alt">
         <div class="section-header reveal">
             <span class="section-subtitle">CATÁLOGO DESTACADO</span>
@@ -140,7 +109,6 @@
         </div>
     </section>
 
-    <!-- 5. FINANCIAMIENTO -->
     <section id="financiamiento" class="section-container financing-section">
         <div class="financing-content reveal">
             <span class="section-subtitle">FINANCIAMIENTO FÁCIL</span>
@@ -155,9 +123,9 @@
         </div>
         <div class="financing-visual reveal delay-1">
             <div class="financing-image">
-                <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=600&auto=format&fit=crop" alt="Financiamiento de motos">
+                <!-- AQUÍ ESTÁ LA NUEVA IMAGEN DE LA BAJAJ -->
+                <img src="https://cuyomotor.com.ar/wp-content/uploads/2025/08/Bajaj-Rouser-NS400z-2025-003.jpg" alt="Financiamiento de motos">
             </div>
-            <!-- Tarjeta flotante de simulación -->
             <div class="floating-card">
                 <div class="fc-header">
                     <span>Cuota estimada</span>
@@ -172,11 +140,10 @@
         </div>
     </section>
 
-    <!-- 6. FOOTER -->
     <footer class="landing-footer">
         <div class="footer-grid">
             <div class="footer-brand">
-                <h3><i></i> Moto Altiplano</h3>
+                <h3 style="color:#fff; font-size:1.5rem; margin-bottom:1.5rem;">HENVI</h3>
                 <p>La plataforma digital que te ayuda a encontrar, comparar y comprar tu moto nueva en Perú.</p>
             </div>
             <div class="footer-links">
@@ -188,12 +155,12 @@
             <div class="footer-links">
                 <h4>Atención al Cliente</h4>
                 <a href="#">WhatsApp: +51 922 681 908</a>
-                <a href="#">Email: hola@motoaltiplano.pe</a>
+                <a href="#">Email: hola@henvi.pe</a>
                 <a href="#">Lunes a Sábado: 9am - 7pm</a>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 Moto Altiplano. Todos los derechos reservados.</p>
+            <p>&copy; 2026 Henvi. Todos los derechos reservados.</p>
             <div class="footer-legal">
                 <a href="#">Términos y Condiciones</a>
                 <a href="#">Política de Privacidad</a>
@@ -203,14 +170,12 @@
 
     <script src="/assets/js/core.js"></script>
     <script>
-        // 1. Navbar scroll effect
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('navbar');
             if (window.scrollY > 50) navbar.classList.add('scrolled');
             else navbar.classList.remove('scrolled');
         });
 
-        // 2. Lógica de sesión
         const navActions = document.getElementById('nav-actions');
         if (session.user && session.token) {
             navActions.innerHTML = `<a href="${HOME[session.user.rol]}" class="btn btn-primary">Mi Panel</a>`;
@@ -218,7 +183,6 @@
             navActions.innerHTML = `<a href="/login.html" class="btn btn-outline">Iniciar Sesión</a>`;
         }
 
-        // 3. Buscador
         const heroSearchInput = document.getElementById('hero-search-input');
         const heroSearchBtn = document.getElementById('hero-search-btn');
         
@@ -239,7 +203,6 @@
             };
         });
 
-        // 4. Scroll Reveal Animations (Intersection Observer)
         const revealElements = document.querySelectorAll('.reveal');
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -249,10 +212,8 @@
                 }
             });
         }, { threshold: 0.1 });
-
         revealElements.forEach(el => revealObserver.observe(el));
 
-        // 5. Cargar destacados
         async function cargarModelosDestacados() {
             const gallery = document.getElementById('featured-gallery');
             const IMAGEN_FALLBACK = 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600&auto=format&fit=crop';
