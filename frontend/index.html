@@ -3,96 +3,296 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Moto Altiplano · Tienda Oficial</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap">
-    <link rel="stylesheet" href="assets/css/panel.css">
-    <style>
-        /* Estilos exclusivos de la Landing Page */
-        .hero {
-            grid-column: 1 / -1;
-            height: 70vh;
-            background: linear-gradient(rgba(8, 16, 22, 0.6), rgba(8, 16, 22, 0.95)), url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1920&auto=format&fit=crop') center/cover;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: #fff;
-            padding: 2rem;
-        }
-        .hero h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 1rem; text-shadow: 0 4px 12px rgba(0,0,0,0.5); line-height: 1.1; }
-        .hero p { font-size: 1.2rem; max-width: 600px; margin-bottom: 2.5rem; color: #CBD5E1; }
-        .navbar { position: absolute; top: 0; width: 100%; padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
-        .navbar .brand { color: #fff; display: flex; align-items: center; gap: 0.5rem; }
-        .landing-catalog { grid-column: 1 / -1; padding: 4rem 3rem; max-width: 1400px; margin: 0 auto; width: 100%; }
-        footer { grid-column: 1 / -1; text-align: center; padding: 2rem; background: var(--side-bg); color: #94A3B8; font-size: 0.9rem; }
-    </style>
-</head>
-<body style="display:block; background:var(--bg);">
+    <title>Moto Altiplano · Encuentra tu moto ideal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <div class="navbar">
-        <div class="brand"><i style="width:14px;height:20px;background:var(--gold);transform:skewX(-18deg);border-radius:4px;display:inline-block"></i> Moto Altiplano</div>
-        <a href="/login.html" id="nav-btn" class="btn ghost" style="color:#fff; border-color:rgba(255,255,255,0.3);">Iniciar Sesión</a>
-    </div>
+    <link rel="stylesheet" href="/assets/css/landing.css">
+</head>
+<body class="landing-body">
 
-    <header class="hero">
-        <h1>Encuentra tu próxima aventura</h1>
-        <p>Explora nuestro catálogo de motocicletas de las mejores marcas. Calidad, potencia y estilo en un solo lugar.</p>
-        
-        <!-- AQUÍ ESTÁ EL CAMBIO: Ahora apunta directo a /cliente/ -->
-        <a href="/cliente/" id="hero-btn" class="btn" style="font-size: 1.1rem; padding: 1rem 3rem; border-radius: 50px;">Ver Catálogo y Comprar</a>
+    <!-- 1. NAVBAR INTELIGENTE -->
+    <header class="landing-navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <i></i> Moto Altiplano
+            </a>
+            <nav class="nav-links">
+                <a href="#modelos">Catálogo</a>
+                <a href="#estilos">Estilos</a>
+                <a href="#financiamiento">Financiamiento</a>
+            </nav>
+            <div class="nav-actions" id="nav-actions">
+                <!-- Se llena con JS -->
+            </div>
+        </div>
     </header>
 
-    <main class="landing-catalog">
-        <h2 style="text-align:center; font-size:2.2rem; margin-bottom:2.5rem; color:var(--ink);">Modelos Destacados</h2>
-        <div class="gallery" id="public-gallery">
-            <p class="muted" style="text-align:center; grid-column: 1/-1;">Cargando catálogo...</p>
+    <!-- 2. HERO SECTION -->
+    <section class="hero-section">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content reveal">
+            <div class="hero-badge">
+                <span class="badge-dot"></span> La mejor experiencia de compra
+            </div>
+            <h1>LA MOTO QUE BUSCAS,<br><span>LA TENEMOS</span></h1>
+            <p>Encuentra, compara y compra tu nueva moto con las mejores opciones de financiamiento del mercado peruano.</p>
+            
+            <!-- Buscador Premium -->
+            <div class="hero-search">
+                <div class="search-input-wrapper">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="hero-search-input" placeholder="Busca por marca, modelo o estilo...">
+                </div>
+                <button class="btn btn-primary" id="hero-search-btn">Buscar Moto</button>
+            </div>
+            
+            <div class="hero-tags">
+                <span>Populares:</span>
+                <a href="#" class="hero-tag" data-search="Honda">Honda</a>
+                <a href="#" class="hero-tag" data-search="Yamaha">Yamaha</a>
+                <a href="#" class="hero-tag" data-search="Bajaj">Bajaj</a>
+                <a href="#" class="hero-tag" data-search="Hero">Hero</a>
+            </div>
         </div>
-    </main>
 
-    <footer>
-        &copy; 2026 Moto Altiplano. Todos los derechos reservados.
+        <!-- Trust Badges flotantes -->
+        <div class="trust-badges reveal delay-2">
+            <div class="trust-item">
+                <span class="trust-icon">🛡️</span>
+                <div>
+                    <b>Garantía Oficial</b>
+                    <small>En todas nuestras motos</small>
+                </div>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">💳</span>
+                <div>
+                    <b>Financiamiento</b>
+                    <small>Cuotas a tu medida</small>
+                </div>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">🔧</span>
+                <div>
+                    <b>Servicio Técnico</b>
+                    <small>Mantenimiento especializado</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. SECCIÓN DE ESTILOS -->
+    <section id="estilos" class="section-container">
+        <div class="section-header reveal">
+            <span class="section-subtitle">NUESTRAS CATEGORÍAS</span>
+            <h2>Encuentra tu estilo de conducción</h2>
+            <p class="muted">Selecciona el tipo de moto que mejor se adapte a tu día a día.</p>
+        </div>
+        <div class="style-grid reveal delay-1">
+            <a href="/cliente/#catalogo" class="style-card">
+                <div class="style-icon-wrapper"><span class="style-icon">🛵</span></div>
+                <h3>Scooter</h3>
+                <p>Urbanas y ágiles</p>
+            </a>
+            <a href="/cliente/#catalogo" class="style-card">
+                <div class="style-icon-wrapper"><span class="style-icon">🏍️</span></div>
+                <h3>Naked</h3>
+                <p>Potencia y estilo</p>
+            </a>
+            <a href="/cliente/#catalogo" class="style-card">
+                <div class="style-icon-wrapper"><span class="style-icon">🏁</span></div>
+                <h3>Deportiva</h3>
+                <p>Velocidad y adrenalina</p>
+            </a>
+            <a href="/cliente/#catalogo" class="style-card">
+                <div class="style-icon-wrapper"><span class="style-icon">⛰️</span></div>
+                <h3>Todo Terreno</h3>
+                <p>Para cualquier camino</p>
+            </a>
+            <a href="/cliente/#catalogo" class="style-card">
+                <div class="style-icon-wrapper"><span class="style-icon">🛣️</span></div>
+                <h3>Cruiser</h3>
+                <p>Viajes largos</p>
+            </a>
+            <a href="/cliente/#catalogo" class="style-card">
+                <div class="style-icon-wrapper"><span class="style-icon">✨</span></div>
+                <h3>Ver todas</h3>
+                <p>Explora el catálogo</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- 4. MODELOS DESTACADOS -->
+    <section id="modelos" class="section-container bg-alt">
+        <div class="section-header reveal">
+            <span class="section-subtitle">CATÁLOGO DESTACADO</span>
+            <h2>Las motos más buscadas</h2>
+            <p class="muted">Calidad, rendimiento y el mejor precio garantizado.</p>
+        </div>
+        <div class="gallery reveal delay-1" id="featured-gallery">
+            <p class="muted" style="grid-column: 1/-1; text-align: center; padding: 3rem;">Cargando catálogo...</p>
+        </div>
+        <div class="reveal delay-2" style="text-align: center; margin-top: 3rem;">
+            <a href="/cliente/#catalogo" class="btn btn-outline">Ver catálogo completo</a>
+        </div>
+    </section>
+
+    <!-- 5. FINANCIAMIENTO -->
+    <section id="financiamiento" class="section-container financing-section">
+        <div class="financing-content reveal">
+            <span class="section-subtitle">FINANCIAMIENTO FÁCIL</span>
+            <h2>Tú sí puedes tener una moto nueva</h2>
+            <p>No dejes que el presupuesto te detenga. Te ofrecemos planes de financiamiento flexibles, aprobación rápida y 100% digital.</p>
+            <ul class="financing-list">
+                <li><span class="check-icon">✓</span> Aprobación en minutos</li>
+                <li><span class="check-icon">✓</span> Cuotas fijas sin sorpresas</li>
+                <li><span class="check-icon">✓</span> Simula tu crédito sin compromiso</li>
+            </ul>
+            <a href="/login.html?comprar=true" class="btn btn-primary">Simular crédito ahora</a>
+        </div>
+        <div class="financing-visual reveal delay-1">
+            <div class="financing-image">
+                <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=600&auto=format&fit=crop" alt="Financiamiento de motos">
+            </div>
+            <!-- Tarjeta flotante de simulación -->
+            <div class="floating-card">
+                <div class="fc-header">
+                    <span>Cuota estimada</span>
+                    <span class="fc-badge">Mensual</span>
+                </div>
+                <div class="fc-price">S/ 299<span>/mes</span></div>
+                <div class="fc-footer">
+                    <small>Hasta 36 meses</small>
+                    <small>TEA 15%</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. FOOTER -->
+    <footer class="landing-footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h3><i></i> Moto Altiplano</h3>
+                <p>La plataforma digital que te ayuda a encontrar, comparar y comprar tu moto nueva en Perú.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Navegación</h4>
+                <a href="#modelos">Catálogo</a>
+                <a href="#estilos">Estilos</a>
+                <a href="#financiamiento">Financiamiento</a>
+            </div>
+            <div class="footer-links">
+                <h4>Atención al Cliente</h4>
+                <a href="#">WhatsApp: +51 922 681 908</a>
+                <a href="#">Email: hola@motoaltiplano.pe</a>
+                <a href="#">Lunes a Sábado: 9am - 7pm</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Moto Altiplano. Todos los derechos reservados.</p>
+            <div class="footer-legal">
+                <a href="#">Términos y Condiciones</a>
+                <a href="#">Política de Privacidad</a>
+            </div>
+        </div>
     </footer>
 
-    <script src="assets/js/core.js"></script>
+    <script src="/assets/js/core.js"></script>
     <script>
-        // Si el usuario ya está logueado, el botón lo lleva directo a SU panel (Admin, trabajador o cliente)
+        // 1. Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) navbar.classList.add('scrolled');
+            else navbar.classList.remove('scrolled');
+        });
+
+        // 2. Lógica de sesión
+        const navActions = document.getElementById('nav-actions');
         if (session.user && session.token) {
-            const rol = session.user.rol;
-            const panelUrl = HOME[rol]; // HOME está definido en core.js
-            document.getElementById('nav-btn').textContent = `Mi Panel`;
-            document.getElementById('nav-btn').href = panelUrl;
-            document.getElementById('hero-btn').textContent = 'Ir a mi cuenta';
-            document.getElementById('hero-btn').href = panelUrl;
+            navActions.innerHTML = `<a href="${HOME[session.user.rol]}" class="btn btn-primary">Mi Panel</a>`;
+        } else {
+            navActions.innerHTML = `<a href="/login.html" class="btn btn-outline">Iniciar Sesión</a>`;
         }
 
-        // Cargar motos públicamente para mostrarlas en la portada
-        async function loadPublicCatalog() {
-            try {
-                const ms = await api('/motos'); // No requiere token
-                const gallery = document.getElementById('public-gallery');
-                
-                if(ms.length === 0) return gallery.innerHTML = '<p class="muted">No hay motos disponibles.</p>';
+        // 3. Buscador
+        const heroSearchInput = document.getElementById('hero-search-input');
+        const heroSearchBtn = document.getElementById('hero-search-btn');
+        
+        function ejecutarBusqueda() {
+            const term = heroSearchInput.value.trim();
+            if (term) sessionStorage.setItem('busqueda_inicial', term);
+            location.href = `/cliente/#catalogo`; 
+        }
 
-                gallery.innerHTML = ms.slice(0, 4).map(m => `
-                    <article class="card moto-card" style="padding:0; overflow:hidden; display:flex; flex-direction:column;">
-                        <div class="moto-img-container" style="height:220px;">
-                            <img src="${m.imagen || 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600&auto=format&fit=crop'}" class="moto-img" alt="${m.modelo}">
+        heroSearchBtn.onclick = ejecutarBusqueda;
+        heroSearchInput.onkeypress = (e) => { if (e.key === 'Enter') ejecutarBusqueda(); };
+
+        document.querySelectorAll('.hero-tag').forEach(tag => {
+            tag.onclick = (e) => {
+                e.preventDefault();
+                sessionStorage.setItem('busqueda_inicial', tag.dataset.search);
+                location.href = '/cliente/#catalogo';
+            };
+        });
+
+        // 4. Scroll Reveal Animations (Intersection Observer)
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // 5. Cargar destacados
+        async function cargarModelosDestacados() {
+            const gallery = document.getElementById('featured-gallery');
+            const IMAGEN_FALLBACK = 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600&auto=format&fit=crop';
+            
+            try {
+                const motos = await api('/motos');
+                if (motos.length === 0) {
+                    gallery.innerHTML = '<p class="muted">No hay motos disponibles por ahora.</p>';
+                    return;
+                }
+                const destacadas = motos.slice(0, 4);
+                gallery.innerHTML = destacadas.map(m => {
+                    const imgUrl = m.imagen ? m.imagen : IMAGEN_FALLBACK;
+                    return `
+                    <article class="card moto-card" onclick="location.href='/cliente/#catalogo'">
+                        <div class="moto-img-container">
+                            <img src="${imgUrl}" class="moto-img" alt="${esc(m.marca)} ${esc(m.modelo)}" onerror="this.onerror=null; this.src='${IMAGEN_FALLBACK}';">
+                            <div class="moto-badge">${m.cc} cc</div>
                         </div>
-                        <div style="padding: 1.5rem; display:flex; flex-direction:column; gap:0.4rem; flex:1;">
-                            <span class="muted" style="font-size:0.8rem; text-transform:uppercase; letter-spacing:1px; font-weight:700;">${m.marca}</span>
-                            <h2 style="margin:0; font-size:1.3rem;">${m.modelo}</h2>
-                            <span class="price" style="margin-top:auto; color:var(--gold-h)">${money(m.precio, m.moneda)}</span>
-                            
-                            <!-- AQUÍ TAMBIÉN CAMBIAMOS LAS TARJETAS PARA QUE VAYAN A /cliente/ -->
-                            <a href="/cliente/" class="btn" style="width:100%; text-align:center; margin-top:0.5rem;">Comprar ahora</a>
+                        <div class="moto-info">
+                            <div class="moto-header">
+                                <span class="moto-brand">${esc(m.marca)}</span>
+                                <span class="moto-year">${m.anio}</span>
+                            </div>
+                            <h3 class="moto-model">${esc(m.modelo)}</h3>
+                            <p class="moto-specs">${esc(m.tipo)}</p>
+                            <div class="moto-footer">
+                                <span class="moto-price">${money(m.precio, m.moneda)}</span>
+                                <span class="btn btn-buy">Ver más</span>
+                            </div>
                         </div>
                     </article>
-                `).join('');
-            } catch (e) { console.error("Error cargando catálogo:", e); }
+                    `;
+                }).join('');
+            } catch (e) {
+                console.error("Error cargando destacados:", e);
+                gallery.innerHTML = '<p class="err">Error al cargar los modelos.</p>';
+            }
         }
-        
-        loadPublicCatalog();
+        cargarModelosDestacados();
     </script>
 </body>
 </html>
