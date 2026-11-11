@@ -1,15 +1,15 @@
 {
   "hosting": {
-    "public": "frontend",
+    "public": "frontend/assets/react-app/dist",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
     ],
-    "headers": [
+    "rewrites": [
       {
-        "source": "**/*.@(js|css|html)",
-        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+        "source": "**",
+        "destination": "/index.html"
       }
     ]
   }
