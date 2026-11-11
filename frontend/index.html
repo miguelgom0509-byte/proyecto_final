@@ -3,8 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#07121C">
     <title>Henvi · Motos nuevas, stock real y crédito simulado</title>
-    <meta name="description" content="Compara motos nuevas, revisa cuántas unidades hay en stock, simula tu cuota y pide la tuya en línea.">
+    <meta name="description" content="Compara motos nuevas, revisa stock real, simula tu cuota y solicita la tuya en línea. Financiamiento y SOAT disponibles.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
@@ -22,37 +23,82 @@
             <nav class="nav-links" aria-label="Principal">
                 <a href="#estilos">Tipos de moto</a>
                 <a href="#modelos">Modelos</a>
+                <a href="#comparador">Comparador</a>
+                <a href="#beneficios">Beneficios</a>
                 <a href="#simulador">Simulador</a>
+                <a href="#faq">FAQ</a>
             </nav>
             <div class="nav-actions" id="nav-actions"></div>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menú" aria-expanded="false">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
         </div>
     </header>
 
     <main>
+        <!-- ==============================================
+             HERO SECTION (Unificada)
+             ============================================== -->
         <section class="hero">
-            <img class="hero-bg" src="/recursos/image/fondo.jpeg" alt="Dos motos nuevas bajo luces azules: una deportiva Polux y una naked Bajaj Pulsar, con el letrero de Henvi al centro" fetchpriority="high">
+            <img class="hero-bg" src="/recursos/image/fondo.jpeg" alt="Dos motos nuevas bajo luces azules" fetchpriority="high">
             <div class="hero-shade"></div>
 
             <div class="wrap hero-main">
                 <div class="hero-inner">
-                    <h1>Encuentra tu&nbsp;moto.<br>Pídela hoy.</h1>
-                    <p class="hero-lead">Compara modelos, mira cuántas unidades hay en stock y envía tu solicitud sin salir de casa.</p>
+                    <span class="hero-badge">🏁 Distribuidor oficial · Perú</span>
+                    
+                    <h1>Encuentra tu moto.<br>Pídela hoy.</h1>
+                    <p class="hero-lead">Compara modelos, filtra por cilindrada y precio, revisa el stock y simula tu cuota al instante.</p>
 
-                    <form class="hero-search" id="hero-search" role="search">
-                        <label>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                            <span style="position:absolute;left:-999px;">Buscar moto</span>
-                            <input type="search" id="hero-search-input" placeholder="Marca, modelo o tipo" autocomplete="off">
-                        </label>
-                        <button class="btn" type="submit" id="hero-search-btn">Buscar moto</button>
-                    </form>
+                    <!-- Panel Unificado de Búsqueda y Filtros -->
+                    <div class="search-widget">
+                        <!-- Buscador por texto -->
+                        <form class="hero-search" id="hero-search" role="search">
+                            <label>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <span style="position:absolute;left:-999px;">Buscar moto</span>
+                                <input type="search" id="hero-search-input" placeholder="Busca por marca, modelo o tipo..." autocomplete="off">
+                            </label>
+                            <button class="btn" type="submit" id="hero-search-btn">Buscar</button>
+                        </form>
+
+                        <div class="search-divider"></div>
+
+                        <!-- Filtros Rápidos -->
+                        <div class="quick-filters" id="quick-filters">
+                            <div class="qf-group">
+                                <label for="qf-tipo">Tipo</label>
+                                <select id="qf-tipo" aria-label="Filtrar por tipo">
+                                    <option value="">Todos</option>
+                                </select>
+                            </div>
+                            <div class="qf-group">
+                                <label for="qf-cc">Cilindrada</label>
+                                <select id="qf-cc" aria-label="Filtrar por cilindrada">
+                                    <option value="">Todas</option>
+                                    <option value="0-150">Hasta 150 cc</option>
+                                    <option value="151-250">151 – 250 cc</option>
+                                    <option value="251-400">251 – 400 cc</option>
+                                    <option value="401-9999">Más de 400 cc</option>
+                                </select>
+                            </div>
+                            <div class="qf-group">
+                                <label for="qf-precio">Precio máximo</label>
+                                <select id="qf-precio" aria-label="Filtrar por precio máximo">
+                                    <option value="">Cualquiera</option>
+                                    <option value="2000">Hasta US$ 2,000</option>
+                                    <option value="3500">Hasta US$ 3,500</option>
+                                    <option value="5000">Hasta US$ 5,000</option>
+                                    <option value="10000">Hasta US$ 10,000</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-filter" id="qf-aplicar" type="button">Filtrar</button>
+                        </div>
+                    </div>
 
                     <div class="hero-tags" id="hero-tags">
-                        <span>Marcas:</span>
-                        <button type="button" class="chip" data-search="Honda">Honda</button>
-                        <button type="button" class="chip" data-search="Yamaha">Yamaha</button>
-                        <button type="button" class="chip" data-search="Bajaj">Bajaj</button>
-                        <button type="button" class="chip" data-search="Hero">Hero</button>
+                        <span>Marcas populares:</span>
+                        <!-- Se llena dinámicamente -->
                     </div>
                 </div>
             </div>
@@ -61,7 +107,7 @@
                 <div class="hero-facts">
                     <div class="fact">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"/><polyline points="3.3 7 12 12 20.7 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>
-                        <div><b id="fact-stock">Stock actualizado</b><span id="fact-modelos">Catálogo en línea</span></div>
+                        <div><b id="fact-stock" data-count="0">Stock actualizado</b><span id="fact-modelos">Catálogo en línea</span></div>
                     </div>
                     <div class="fact">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
@@ -77,28 +123,36 @@
                     </div>
                 </div>
             </div>
+
+            <a href="#estilos" class="scroll-indicator" aria-label="Descubre más">
+                <span>Descubre más</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </a>
         </section>
 
+        <!-- ==============================================
+             TIPOS DE MOTO (Grid Visual)
+             ============================================== -->
         <section id="estilos" class="section">
             <div class="wrap">
-                <div class="section-head">
+                <div class="section-head reveal">
                     <div>
                         <h2>¿Qué tipo de moto buscas?</h2>
                         <p>Elige un tipo y te llevamos al catálogo con ese filtro aplicado.</p>
                     </div>
                 </div>
-                <ul class="style-list" id="style-list">
-                    <li><button class="style-row" type="button" data-tipo="Scooter"><span class="style-name">Scooter</span></button></li>
-                    <li><button class="style-row" type="button" data-tipo="Naked"><span class="style-name">Naked</span></button></li>
-                    <li><button class="style-row" type="button" data-tipo="Utilitaria"><span class="style-name">Utilitaria</span></button></li>
-                    <li><button class="style-row" type="button" data-tipo=""><span class="style-name">Ver todas</span></button></li>
+                <ul class="style-grid reveal" id="style-list">
+                    <li><button class="style-card" disabled><div class="style-card-content"><span class="style-name">Cargando...</span></div></button></li>
                 </ul>
             </div>
         </section>
 
+        <!-- ==============================================
+             MODELOS DESTACADOS
+             ============================================== -->
         <section id="modelos" class="section modelos">
             <div class="wrap">
-                <div class="section-head">
+                <div class="section-head reveal">
                     <div>
                         <h2>Modelos disponibles ahora</h2>
                         <p>Primero las que tienen stock. Toca una moto para ver su ficha técnica.</p>
@@ -111,15 +165,136 @@
             </div>
         </section>
 
+        <!-- ==============================================
+             COMPARADOR DE MODELOS
+             ============================================== -->
+        <section id="comparador" class="section comparador">
+            <div class="wrap">
+                <div class="section-head reveal">
+                    <div>
+                        <h2>Compara hasta 3 modelos</h2>
+                        <p>Selecciona las motos que te interesan y mira sus especificaciones lado a lado.</p>
+                    </div>
+                </div>
+
+                <div class="comparador-grid">
+                    <div class="comparador-selector" id="comparador-selector">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                    <div class="comparador-tabla-wrapper reveal" id="comparador-tabla-wrapper">
+                        <p class="muted" style="text-align:center; padding:2rem;">Selecciona al menos 2 motos para comparar.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             BENEFICIOS
+             ============================================== -->
+        <section id="beneficios" class="section beneficios">
+            <div class="wrap">
+                <div class="section-head reveal">
+                    <div>
+                        <h2>¿Por qué elegir Henvi?</h2>
+                        <p>Más que un concesionario: un aliado para tu movilidad.</p>
+                    </div>
+                </div>
+                <div class="benefits-grid">
+                    <article class="benefit-card reveal">
+                        <div class="benefit-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                        </div>
+                        <h3>Garantía oficial</h3>
+                        <p>Todas nuestras motos vienen con garantía de fábrica y respaldo técnico certificado.</p>
+                    </article>
+                    <article class="benefit-card reveal">
+                        <div class="benefit-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                        </div>
+                        <h3>Financiamiento flexible</h3>
+                        <p>Cuotas desde 12 hasta 48 meses, con o sin inicial. Simula antes de decidir.</p>
+                    </article>
+                    <article class="benefit-card reveal">
+                        <div class="benefit-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 7h-3V5a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3v2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M7 7V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2"/></svg>
+                        </div>
+                        <h3>Stock en tiempo real</h3>
+                        <p>Consulta unidades disponibles al instante. Sin sorpresas, sin esperas innecesarias.</p>
+                    </article>
+                    <article class="benefit-card reveal">
+                        <div class="benefit-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <h3>Entrega rápida</h3>
+                        <p>Coordinamos la entrega de tu moto en el menor tiempo posible, con seguimiento en línea.</p>
+                    </article>
+                    <article class="benefit-card reveal">
+                        <div class="benefit-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                        </div>
+                        <h3>Servicio técnico</h3>
+                        <p>Taller especializado con repuestos originales y mecánicos certificados por marca.</p>
+                    </article>
+                    <article class="benefit-card reveal">
+                        <div class="benefit-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        </div>
+                        <h3>Asesoría personalizada</h3>
+                        <p>Te ayudamos a elegir la moto ideal según tu presupuesto y estilo de vida.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             PROCESO
+             ============================================== -->
+        <section class="section proceso">
+            <div class="wrap">
+                <div class="section-head reveal">
+                    <div>
+                        <h2>Comprar tu moto en 3 pasos</h2>
+                        <p>Sin filas, sin papeleo innecesario. Así de simple.</p>
+                    </div>
+                </div>
+                <ol class="steps">
+                    <li class="step reveal">
+                        <span class="step-num">01</span>
+                        <div class="step-body">
+                            <h3>Explora y compara</h3>
+                            <p>Filtra por tipo, cilindrada o precio. Compara especificaciones lado a lado y elige la que más te convenga.</p>
+                        </div>
+                    </li>
+                    <li class="step reveal">
+                        <span class="step-num">02</span>
+                        <div class="step-body">
+                            <h3>Simula tu cuota</h3>
+                            <p>Elige la moto, define tu inicial y el plazo. Mira tu cuota mensual estimada al instante.</p>
+                        </div>
+                    </li>
+                    <li class="step reveal">
+                        <span class="step-num">03</span>
+                        <div class="step-body">
+                            <h3>Envía tu solicitud</h3>
+                            <p>Crea tu cuenta, envía la solicitud y un asesor te contactará para coordinar la entrega.</p>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             SIMULADOR
+             ============================================== -->
         <section id="simulador" class="section sim">
             <div class="wrap sim-grid">
-                <div>
+                <div class="reveal">
                     <h2>Calcula tu cuota antes de pedir</h2>
                     <p class="sim-intro">Elige la moto, cuánto puedes dar de inicial y en cuántos meses quieres pagar. La cuota se actualiza al instante.</p>
                     <p class="sim-nota">Simulación referencial con TEA de 15 % y tipo de cambio de S/ 3.75 por dólar. No incluye seguros ni gastos administrativos. La cuota final la confirma el asesor.</p>
                 </div>
 
-                <div class="sim-panel">
+                <div class="sim-panel reveal">
                     <form id="sim-form" onsubmit="return false">
                         <label class="campo">
                             <span>Moto</span>
@@ -149,44 +324,185 @@
                             <div><dt>Inicial</dt><dd id="sim-r-inicial">S/ 0</dd></div>
                             <div><dt>Monto a financiar</dt><dd id="sim-r-financiar">S/ 0</dd></div>
                         </dl>
+                        <details class="sim-detalle">
+                            <summary>Ver resumen del crédito</summary>
+                            <dl class="desglose" style="margin-top:.85rem;">
+                                <div><dt>Total a pagar</dt><dd id="sim-r-total">S/ 0</dd></div>
+                                <div><dt>Total intereses</dt><dd id="sim-r-interes">S/ 0</dd></div>
+                            </dl>
+                        </details>
                         <a href="/cliente/#catalogo" class="btn" id="sim-pedir">Pedir esta moto</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             SOAT
+             ============================================== -->
+        <section class="section soat">
+            <div class="wrap">
+                <div class="soat-card reveal">
+                    <div class="soat-content">
+                        <span class="soat-badge">🛡️ SOAT digital</span>
+                        <h2>Protege tu moto con SOAT al instante</h2>
+                        <p>Obtén tu SOAT 100 % digital en minutos. Cobertura nacional, sin trámites presenciales.</p>
+                        <a href="https://wa.me/51922681908?text=Quiero%20comprar%20SOAT%20para%20mi%20moto" 
+                           class="btn btn-soat" target="_blank" rel="noopener">
+                           Cotizar SOAT por WhatsApp
+                        </a>
+                    </div>
+                    <div class="soat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="120" height="120">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <polyline points="9 12 11 14 15 10"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             TESTIMONIOS
+             ============================================== -->
+        <section class="section testimonios">
+            <div class="wrap">
+                <div class="section-head reveal">
+                    <div>
+                        <h2>Lo que dicen nuestros clientes</h2>
+                        <p>Más de 500 peruanos ya encontraron su moto ideal con Henvi.</p>
+                    </div>
+                </div>
+                <div class="testimonials-grid">
+                    <article class="testimonial reveal">
+                        <div class="stars">★★★★★</div>
+                        <blockquote>"El proceso fue rapidísimo. Elegí mi Honda, simulé la cuota y en 3 días ya tenía la moto en mi casa."</blockquote>
+                        <footer>
+                            <div class="avatar-sm">CM</div>
+                            <div><strong>Carlos M.</strong><small>Cliente · Lima</small></div>
+                        </footer>
+                    </article>
+                    <article class="testimonial reveal">
+                        <div class="stars">★★★★★</div>
+                        <blockquote>"Lo que más me gustó fue ver el stock real. No tuve que ir al concesionario para saber si había la moto que quería."</blockquote>
+                        <footer>
+                            <div class="avatar-sm">LR</div>
+                            <div><strong>Lucía R.</strong><small>Cliente · Arequipa</small></div>
+                        </footer>
+                    </article>
+                    <article class="testimonial reveal">
+                        <div class="stars">★★★★★</div>
+                        <blockquote>"Excelente asesoría. Me ayudaron a elegir la moto según mi presupuesto y el financiamiento fue muy claro."</blockquote>
+                        <footer>
+                            <div class="avatar-sm">JP</div>
+                            <div><strong>Jorge P.</strong><small>Cliente · Cusco</small></div>
+                        </footer>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             FAQ
+             ============================================== -->
+        <section id="faq" class="section faq">
+            <div class="wrap">
+                <div class="section-head reveal">
+                    <div>
+                        <h2>Preguntas frecuentes</h2>
+                        <p>Todo lo que necesitas saber antes de pedir tu moto.</p>
+                    </div>
+                </div>
+                <div class="faq-list reveal">
+                    <details>
+                        <summary>¿Cómo sé si la moto tiene stock?</summary>
+                        <p>Cada tarjeta muestra el stock en tiempo real: "Disponible", "Últimas unidades" o "Agotada". También puedes ver las unidades exactas en la ficha técnica.</p>
+                    </details>
+                    <details>
+                        <summary>¿La simulación de cuota es vinculante?</summary>
+                        <p>No. La simulación es referencial (TEA 15 %, tipo de cambio S/ 3.75). La cuota final la confirma un asesor según tu perfil crediticio.</p>
+                    </details>
+                    <details>
+                        <summary>¿Necesito crear una cuenta para pedir una moto?</summary>
+                        <p>Sí. Puedes explorar el catálogo como invitado, pero para enviar una solicitud necesitas registrarte. Es gratis y solo toma un minuto.</p>
+                    </details>
+                    <details>
+                        <summary>¿Cuánto demora la entrega?</summary>
+                        <p>Entre 3 y 7 días hábiles dependiendo de la ciudad. Coordinamos contigo la fecha y lugar exactos una vez confirmado el pedido.</p>
+                    </details>
+                    <details>
+                        <summary>¿Puedo dar mi moto actual en parte de pago?</summary>
+                        <p>Sí, trabajamos con retoma. Un asesor evalúa tu moto y te ofrece un valor para descontarlo del precio final.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             CTA FINAL
+             ============================================== -->
+        <section class="section cta-final">
+            <div class="wrap">
+                <div class="cta-box reveal">
+                    <h2>¿Listo para tu próxima moto?</h2>
+                    <p>Explora el catálogo, compara modelos, simula tu cuota y envía tu solicitud en menos de 5 minutos.</p>
+                    <div class="cta-actions">
+                        <a href="/cliente/#catalogo" class="btn">Ver catálogo</a>
+                        <a href="/login.html" class="btn btn-line" style="border-color:#fff; color:#fff;">Crear cuenta</a>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
+    <!-- ==============================================
+         FOOTER
+         ============================================== -->
     <footer class="landing-footer">
         <div class="wrap">
             <div class="footer-grid">
                 <div class="footer-brand">
                     <h3>HENVI</h3>
                     <p>Plataforma para encontrar, comparar y pedir tu moto nueva en Perú.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Facebook"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+                        <a href="#" aria-label="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="18" cy="6" r="1" fill="currentColor"/></svg></a>
+                        <a href="https://wa.me/51922681908" aria-label="WhatsApp" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
+                    </div>
                 </div>
                 <div class="footer-links">
                     <h4>Navegación</h4>
                     <a href="#estilos">Tipos de moto</a>
                     <a href="#modelos">Modelos</a>
+                    <a href="#comparador">Comparador</a>
                     <a href="#simulador">Simulador</a>
                     <a href="/login.html">Ingresar</a>
                 </div>
-                <div class="footer-links">
-                    <h4>Atención al cliente</h4>
-                    <a href="https://wa.me/51922681908" rel="noopener">WhatsApp +51 922 681 908</a>
-                    <a href="mailto:hola@henvi.pe">hola@henvi.pe</a>
-                    <span>Lunes a sábado, de 9 a. m. a 7 p. m.</span>
+                <div class="footer-newsletter">
+                    <h4>Recibe ofertas</h4>
+                    <p>Promociones y nuevos modelos directo a tu correo.</p>
+                    <form id="newsletter-form">
+                        <input type="email" placeholder="tu@correo.com" required>
+                        <button type="submit" aria-label="Suscribirme">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        </button>
+                    </form>
                 </div>
             </div>
             <div class="footer-bottom">
                 <p style="margin:0;">&copy; 2026 Henvi. Todos los derechos reservados.</p>
+                <div class="footer-contact">
+                    <a href="https://wa.me/51922681908" rel="noopener">WhatsApp +51 922 681 908</a>
+                    <a href="mailto:hola@henvi.pe">hola@henvi.pe</a>
+                </div>
             </div>
         </div>
     </footer>
 
     <script src="/assets/js/core.js"></script>
     <script>
-        const TIPO_CAMBIO = 3.75;   // S/ por US$ (referencial)
-        const TEA = 0.15;           // tasa efectiva anual (referencial)
+        const TIPO_CAMBIO = 3.75;
+        const TEA = 0.15;
         const IMG_FALLBACK = '/recursos/image/logo.jpeg';
         const $id = id => document.getElementById(id);
 
@@ -201,27 +517,95 @@
         window.addEventListener('scroll', alScroll, { passive: true });
         alScroll();
 
-        // --- Ir al catálogo con una búsqueda ya aplicada ---
-        function irAlCatalogo(texto) {
-            const t = (texto || '').trim();
-            try { t ? sessionStorage.setItem('busqueda_inicial', t) : sessionStorage.removeItem('busqueda_inicial'); } catch { /* sin storage */ }
+        // --- Menú móvil ---
+        const navToggle = $id('nav-toggle');
+        if (navToggle) {
+            navToggle.onclick = () => {
+                const abierto = navbar.classList.toggle('menu-abierto');
+                navToggle.setAttribute('aria-expanded', abierto);
+            };
+            document.querySelectorAll('.nav-links a').forEach(a => a.onclick = () => {
+                navbar.classList.remove('menu-abierto');
+                navToggle.setAttribute('aria-expanded', 'false');
+            });
+        }
+
+        // --- Scroll reveal ---
+        const io = 'IntersectionObserver' in window
+            ? new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('visible');
+                        io.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.12 })
+            : null;
+        document.querySelectorAll('.reveal').forEach(el => io ? io.observe(el) : el.classList.add('visible'));
+
+        // --- Ir al catálogo con filtros ---
+        function irAlCatalogo(filtros = {}) {
+            try {
+                if (filtros.texto) sessionStorage.setItem('busqueda_inicial', filtros.texto);
+                if (filtros.tipo) sessionStorage.setItem('filtro_tipo', filtros.tipo);
+                if (filtros.cc) sessionStorage.setItem('filtro_cc', filtros.cc);
+                if (filtros.precio) sessionStorage.setItem('filtro_precio', filtros.precio);
+            } catch {}
             location.href = '/cliente/#catalogo';
         }
 
-        $id('hero-search').onsubmit = e => { e.preventDefault(); irAlCatalogo($id('hero-search-input').value); };
+        // --- Filtros rápidos del hero ---
+        $id('qf-aplicar').onclick = () => {
+            irAlCatalogo({
+                tipo: $id('qf-tipo').value,
+                cc: $id('qf-cc').value,
+                precio: $id('qf-precio').value,
+            });
+        };
+
+        // --- Buscador por texto ---
+        $id('hero-search').onsubmit = e => { e.preventDefault(); irAlCatalogo({ texto: $id('hero-search-input').value }); };
+        
         document.addEventListener('click', e => {
             const chip = e.target.closest('[data-search]');
-            if (chip) irAlCatalogo(chip.dataset.search);
-            const fila = e.target.closest('.style-row');
-            if (fila) irAlCatalogo(fila.dataset.tipo);
+            if (chip) irAlCatalogo({ texto: chip.dataset.search });
+            
+            const tarjetaTipo = e.target.closest('.style-card');
+            if (tarjetaTipo && tarjetaTipo.dataset.tipo !== undefined) irAlCatalogo({ tipo: tarjetaTipo.dataset.tipo });
         });
+
+        // --- Newsletter (demo) ---
+        const nlForm = $id('newsletter-form');
+        if (nlForm) {
+            nlForm.onsubmit = e => {
+                e.preventDefault();
+                const input = nlForm.querySelector('input');
+                if (!input.value || !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(input.value)) {
+                    alert('Ingresa un correo válido'); return;
+                }
+                alert('¡Gracias! Te avisaremos de nuestras ofertas.');
+                input.value = '';
+            };
+        }
+
+        // --- Contador animado ---
+        function animarContador(el, fin, sufijo = '') {
+            const inicio = 0, dur = 1200, t0 = performance.now();
+            const paso = t => {
+                const p = Math.min((t - t0) / dur, 1);
+                const val = Math.round(inicio + (fin - inicio) * (1 - Math.pow(1 - p, 3)));
+                el.textContent = val + sufijo;
+                if (p < 1) requestAnimationFrame(paso);
+            };
+            requestAnimationFrame(paso);
+        }
 
         // --- Tarjeta de moto ---
         function tarjeta(m) {
             const flag = m.stock < 1 ? '<span class="moto-flag">Agotada</span>'
                        : m.stock <= 3 ? `<span class="moto-flag poco">Quedan ${m.stock}</span>` : '';
             return `
-            <a class="moto-card" href="/cliente/#ficha/${m.id}">
+            <a class="moto-card reveal" href="/cliente/#ficha/${m.id}">
                 <div class="moto-media">
                     ${flag}
                     <img class="moto-img" src="${esc(m.imagen || IMG_FALLBACK)}" alt="${esc(m.marca)} ${esc(m.modelo)}" loading="lazy"
@@ -236,7 +620,7 @@
             </a>`;
         }
 
-        // --- Simulador (sistema francés: cuota fija) ---
+        // --- Simulador ---
         const enSoles = m => m.moneda === 'USD' ? m.precio * TIPO_CAMBIO : m.precio;
         let catalogo = [];
 
@@ -246,16 +630,75 @@
             const pct = +$id('sim-inicial').value / 100;
             const n = +document.querySelector('input[name=plazo]:checked').value;
             const precio = enSoles(m), inicial = precio * pct, financiar = precio - inicial;
-            const r = Math.pow(1 + TEA, 1 / 12) - 1;               // tasa mensual equivalente
+            const r = Math.pow(1 + TEA, 1 / 12) - 1;
             const cuota = financiar * r / (1 - Math.pow(1 + r, -n));
+            const total = cuota * n;
+            const interes = total - financiar;
             $id('sim-inicial-out').textContent = Math.round(pct * 100) + ' %';
             $id('sim-cuota').innerHTML = `${money(cuota)}<span>al mes</span>`;
             $id('sim-r-inicial').textContent = money(inicial);
             $id('sim-r-financiar').textContent = money(financiar);
+            $id('sim-r-total').textContent = money(total + inicial);
+            $id('sim-r-interes').textContent = money(interes);
             $id('sim-pedir').href = `/cliente/#ficha/${m.id}`;
         }
 
-        // --- Carga del catálogo real ---
+        // --- Comparador ---
+        let seleccionadas = [];
+
+        function renderComparador() {
+            const cont = $id('comparador-selector');
+            const wrapper = $id('comparador-tabla-wrapper');
+            if (!cont) return;
+
+            cont.innerHTML = catalogo.map(m => `
+                <label class="comp-check">
+                    <input type="checkbox" value="${m.id}" ${seleccionadas.includes(m.id) ? 'checked' : ''}>
+                    <span>${esc(m.marca)} ${esc(m.modelo)}</span>
+                </label>`).join('');
+
+            cont.querySelectorAll('input[type=checkbox]').forEach(chk => {
+                chk.onchange = () => {
+                    const id = +chk.value;
+                    if (chk.checked) {
+                        if (seleccionadas.length >= 3) { chk.checked = false; return; }
+                        seleccionadas.push(id);
+                    } else {
+                        seleccionadas = seleccionadas.filter(x => x !== id);
+                    }
+                    renderComparador();
+                };
+            });
+
+            if (seleccionadas.length < 2) {
+                wrapper.innerHTML = '<p class="muted" style="text-align:center; padding:2rem;">Selecciona al menos 2 motos para comparar.</p>';
+                return;
+            }
+
+            const motos = seleccionadas.map(id => catalogo.find(m => m.id === id)).filter(Boolean);
+            const filas = [
+                ['Marca', m => esc(m.marca)],
+                ['Modelo', m => `<b>${esc(m.modelo)}</b>`],
+                ['Año', m => m.anio],
+                ['Tipo', m => esc(m.tipo)],
+                ['Cilindrada', m => `${m.cc} cc`],
+                ['Precio', m => `<b style="color:var(--azul-vivo)">${money(m.precio, m.moneda)}</b>`],
+                ['Stock', m => m.stock > 0 ? `${m.stock} un.` : 'Agotada'],
+            ];
+
+            wrapper.innerHTML = `
+                <div class="tbl" style="border:none; box-shadow:none;">
+                    <table>
+                        <thead><tr><th>Especificación</th>${motos.map(m => `<th>${esc(m.marca)} ${esc(m.modelo)}</th>`).join('')}</tr></thead>
+                        <tbody>
+                            ${filas.map(([label, fn]) => `<tr><td><b>${label}</b></td>${motos.map(m => `<td>${fn(m)}</td>`).join('')}</tr>`).join('')}
+                            <tr><td></td>${motos.map(m => `<td><a href="/cliente/#ficha/${m.id}" class="btn btn-primary sm">Ver ficha</a></td>`).join('')}</tr>
+                        </tbody>
+                    </table>
+                </div>`;
+        }
+
+        // --- Carga del catálogo ---
         async function iniciar() {
             const galeria = $id('featured-gallery');
             try {
@@ -270,34 +713,68 @@
                 return;
             }
 
-            // Datos en vivo de la barra del hero
+            // Poblar filtros rápidos
+            const tipos = [...new Set(catalogo.map(m => m.tipo))];
+            $id('qf-tipo').innerHTML = '<option value="">Todos</option>' + tipos.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
+
+            // Datos en vivo
             const unidades = catalogo.reduce((t, m) => t + m.stock, 0);
-            $id('fact-stock').textContent = `${unidades} unidad${unidades === 1 ? '' : 'es'} en stock`;
+            const stockEl = $id('fact-stock');
+            stockEl.textContent = '0 unidades en stock';
+            animarContador(stockEl, unidades, ' unidades en stock');
             $id('fact-modelos').textContent = `En ${catalogo.length} modelo${catalogo.length === 1 ? '' : 's'} disponibles`;
 
             // Marcas reales
             const marcas = [...new Set(catalogo.map(m => m.marca))].slice(0, 6);
-            $id('hero-tags').innerHTML = '<span>Marcas:</span>' +
+            $id('hero-tags').innerHTML = '<span>Marcas populares:</span>' +
                 marcas.map(x => `<button type="button" class="chip" data-search="${esc(x)}">${esc(x)}</button>`).join('');
 
-            // Tipos reales con cantidad de modelos
-            const porTipo = catalogo.reduce((o, m) => (o[m.tipo] = (o[m.tipo] || 0) + 1, o), {});
-            $id('style-list').innerHTML = Object.entries(porTipo).map(([t, n]) => `
-                <li><button class="style-row" type="button" data-tipo="${esc(t)}">
-                    <span class="style-name">${esc(t)}</span>
-                    <span class="style-count">${n} modelo${n === 1 ? '' : 's'}</span>
-                </button></li>`).join('') +
-                `<li><button class="style-row" type="button" data-tipo=""><span class="style-name">Ver todas</span><span class="style-count">${catalogo.length} modelos</span></button></li>`;
+            // --- TIPOS DE MOTO CON IMÁGENES ---
+            const IMAGENES_TIPO = {
+                'Scooter': 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600&auto=format&fit=crop',
+                'Naked': 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=600&auto=format&fit=crop',
+                'Utilitaria': 'https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?q=80&w=600&auto=format&fit=crop',
+                'Pistera': 'https://images.unsplash.com/photo-1558980664-10ea292d4342?q=80&w=600&auto=format&fit=crop',
+                'Deportiva': 'https://images.unsplash.com/photo-1558980664-10ea292d4342?q=80&w=600&auto=format&fit=crop'
+            };
+            const getImagenTipo = t => IMAGENES_TIPO[t] || 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600&auto=format&fit=crop';
 
-            // Destacadas: primero las que tienen stock
-            const destacadas = [...catalogo].sort((a, b) => (b.stock > 0) - (a.stock > 0)).slice(0, 4);
+            const porTipo = catalogo.reduce((o, m) => (o[m.tipo] = (o[m.tipo] || 0) + 1, o), {});
+            
+            $id('style-list').innerHTML = Object.entries(porTipo).map(([t, n]) => `
+                <li class="reveal">
+                    <button class="style-card" type="button" data-tipo="${esc(t)}">
+                        <img src="${getImagenTipo(t)}" alt="${esc(t)}" loading="lazy">
+                        <div class="style-card-content">
+                            <span class="style-name">${esc(t)}</span>
+                            <span class="style-count">${n} modelo${n === 1 ? '' : 's'}</span>
+                        </div>
+                    </button>
+                </li>`).join('') +
+                `<li class="reveal">
+                    <button class="style-card style-card-all" type="button" data-tipo="">
+                        <div class="style-card-content">
+                            <span class="style-name">Ver todas</span>
+                            <span class="style-count">${catalogo.length} modelos disponibles</span>
+                        </div>
+                    </button>
+                </li>`;
+            
+            document.querySelectorAll('#style-list .reveal').forEach(el => io ? io.observe(el) : el.classList.add('visible'));
+
+            // Destacadas
+            const destacadas = [...catalogo].sort((a, b) => (b.stock > 0) - (a.stock > 0)).slice(0, 8);
             galeria.innerHTML = destacadas.map(tarjeta).join('');
+            document.querySelectorAll('#featured-gallery .reveal').forEach(el => io ? io.observe(el) : el.classList.add('visible'));
 
             // Simulador
             $id('sim-moto').innerHTML = catalogo.map(m =>
                 `<option value="${m.id}">${esc(m.marca)} ${esc(m.modelo)}, ${esc(money(m.precio, m.moneda))}</option>`).join('');
             $id('sim-form').addEventListener('input', calcular);
             calcular();
+
+            // Comparador
+            renderComparador();
         }
         iniciar();
     </script>
