@@ -8,40 +8,44 @@ mountPanel({ rol: 'trabajador', title: 'Trabajador', sections: [
 
     const pendientes = pedidos.filter(p => p.estado === 'pendiente').length;
     const enProceso = pedidos.filter(p => p.estado === 'en_proceso').length;
-    const bajoStock = motos.filter(m => m.stock <= 3 && m.activo);
+    const bajoStock = motos.filter(m => m.stock <= 3 && m.activo).sort((a, b) => a.stock - b.stock);
 
-    const card = (n, l, icon, color) => `
-      <div class="card stat-card animate-up" style="border-left: 4px solid ${color}; padding: 1.5rem; display: flex; align-items: center; gap: 1.25rem;">
-        <div class="stat-icon" style="color: ${color}; background: ${color}15; width: 55px; height: 55px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 1.8rem;">${icon}</div>
-        <div class="stat-content">
-          <b style="font-size: 2rem; display: block; line-height: 1; margin-bottom: 0.2rem;">${n}</b>
-          <span style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase;">${l}</span>
+    // Reutilizamos la estructura visual de las KPI Cards del Admin
+    const kpiCard = (n, l, iconSvg, colorVar, bgGlow) => `
+      <div class="kpi-card animate-up">
+        <div class="kpi-header">
+          <span class="kpi-label">${l}</span>
+          <div class="kpi-icon" style="color: ${colorVar}; background: ${bgGlow};">${iconSvg}</div>
         </div>
+        <div class="kpi-value">${n}</div>
       </div>`;
 
     v.innerHTML = `
-      <div class="cards" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-        ${card(pendientes, 'Pedidos Pendientes', '⏳', '#F59E0B')}
-        ${card(enProceso, 'Pedidos en Proceso', '⚙️', '#8B5CF6')}
-        ${card(bajoStock.length, 'Motos con Bajo Stock', '⚠️', '#EF4444')}
+      <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 24px;">
+        ${kpiCard(pendientes, 'Pedidos Pendientes', '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>', 'var(--accent-orange)', 'rgba(245, 158, 11, 0.15)')}
+        ${kpiCard(enProceso, 'En Proceso', '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>', 'var(--accent-purple)', 'rgba(139, 92, 246, 0.15)')}
+        ${kpiCard(bajoStock.length, 'Alertas de Stock', '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>', 'var(--accent-red)', 'rgba(239, 68, 68, 0.15)')}
       </div>
 
-      <div class="dashboard-grid" style="grid-template-columns: 1fr; gap: 1.5rem;">
-        <div class="card animate-up delay-1" style="padding:0; overflow:hidden;">
-            <div style="padding: 1.5rem; border-bottom: 1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:1.1rem;">⚠️ Alerta de Inventario</h3>
-                <a href="#inventario" class="btn ghost sm" style="font-size:0.8rem;">Ir a Inventario</a>
+      <div class="dashboard-grid" style="grid-template-columns: 1fr;">
+        <div class="table-card animate-up delay-1">
+            <div class="table-header">
+                <h3 class="table-title" style="color: var(--accent-red); display: flex; align-items: center; gap: 8px;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                  Alerta de Inventario
+                </h3>
+                <a href="#inventario" class="btn btn-ghost btn-sm">Ir a Inventario</a>
             </div>
-            <div style="padding: 1rem;">
+            <div style="padding: 0 24px;">
                 ${bajoStock.length === 0 
-                    ? '<p class="muted" style="text-align:center; padding:2rem 0;">Todo el inventario está en niveles óptimos.</p>' 
+                    ? '<p class="text-muted" style="text-align:center; padding:32px 0;">Todo el inventario está en niveles óptimos.</p>' 
                     : bajoStock.map(m => `
-                        <div class="stock-alert-item" style="display:flex; justify-content:space-between; align-items:center; padding:1rem; border-bottom:1px solid var(--line);">
-                            <div style="display:flex; gap:1rem; align-items:center;">
-                                ${m.imagen ? `<img src="${esc(m.imagen)}" style="width:50px; height:35px; object-fit:cover; border-radius:6px;">` : ''}
+                        <div class="stock-alert-item">
+                            <div style="display:flex; gap:16px; align-items:center;">
+                                ${m.imagen ? `<img src="${esc(m.imagen)}" class="stock-img">` : ''}
                                 <div>
-                                    <b style="display:block; font-size:0.95rem;">${esc(m.marca)} ${esc(m.modelo)}</b>
-                                    <small class="muted">${esc(m.tipo)}</small>
+                                    <b style="display:block; font-size:14px; color:var(--text-primary);">${esc(m.marca)} ${esc(m.modelo)}</b>
+                                    <small style="color:var(--text-secondary);">${esc(m.tipo)}</small>
                                 </div>
                             </div>
                             <span class="tag off">${m.stock} un.</span>
@@ -56,23 +60,31 @@ mountPanel({ rol: 'trabajador', title: 'Trabajador', sections: [
   { id: 'pedidos', label: 'Pedidos', async render(v, again) {
     const ps = await api('/pedidos');
     
-    v.innerHTML = `<h2 class="section-title animate-up">Gestión de Pedidos</h2>
-    <div class="animate-up delay-1">` + table([
-      ['N.º', p => `<b>#${p.id}</b>`], 
-      ['Fecha', p => `<span class="muted">${fecha(p.creado)}</span>`], 
-      ['Cliente', p => `<b>${esc(p.cliente)}</b>`], 
-      ['Moto', p => `${esc(p.moto)}`], 
-      ['Nota', p => p.nota ? `<i style="color:var(--warning); font-size:0.85rem;">"${esc(p.nota)}"</i>` : '<span class="muted">—</span>'],
-      ['Estado', p => `
-        <select data-p="${p.id}" style="min-height:36px; font-size:0.85rem; font-weight:700; border-radius:8px; cursor:pointer; padding:0 0.5rem;
-            ${p.estado === 'entregado' ? 'border-color:var(--ok); color:var(--ok); background:rgba(16,185,129,0.1);' 
-            : p.estado === 'en_proceso' ? 'border-color:var(--warning); color:var(--warning); background:rgba(245,158,11,0.1);' 
-            : p.estado === 'cancelado' ? 'border-color:var(--bad); color:var(--bad); background:rgba(239,68,68,0.1);' 
-            : 'border-color:var(--line); color:var(--muted); background:var(--bg);'}">
-          ${Object.entries(ESTADOS).map(([k, l]) => `<option value="${k}" ${k === p.estado ? 'selected' : ''}>${l}</option>`).join('')}
-        </select>
-      `]
-    ], ps, 'No hay pedidos pendientes por atender.') + `</div>`;
+    v.innerHTML = `
+    <div class="table-card animate-up">
+        <div class="table-header">
+            <h2 class="table-title">Gestión de Pedidos</h2>
+        </div>
+        <div class="table-responsive">
+        ${table([
+          ['N.º', p => `<b>#${p.id}</b>`], 
+          ['Fecha', p => `<span style="color:var(--text-muted)">${fecha(p.creado)}</span>`], 
+          ['Cliente', p => `<b>${esc(p.cliente)}</b>`], 
+          ['Moto', p => `${esc(p.moto)}`], 
+          ['Nota', p => p.nota ? `<i style="color:var(--accent-orange); font-size:13px;">"${esc(p.nota)}"</i>` : '<span class="text-muted">—</span>'],
+          ['Estado', p => `
+            <select data-p="${p.id}" class="select-status" style="
+                background: ${p.estado === 'entregado' ? 'var(--accent-green-glow)' : p.estado === 'en_proceso' ? 'rgba(245, 158, 11, 0.15)' : p.estado === 'cancelado' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(148, 163, 184, 0.15)'};
+                color: ${p.estado === 'entregado' ? 'var(--accent-green)' : p.estado === 'en_proceso' ? 'var(--accent-orange)' : p.estado === 'cancelado' ? 'var(--accent-red)' : 'var(--text-secondary)'};
+                border: 1px solid ${p.estado === 'entregado' ? 'var(--accent-green)' : p.estado === 'en_proceso' ? 'var(--accent-orange)' : p.estado === 'cancelado' ? 'var(--accent-red)' : 'var(--border-strong)'};
+                font-weight: 600; padding: 6px 12px; border-radius: 20px; cursor: pointer; outline: none; transition: all 0.2s;
+            ">
+              ${Object.entries(ESTADOS).map(([k, l]) => `<option value="${k}" ${k === p.estado ? 'selected' : ''}>${l}</option>`).join('')}
+            </select>
+          `]
+        ], ps, 'No hay pedidos registrados.')}
+        </div>
+    </div>`;
     
     // Evento para cambiar estado
     v.querySelectorAll('[data-p]').forEach(s => {
@@ -87,25 +99,42 @@ mountPanel({ rol: 'trabajador', title: 'Trabajador', sections: [
   { id: 'inventario', label: 'Inventario', async render(v, again) {
     const ms = await api('/motos');
     
-    v.innerHTML = `<h2 class="section-title animate-up">Control de Inventario</h2>
-    <div class="animate-up delay-1">` + table([
-      ['Moto', m => `
-        <div style="display:flex; align-items:center; gap:1rem;">
-            ${m.imagen ? `<img src="${esc(m.imagen)}" style="width:60px; height:40px; object-fit:cover; border-radius:6px;">` : ''}
-            <div>
-                <b>${esc(m.marca)}</b> ${esc(m.modelo)} <br>
-                <small class="muted">${esc(m.tipo)} · ${m.cc} cc</small>
+    v.innerHTML = `
+    <div class="table-card animate-up">
+        <div class="table-header">
+            <h2 class="table-title">Control de Inventario</h2>
+        </div>
+        <div class="table-responsive">
+        ${table([
+          ['Moto', m => `
+            <div style="display:flex; align-items:center; gap:16px;">
+                ${m.imagen ? `<img src="${esc(m.imagen)}" class="stock-img" style="width:60px; height:40px;">` : ''}
+                <div>
+                    <b>${esc(m.marca)}</b> ${esc(m.modelo)} <br>
+                    <small style="color:var(--text-muted)">${esc(m.tipo)} · ${m.cc} cc</small>
+                </div>
             </div>
+          `], 
+          ['Stock Actual', m => `<span class="tag ${m.stock > 3 ? 'on' : (m.stock > 0 ? 'en_proceso' : 'off')}">${m.stock} un.</span>`],
+          ['Actualizar Stock', m => `
+            <div style="display:flex; gap:8px; align-items:center;">
+              <input type="number" min="0" value="${m.stock}" id="s${m.id}" class="stock-input" style="
+                width: 80px; 
+                padding: 8px; 
+                text-align: center; 
+                font-weight: 600;
+                background: var(--bg-body);
+                border: 1px solid var(--border-strong);
+                border-radius: var(--radius-sm);
+                color: var(--text-primary);
+                outline: none;
+              ">
+              <button class="btn btn-primary btn-sm" data-s="${m.id}" style="padding: 8px 12px;">Guardar</button>
+            </div>
+          `]
+        ], ms, 'No hay motos en el inventario.')}
         </div>
-      `], 
-      ['Stock Actual', m => `<span class="tag ${m.stock > 3 ? 'on' : (m.stock > 0 ? 'en_proceso' : 'off')}">${m.stock} un.</span>`],
-      ['Actualizar Stock', m => `
-        <div style="display:flex; gap:0.5rem; align-items:center;">
-          <input type="number" min="0" value="${m.stock}" id="s${m.id}" style="width:90px; min-height:38px; text-align:center; font-weight:700; margin:0; padding:0.3rem;">
-          <button class="btn btn-primary sm" data-s="${m.id}" style="min-height:38px;">Guardar</button>
-        </div>
-      `]
-    ], ms, 'No hay motos en el inventario.');
+    </div>`;
     
     // Lógica para guardar stock
     v.querySelectorAll('[data-s]').forEach(b => {

@@ -1,6 +1,3 @@
-// Panel de Cliente: catálogo, favoritos, ficha técnica y mis pedidos.
-// Depende de core.js (api, mountPanel, session, table, run, toast, esc, money, fecha).
-
 const FAV_KEY = 'ma_favs';
 const IMG_FALLBACK = '/recursos/image/logo.jpeg';
 
@@ -22,26 +19,32 @@ const stockInfo = m =>
 
 const estadoTag = e => `<span class="tag ${esc(e)}">${ESTADOS[e] || esc(e)}</span>`;
 
+// Función de tarjeta corregida (botones no se aplastan, imágenes no se deforman)
 function tarjeta(m) {
   const [clase, texto] = stockInfo(m);
+  const badgeTexto = texto === 'Últimas unidades' ? `Quedan ${m.stock}` : texto;
+
   return `
-    <article class="card moto-card animate-up">
+    <article class="moto-card animate-up">
       <div class="moto-img-container">
-        <span class="stock-badge ${clase}">${texto}</span>
+        <span class="stock-badge ${clase}">${badgeTexto}</span>
         <button class="btn-fav" type="button" data-fav="${m.id}" aria-label="Favorito">${favs.has(m.id) ? '❤️' : '🤍'}</button>
-        <img class="moto-img" src="${esc(m.imagen || IMG_FALLBACK)}" alt="${esc(m.marca)} ${esc(m.modelo)}"
-             onerror="this.onerror=null;this.src='${IMG_FALLBACK}'">
+        <img class="moto-img ${!m.imagen ? 'sin-foto' : ''}" src="${esc(m.imagen || IMG_FALLBACK)}" alt="${esc(m.marca)} ${esc(m.modelo)}"
+             onerror="this.onerror=null;this.src='${IMG_FALLBACK}';this.classList.add('sin-foto');">
       </div>
       <div class="moto-info">
-        <div class="moto-header"><span class="moto-brand">${esc(m.marca)}</span><span class="moto-year">${m.anio}</span></div>
+        <div class="moto-header">
+          <span class="moto-brand">${esc(m.marca)}</span>
+          <span class="moto-year">${m.anio}</span>
+        </div>
         <h3 class="moto-model">${esc(m.modelo)}</h3>
         <p class="moto-desc">${esc(m.tipo)} · ${m.cc} cc</p>
         <div class="moto-footer">
           <span class="moto-price">${money(m.precio, m.moneda)}</span>
-          <span style="display:flex; gap:.5rem;">
-            <a class="btn ghost sm" href="#ficha/${m.id}">Ver ficha</a>
-            <button class="btn btn-primary btn-buy" type="button" data-sol="${m.id}" ${m.stock < 1 ? 'disabled' : ''}>Solicitar</button>
-          </span>
+          <div class="moto-actions">
+            <a class="btn btn-ghost btn-sm" href="#ficha/${m.id}">Ver ficha</a>
+            <button class="btn btn-primary btn-sm" type="button" data-sol="${m.id}" ${m.stock < 1 ? 'disabled' : ''}>Solicitar</button>
+          </div>
         </div>
       </div>
     </article>`;
@@ -58,7 +61,6 @@ async function solicitar(id, again) {
   );
 }
 
-// Enlaza favoritos y "Solicitar" dentro de un contenedor (se llama tras cada pintado)
 function enlazar(cont, { onFav, again }) {
   cont.querySelectorAll('[data-fav]').forEach(b => b.onclick = () => {
     const activo = favs.toggle(+b.dataset.fav);
@@ -75,52 +77,144 @@ const vacio = (icono, titulo, texto) =>
 async function renderFicha(id) {
   const v = $('#view');
   $('#ttl').textContent = 'Ficha técnica';
-  v.innerHTML = '<p class="muted animate-up">Cargando datos...</p>';
+  v.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Cargando ficha...</p></div>';
+  
   try {
     const m = (await api('/motos')).find(x => x.id === id);
     if (!m) { v.innerHTML = vacio('🔎', 'Moto no encontrada', '<a href="#catalogo">Volver al catálogo</a>'); return; }
+    
     const [clase, texto] = stockInfo(m);
-    // Valores referenciales calculados a partir de la cilindrada
     const potencia = (m.cc * 0.095).toFixed(1), torque = (m.cc * 0.085).toFixed(1);
     const rendimiento = Math.max(18, Math.round(58 - m.cc / 12));
-    const spec = (l, val) => `<div class="ficha-spec-item"><span class="spec-label">${l}</span><span class="spec-valor">${val}</span></div>`;
+    
+    const especificaciones = [
+      { label: 'Cilindrada', value: `${m.cc} cc` },
+      { label: 'Potencia', value: `${potencia} HP` },
+      { label: 'Torque', value: `${torque} Nm` },
+      { label: 'Rendimiento', value: `~${rendimiento} km/l` },
+      { label: 'Peso', value: '135 kg' },
+      { label: 'Capacidad de tanque', value: '12 L' },
+      { label: 'Frenos', value: 'Disco / Tambor' },
+      { label: 'Suspensión', value: 'Telescópica / Monoshock' },
+    ];
+
+    const destacados = [
+      { icon: '💡', title: 'Iluminación LED', desc: 'Faros y luces traseras de bajo consumo y alta durabilidad.' },
+      { icon: '🛡️', title: 'Frenos ABS', desc: 'Sistema de frenado antibloqueo para mayor seguridad.' },
+      { icon: '🔋', title: 'Tablero digital', desc: 'Lectura clara de velocidad, RPM y nivel de combustible.' },
+      { icon: '🛠️', title: 'Garantía oficial', desc: '12 meses o 12,000 km, lo que ocurra primero.' },
+    ];
+
+    const colores = ['#1E3A8A', '#DC2626', '#111827', '#F3F4F6'];
+
     v.innerHTML = `
       <div class="ficha-container animate-up">
-        <p><a href="#catalogo">← Volver al catálogo</a></p>
+        
+        <nav class="breadcrumb">
+          <a href="#catalogo">Catálogo</a> 
+          <span>/</span> 
+          <a href="#catalogo">${esc(m.tipo)}</a> 
+          <span>/</span> 
+          <span>${esc(m.marca)} ${esc(m.modelo)}</span>
+        </nav>
+
         <div class="ficha-grid">
           <div class="ficha-imagen-col">
             <div class="ficha-imagen-principal">
               <img src="${esc(m.imagen || IMG_FALLBACK)}" alt="${esc(m.marca)} ${esc(m.modelo)}" onerror="this.onerror=null;this.src='${IMG_FALLBACK}'">
             </div>
-            <div class="ficha-precio-box">
-              <span class="ficha-precio-label">Precio</span>
-              <span class="ficha-precio-valor">${money(m.precio, m.moneda)}</span>
+            <div class="ficha-galeria">
+              <img src="${esc(m.imagen || IMG_FALLBACK)}" class="miniatura activa" alt="Vista 1">
+              <img src="${esc(m.imagen || IMG_FALLBACK)}" class="miniatura" alt="Vista 2">
+              <img src="${esc(m.imagen || IMG_FALLBACK)}" class="miniatura" alt="Vista 3">
             </div>
           </div>
+
           <div class="ficha-detalles-col">
-            <div>
-              <span class="moto-brand">${esc(m.marca)}</span>
-              <h2 class="ficha-titulo">${esc(m.modelo)}</h2>
+            <div class="ficha-badge-container">
+              <span class="tag ${clase === 'badge-danger' ? 'off' : clase === 'badge-warning' ? 'en_proceso' : 'on'}">${texto}</span>
+              <span class="tag pendiente">${m.anio}</span>
             </div>
-            <p class="ficha-descripcion">${esc(m.tipo)} modelo ${m.anio}. <span class="stock-badge ${clase}" style="position:static; display:inline-block;">${texto}</span></p>
-            <div class="ficha-specs-grid">
-              ${spec('Cilindrada', m.cc + ' cc')}${spec('Año', m.anio)}${spec('Tipo', esc(m.tipo))}${spec('Unidades', m.stock)}
-              ${spec('Potencia', potencia + ' HP')}${spec('Torque', torque + ' Nm')}${spec('Rendimiento', '~' + rendimiento + ' km/l')}
+            
+            <h1 class="ficha-titulo">${esc(m.marca)} ${esc(m.modelo)}</h1>
+            
+            <div class="ficha-precio-box">
+              <span class="ficha-precio-label">Precio referencial</span>
+              <span class="ficha-precio-valor">${money(m.precio, m.moneda)}</span>
+              ${m.moneda === 'PEN' ? `<span class="ficha-precio-alt">Aprox. US$ ${Math.round(m.precio / 3.75).toLocaleString('es-PE')}</span>` : ''}
             </div>
-            <div class="ficha-seccion"><h3>Nota</h3><p>Potencia, torque y rendimiento son valores referenciales calculados según la cilindrada.</p></div>
-            <div style="display:flex; gap:1rem;">
+
+            <div class="ficha-acciones">
               <button class="btn btn-primary" type="button" data-sol="${m.id}" ${m.stock < 1 ? 'disabled' : ''}>Solicitar esta moto</button>
-              <button class="btn ghost" type="button" data-fav="${m.id}">${favs.has(m.id) ? '❤️ En favoritos' : '🤍 Guardar'}</button>
+              <button class="btn btn-ghost" type="button" data-fav="${m.id}">${favs.has(m.id) ? '❤️ En favoritos' : '🤍 Guardar'}</button>
+            </div>
+
+            <div class="ficha-specs-grid">
+              ${especificaciones.slice(0, 4).map(s => `
+                <div class="ficha-spec-item">
+                  <span class="spec-label">${s.label}</span>
+                  <span class="spec-valor">${s.value}</span>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="ficha-seccion">
+              <h3>Colores disponibles</h3>
+              <div class="colores-container">
+                ${colores.map(c => `<span class="color-circle" style="background:${c};" title="Color"></span>`).join('')}
+              </div>
+            </div>
+
+            <div class="ficha-seccion">
+              <h3>Descripción</h3>
+              <p>${esc(m.tipo)} modelo ${m.anio}. Potencia, torque y rendimiento son valores referenciales calculados según la cilindrada. Diseño moderno y eficiente para tu día a día.</p>
             </div>
           </div>
         </div>
+
+        <div class="ficha-section-card animate-up delay-1">
+          <h2 class="section-title">Especificaciones técnicas</h2>
+          <div class="specs-tabla">
+            ${especificaciones.map(s => `
+              <div class="spec-row">
+                <span class="spec-label">${s.label}</span>
+                <span class="spec-valor">${s.value}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="ficha-section-card animate-up delay-2">
+          <h2 class="section-title">Destacados</h2>
+          <div class="destacados-grid">
+            ${destacados.map(d => `
+              <div class="destacado-card">
+                <div class="destacado-icon">${d.icon}</div>
+                <h3>${d.title}</h3>
+                <p>${d.desc}</p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
       </div>`;
+    
     enlazar(v, {
       again: () => renderFicha(id),
       onFav: () => renderFicha(id),
     });
+
+    v.querySelectorAll('.miniatura').forEach(img => {
+      img.onclick = () => {
+        v.querySelectorAll('.miniatura').forEach(i => i.classList.remove('activa'));
+        img.classList.add('activa');
+        const principal = v.querySelector('.ficha-imagen-principal img');
+        if (principal) principal.src = img.src;
+      };
+    });
+
   } catch (e) {
-    v.innerHTML = `<p class="err">${esc(e.message)}</p>`;
+    v.innerHTML = `<div class="error-state">${esc(e.message)}</div>`;
   }
 }
 
@@ -131,11 +225,35 @@ const fichaId = () => {
 
 // ---------------------------------------------------------------- Paneles
 mountPanel({ rol: 'cliente', title: 'Cliente', sections: [
+  // NUEVA SECCIÓN DE BIENVENIDA (HERO)
+  { id: 'inicio', label: 'Inicio', async render(v) {
+    const nombre = session.user ? session.user.nombre.split(' ')[0] : 'Invitado';
+    
+    v.innerHTML = `
+      <div class="hero-cliente animate-up">
+        <img src="/recursos/image/fondo.jpeg" class="hero-bg" alt="Bienvenida Henvi">
+        <div class="hero-overlay"></div>
+        
+        <div class="hero-content">
+          <span class="hero-badge">Bienvenido, ${esc(nombre)}</span>
+          <h1 class="hero-title">Tu próxima<br>moto ideal</h1>
+          <p class="hero-subtitle">Explora nuestro catálogo exclusivo, simula tu financiamiento al instante y encuentra el modelo perfecto para dominar las calles.</p>
+          <div class="hero-actions">
+            <a href="#catalogo" class="btn btn-primary" style="padding: 14px 28px; font-size: 16px;">Explorar Catálogo</a>
+          </div>
+        </div>
+
+        <a href="#catalogo" class="scroll-down" aria-label="Bajar al catálogo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </a>
+      </div>
+    `;
+  } },
+
   { id: 'catalogo', label: 'Catálogo', async render(v, again) {
     const motos = await api('/motos');
     let tipo = 'Todas';
     let orden = '';
-    // Búsqueda que viene desde la landing (se usa una sola vez)
     let texto = sessionStorage.getItem('busqueda_inicial') || '';
     sessionStorage.removeItem('busqueda_inicial');
 
@@ -144,14 +262,18 @@ mountPanel({ rol: 'cliente', title: 'Cliente', sections: [
       <div class="catalog-header animate-up">
         <div class="catalog-title"><h2>Catálogo de motos</h2><p class="muted" id="conteo"></p></div>
         <div class="catalog-actions">
-          <div class="search-wrapper"><span class="search-icon">🔍</span>
-            <input id="q" type="search" placeholder="Buscar por marca o modelo..." value="${esc(texto)}"></div>
-          <div class="sort-wrapper"><select id="ord" aria-label="Ordenar">
-            <option value="">Ordenar por</option>
-            <option value="precio-asc">Precio: menor a mayor</option>
-            <option value="precio-desc">Precio: mayor a menor</option>
-            <option value="anio-desc">Más recientes</option>
-          </select></div>
+          <div class="search-wrapper">
+            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input id="q" type="search" placeholder="Buscar por marca o modelo..." value="${esc(texto)}">
+          </div>
+          <div class="sort-wrapper">
+            <select id="ord" aria-label="Ordenar">
+              <option value="">Ordenar por</option>
+              <option value="precio-asc">Precio: menor a mayor</option>
+              <option value="precio-desc">Precio: mayor a menor</option>
+              <option value="anio-desc">Más recientes</option>
+            </select>
+          </div>
         </div>
       </div>
       <div class="category-tabs" id="tabs">
@@ -206,6 +328,5 @@ mountPanel({ rol: 'cliente', title: 'Cliente', sections: [
   } },
 ] });
 
-// La ficha técnica (#ficha/<id>) la dibuja este archivo; core.js la deja pasar
 addEventListener('hashchange', () => { const id = fichaId(); if (id) renderFicha(id); });
 if (fichaId()) renderFicha(fichaId());
