@@ -1,16 +1,15 @@
 {
   "hosting": {
-    "public": "frontend/assets/react-app/dist",
+    "public": "frontend",
+    "cleanUrls": true,
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "assets/react-app/**"
     ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
+    "headers": [
+      { "source": "**/*.@(jpeg|jpg|png|svg|webp)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }] }
     ]
   }
 }

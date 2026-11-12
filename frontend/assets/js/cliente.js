@@ -51,7 +51,7 @@ function tarjeta(m) {
 }
 
 async function solicitar(id, again) {
-  if (!session.token) { location.href = '/login.html?comprar=true'; return; }
+  if (!session.token) { location.href = '/login.html?comprar=true&next=' + encodeURIComponent(location.pathname + location.hash); return; }
   const nota = prompt('¿Quieres dejar una nota para el vendedor? (opcional)');
   if (nota === null) return;
   await run(
@@ -252,12 +252,19 @@ mountPanel({ rol: 'cliente', title: 'Cliente', sections: [
 
   { id: 'catalogo', label: 'Catálogo', async render(v, again) {
     const motos = await api('/motos');
-    let tipo = 'Todas';
     let orden = '';
-    let texto = sessionStorage.getItem('busqueda_inicial') || '';
-    sessionStorage.removeItem('busqueda_inicial');
+    // Filtros que vienen de la landing (buscador, tipo, cilindrada y precio máximo)
+    const leer = k => { try { const v = sessionStorage.getItem(k) || ''; sessionStorage.removeItem(k); return v; } catch { return ''; } };
+    let texto = leer('busqueda_inicial');
+    const tipoInicial = leer('filtro_tipo');
+    let [ccMin, ccMax] = leer('filtro_cc').split('-').map(Number);
+    if (!(ccMax > 0)) ccMin = ccMax = null;
+    let precioMax = +leer('filtro_precio') || null;   // en US$
 
     const tipos = ['Todas', ...new Set(motos.map(m => m.tipo))];
+    let tipo = tipos.includes(tipoInicial) ? tipoInicial : 'Todas';
+    const TIPO_CAMBIO = 3.75;
+    const enUsd = m => m.moneda === 'USD' ? m.precio : m.precio / TIPO_CAMBIO;
     v.innerHTML = `
       <div class="catalog-header animate-up">
         <div class="catalog-title"><h2>Catálogo de motos</h2><p class="muted" id="conteo"></p></div>
@@ -276,6 +283,7 @@ mountPanel({ rol: 'cliente', title: 'Cliente', sections: [
           </div>
         </div>
       </div>
+      <div id="filtros-extra" class="muted" style="margin-bottom:12px"></div>
       <div class="category-tabs" id="tabs">
         ${tipos.map(t => `<button type="button" class="category-tab ${t === tipo ? 'active' : ''}" data-tipo="${esc(t)}">${esc(t)}</button>`).join('')}
       </div>
@@ -284,10 +292,20 @@ mountPanel({ rol: 'cliente', title: 'Cliente', sections: [
     const pintar = () => {
       const q = texto.trim().toLowerCase();
       const lista = motos
-        .filter(m => (tipo === 'Todas' || m.tipo === tipo) && `${m.marca} ${m.modelo} ${m.tipo}`.toLowerCase().includes(q))
+        .filter(m => (tipo === 'Todas' || m.tipo === tipo)
+                  && `${m.marca} ${m.modelo} ${m.tipo}`.toLowerCase().includes(q)
+                  && (ccMax === null || (m.cc >= ccMin && m.cc <= ccMax))
+                  && (precioMax === null || enUsd(m) <= precioMax))
         .sort((a, b) => orden === 'precio-asc' ? a.precio - b.precio
                       : orden === 'precio-desc' ? b.precio - a.precio
                       : orden === 'anio-desc' ? b.anio - a.anio : 0);
+      const extra = [];
+      if (ccMax !== null) extra.push(ccMax >= 9999 ? `Más de ${ccMin - 1} cc` : `${ccMin}–${ccMax} cc`);
+      if (precioMax !== null) extra.push(`Hasta US$ ${precioMax.toLocaleString('es-PE')}`);
+      $('#filtros-extra').innerHTML = extra.length
+        ? `Filtros: <b>${extra.join(' · ')}</b> <button type="button" class="btn btn-ghost btn-sm" id="limpiar-filtros">Quitar</button>` : '';
+      const lf = $('#limpiar-filtros');
+      if (lf) lf.onclick = () => { ccMin = ccMax = precioMax = null; pintar(); };
       $('#conteo').textContent = `${lista.length} modelo${lista.length === 1 ? '' : 's'}`;
       const grid = $('#grid');
       grid.innerHTML = lista.length ? lista.map(tarjeta).join('')

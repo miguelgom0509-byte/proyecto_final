@@ -65,10 +65,10 @@ mountPanel({ rol: 'admin', title: 'Admin', sections: [
 
     v.innerHTML = `
       <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 24px;">
-        ${kpiCard('motos', stats.motos, 'Modelos Activos', '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5.5" cy="17.5" r="3.5"></circle><circle cx="18.5" cy="17.5" r="3.5"></circle><path d="M15 6h-3l-3 9h6"></path><path d="M15 6l3 4"></path></svg>', 'var(--accent-blue)', 'var(--accent-blue-glow)', '+2 este mes')}
-        ${kpiCard('unidades', stats.unidades, 'Unidades en Stock', '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>', 'var(--accent-green)', 'var(--accent-green-glow)', '-1 esta semana')}
+        ${kpiCard('motos', stats.motos, 'Modelos Activos', '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5.5" cy="17.5" r="3.5"></circle><circle cx="18.5" cy="17.5" r="3.5"></circle><path d="M15 6h-3l-3 9h6"></path><path d="M15 6l3 4"></path></svg>', 'var(--accent-blue)', 'var(--accent-blue-glow)')}
+        ${kpiCard('unidades', stats.unidades, 'Unidades en Stock', '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>', 'var(--accent-green)', 'var(--accent-green-glow)')}
         ${kpiCard('pendientes', p.pendiente, 'Pedidos Pendientes', '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>', 'var(--accent-orange)', 'rgba(245, 158, 11, 0.15)')}
-        ${kpiCard('clientes', stats.usuarios.cliente, 'Total Clientes', '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>', '#8B5CF6', 'rgba(139, 92, 246, 0.15)', '+5% vs mes ant.')}
+        ${kpiCard('clientes', stats.usuarios.cliente, 'Total Clientes', '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>', '#8B5CF6', 'rgba(139, 92, 246, 0.15)')}
       </div>
 
       <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 24px;">
@@ -159,7 +159,7 @@ mountPanel({ rol: 'admin', title: 'Admin', sections: [
             data: [p.pendiente || 0, p.en_proceso || 0, p.entregado || 0, p.cancelado || 0],
             backgroundColor: ['#F59E0B', '#8B5CF6', '#10B981', '#EF4444'],
             borderWidth: 2,
-            borderColor: '#111318',
+            borderColor: '#0D1B13',
             hoverOffset: 6
           }]
         },
@@ -183,7 +183,7 @@ mountPanel({ rol: 'admin', title: 'Admin', sections: [
           datasets: [{
             label: 'Cantidad',
             data: [stats.usuarios.cliente || 0, stats.usuarios.trabajador || 0, stats.usuarios.admin || 0],
-            backgroundColor: ['#3B82F6', '#F59E0B', '#EF4444'],
+            backgroundColor: ['#22B14C', '#F59E0B', '#EF4444'],
             borderRadius: 6,
             barThickness: 40
           }]

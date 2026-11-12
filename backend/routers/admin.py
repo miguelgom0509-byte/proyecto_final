@@ -15,7 +15,7 @@ def stats(db: Session = Depends(get_db)):
     por = lambda col: dict(db.execute(select(col, func.count()).group_by(col)).all())
     return {
         "motos": db.scalar(select(func.count()).select_from(Moto).where(Moto.activo.is_(True))),
-        "unidades": db.scalar(select(func.coalesce(func.sum(Moto.stock), 0))),
+        "unidades": db.scalar(select(func.coalesce(func.sum(Moto.stock), 0)).where(Moto.activo.is_(True))),
         "pedidos": por(Pedido.estado),
         "usuarios": por(Usuario.rol),
     }

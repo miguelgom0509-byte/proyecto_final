@@ -17,16 +17,29 @@ const HOME = { admin: '/admin/', trabajador: '/trabajador/', cliente: '/cliente/
 const session = {
   get token() { try { return localStorage.getItem('ma_token'); } catch { return null; } },
   get user() { try { return JSON.parse(localStorage.getItem('ma_user')); } catch { return null; } },
-  set(t, u) { localStorage.setItem('ma_token', t); localStorage.setItem('ma_user', JSON.stringify(u)); },
+  set(t, u) { try { localStorage.setItem('ma_token', t); localStorage.setItem('ma_user', JSON.stringify(u)); } catch { /* sin acceso a storage */ } },
   clear() { try { localStorage.removeItem('ma_token'); localStorage.removeItem('ma_user'); } catch { /* sin acceso a storage */ } },
 };
 
-// true  = usa el backend FastAPI (uvicorn backend.main:app)
-// false = modo Firebase Hosting: todo se guarda en el navegador (localStorage)
-const USAR_BACKEND = false;
+// Modo automático: si el servidor FastAPI responde en /api/health se usa el backend real
+// (uvicorn backend.main:app); si no (Firebase Hosting, archivo abierto a mano, etc.)
+// todo se guarda en el navegador (localStorage).
+let backendDisponible = null;
+function detectarBackend() {
+  backendDisponible ??= (async () => {
+    if (location.protocol === 'file:') return false;
+    try {
+      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 2500);
+      const r = await fetch('/api/health', { signal: ctl.signal, cache: 'no-store' });
+      clearTimeout(t);
+      return r.ok && (await r.json().catch(() => null))?.ok === true;
+    } catch { return false; }
+  })();
+  return backendDisponible;
+}
 
 async function api(path, opts = {}) {
-  return USAR_BACKEND ? apiRemota(path, opts) : apiLocal(path, opts);
+  return (await detectarBackend()) ? apiRemota(path, opts) : apiLocal(path, opts);
 }
 
 async function apiRemota(path, { method = 'GET', body } = {}) {
@@ -89,7 +102,7 @@ async function semilla() {
   };
 }
 
-const guardarDB = d => localStorage.setItem(DB_KEY, JSON.stringify(d));
+const guardarDB = d => { try { localStorage.setItem(DB_KEY, JSON.stringify(d)); } catch { /* sin acceso a storage */ } };
 let semillaPromise = null;
 async function cargarDB() {
   const leer = () => { try { return JSON.parse(localStorage.getItem(DB_KEY)); } catch { return null; } };
@@ -232,7 +245,7 @@ async function apiLocal(path, { method = 'GET', body } = {}) {
     exigir('admin');
     if (b === 'stats') return {
       motos: db.motos.filter(m => m.activo).length,
-      unidades: db.motos.reduce((s, m) => s + m.stock, 0),
+      unidades: db.motos.filter(m => m.activo).reduce((s, m) => s + m.stock, 0),
       pedidos: contar(db.pedidos, 'estado'),
       usuarios: contar(db.usuarios, 'rol'),
     };
@@ -302,7 +315,7 @@ function mountPanel({ rol, title, sections }) {
   const nombreUsuario = esInvitado ? 'Invitado' : (u.nombre || 'Usuario');
   const inicial = nombreUsuario.charAt(0).toUpperCase();
   const botonSesion = esInvitado
-      ? `<button class="btn btn-primary w-full" onclick="location.href='/login.html?comprar=true'">Iniciar Sesión</button>`
+      ? `<button class="btn btn-primary w-full" onclick="location.href='/login.html?comprar=true&next='+encodeURIComponent(location.pathname+location.hash)">Iniciar Sesión</button>`
       : `<button id="out" class="btn btn-logout w-full" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Cerrar Sesión</button>`;
 
   // Aplicamos el tema oscuro al body
@@ -374,12 +387,10 @@ function mountPanel({ rol, title, sections }) {
     collapseBtn.onclick = () => {
       sidebar.classList.toggle('collapsed');
       // Guardar preferencia
-      localStorage.setItem('sidebar-collapsed', sidebar.classList.contains('collapsed'));
+      try { localStorage.setItem('sidebar-collapsed', sidebar.classList.contains('collapsed')); } catch { /* sin storage */ }
     };
     // Restaurar preferencia al cargar
-    if (localStorage.getItem('sidebar-collapsed') === 'true') {
-      sidebar.classList.add('collapsed');
-    }
+    try { if (localStorage.getItem('sidebar-collapsed') === 'true') sidebar.classList.add('collapsed'); } catch { /* sin storage */ }
   }
 
   let ultimo = 0;

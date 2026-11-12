@@ -3,9 +3,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..database import get_db
-from ..models import Moto
+from ..models import Moto, Usuario
 from ..schemas import MotoIn, StockIn
-from ..security import require
+from ..security import optional_user, require
 
 router = APIRouter(prefix="/api/motos", tags=["motos"])
 
@@ -18,9 +18,10 @@ def _get(db: Session, moto_id: int) -> Moto:
 
 
 @router.get("")
-def listar(todas: bool = False, db: Session = Depends(get_db)):
+def listar(todas: bool = False, user: Usuario | None = Depends(optional_user), db: Session = Depends(get_db)):
     q = select(Moto).order_by(Moto.marca, Moto.modelo)
-    if not todas:
+    # Las motos dadas de baja solo las ven admin y trabajador
+    if not (todas and user and user.rol in ("admin", "trabajador")):
         q = q.where(Moto.activo.is_(True))
     return [m.public() for m in db.scalars(q)]
 

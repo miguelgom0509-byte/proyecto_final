@@ -46,6 +46,8 @@ def cambiar_estado(pedido_id: int, data: EstadoIn, db: Session = Depends(get_db)
         if pedido.moto.stock < 1:
             raise HTTPException(409, "No hay stock para entregar esta moto")
         pedido.moto.stock -= 1
+    elif pedido.estado == "entregado" and data.estado != "entregado":
+        pedido.moto.stock += 1  # se revierte la entrega: la unidad vuelve al inventario
     pedido.estado = data.estado
     db.commit()
     return pedido.public()
