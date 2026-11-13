@@ -159,7 +159,7 @@ mountPanel({ rol: 'admin', title: 'Admin', sections: [
             data: [p.pendiente || 0, p.en_proceso || 0, p.entregado || 0, p.cancelado || 0],
             backgroundColor: ['#F59E0B', '#8B5CF6', '#10B981', '#EF4444'],
             borderWidth: 2,
-            borderColor: '#0D1B13',
+            borderColor: '#0D111B',
             hoverOffset: 6
           }]
         },
@@ -183,7 +183,7 @@ mountPanel({ rol: 'admin', title: 'Admin', sections: [
           datasets: [{
             label: 'Cantidad',
             data: [stats.usuarios.cliente || 0, stats.usuarios.trabajador || 0, stats.usuarios.admin || 0],
-            backgroundColor: ['#22B14C', '#F59E0B', '#EF4444'],
+            backgroundColor: ['#2F6FE0', '#F59E0B', '#EF4444'],
             borderRadius: 6,
             barThickness: 40
           }]

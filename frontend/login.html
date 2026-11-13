@@ -9,27 +9,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <meta name="description" content="Ingresa a Henvi para solicitar tu moto y seguir tus pedidos.">
     <link rel="icon" type="image/jpeg" href="/recursos/image/logo.jpeg">
-    <link rel="stylesheet" href="/assets/css/panel.css">
+    <link rel="stylesheet" href="/assets/css/panel.css?v=20261114">
 </head>
-<body class="login-body">
-    
-    <!-- Luces de fondo (Efecto Premium) -->
-    <div class="bg-glow bg-glow-1"></div>
-    <div class="bg-glow bg-glow-2"></div>
-
-    <div class="login-wrapper">
-        <div class="login-card">
-            
-            <div class="login-header">
-                <a href="/" class="login-brand">
-                    <img src="/recursos/image/logo.jpeg" alt="Henvi" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+<body class="login-body login-split-body">
+    <main class="ls">
+        <!-- Lado visual -->
+        <section class="ls-visual" aria-label="Presentación">
+            <img class="ls-photo" src="/recursos/image/fondo.jpeg" alt="" aria-hidden="true">
+            <div class="ls-shade"></div>
+            <div class="ls-content">
+                <a href="/" class="ls-brand" aria-label="Henvi, volver al inicio">
+                    <img src="/recursos/image/logo.jpeg" alt="Henvi del Sur" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <span class="brand-fallback" style="display:none;">HENVI</span>
                 </a>
-                <h1 id="t">Bienvenido de nuevo</h1>
-                <p id="subtitle" class="text-muted">Ingresa tus credenciales para continuar</p>
+                <h2 class="ls-title">Tu próxima moto empieza aquí.</h2>
+                <p class="ls-lead">Ingresa para enviar tu solicitud, seguir tus pedidos y guardar las motos que más te gustan.</p>
+                <ul class="ls-perks">
+                    <li><span aria-hidden="true">✔</span><div><b>Solicita en línea</b><small>Un asesor confirma stock y financiamiento.</small></div></li>
+                    <li><span aria-hidden="true">✔</span><div><b>Sigue tus pedidos</b><small>Mira el estado de cada solicitud.</small></div></li>
+                    <li><span aria-hidden="true">✔</span><div><b>Guarda tus favoritas</b><small>Compáralas cuando quieras decidir.</small></div></li>
+                </ul>
             </div>
-            
-            <form id="f" novalidate>
+        </section>
+
+        <!-- Lado del formulario -->
+        <section class="ls-form">
+            <div class="login-card ls-card">
+                <a class="ls-back" href="/">Volver al inicio</a>
+                <div class="login-header ls-header">
+                    <h1 id="t">Bienvenido de nuevo</h1>
+                    <p id="subtitle" class="text-muted">Ingresa tus credenciales para continuar</p>
+                </div>
+
+                <form id="f" novalidate>
                 
                 <!-- Input: Nombre (Oculto por defecto para Login) -->
                 <div id="group-nombre" class="form-group" hidden>
@@ -63,16 +75,17 @@
                 <button class="btn btn-primary btn-block" id="go" type="submit">Ingresar al sistema</button>
             </form>
 
-            <div class="login-footer">
-                <p class="text-muted" id="footer-text">¿No tienes una cuenta?</p>
-                <button class="btn-link" id="sw" type="button">Regístrate aquí</button>
+                <div class="login-footer">
+                    <p class="text-muted" id="footer-text">¿No tienes una cuenta?</p>
+                    <button class="btn-link" id="sw" type="button">Regístrate aquí</button>
+                </div>
             </div>
-        </div>
-    </div>
-    
+        </section>
+    </main>
+
     <div id="toast"></div>
     
-    <script src="/assets/js/core.js"></script>
+    <script src="/assets/js/core.js?v=20261113"></script>
     <script>
         let reg = false;
         const urlParams = new URLSearchParams(window.location.search);

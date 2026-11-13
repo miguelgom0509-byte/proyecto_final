@@ -19,32 +19,62 @@ const stockInfo = m =>
 
 const estadoTag = e => `<span class="tag ${esc(e)}">${ESTADOS[e] || esc(e)}</span>`;
 
-// Función de tarjeta corregida (botones no se aplastan, imágenes no se deforman)
+// ---- Datos comerciales (misma fórmula del simulador de la landing)
+const WA = 'https://wa.me/51922681908';
+const TIPO_CAMBIO = 3.75, TEA = 0.15;
+const enSoles = m => m.moneda === 'USD' ? m.precio * TIPO_CAMBIO : m.precio;
+// Cuota referencial: 20 % de inicial, 36 meses, TEA 15 %
+function cuotaMensual(m, pct = 0.2, n = 36) {
+  const financiar = enSoles(m) * (1 - pct), r = Math.pow(1 + TEA, 1 / 12) - 1;
+  return financiar * r / (1 - Math.pow(1 + r, -n));
+}
+// Etiquetas calculadas con los datos reales del catálogo
+const etiquetas = {};
+function calcEtiquetas(motos) {
+  Object.keys(etiquetas).forEach(k => delete etiquetas[k]);
+  const disp = motos.filter(m => m.stock > 0);
+  if (disp.length < 2) return;
+  const barata = disp.reduce((a, b) => enSoles(a) <= enSoles(b) ? a : b);
+  const potente = disp.reduce((a, b) => a.cc >= b.cc ? a : b);
+  const nueva = disp.reduce((a, b) => a.anio >= b.anio ? a : b);
+  if (nueva.anio > Math.min(...disp.map(m => m.anio))) etiquetas[nueva.id] = '✨ Modelo más nuevo';
+  etiquetas[potente.id] = '⚡ Mayor cilindrada';
+  etiquetas[barata.id] = '💰 Mejor precio';
+}
+
 function tarjeta(m) {
   const [clase, texto] = stockInfo(m);
   const badgeTexto = texto === 'Últimas unidades' ? `Quedan ${m.stock}` : texto;
+  const agotada = m.stock < 1;
 
   return `
-    <article class="moto-card animate-up">
+    <article class="moto-card sales-card animate-up">
       <div class="moto-img-container">
         <span class="stock-badge ${clase}">${badgeTexto}</span>
         <button class="btn-fav" type="button" data-fav="${m.id}" aria-label="Favorito">${favs.has(m.id) ? '❤️' : '🤍'}</button>
-        <img class="moto-img ${!m.imagen ? 'sin-foto' : ''}" src="${esc(m.imagen || IMG_FALLBACK)}" alt="${esc(m.marca)} ${esc(m.modelo)}"
-             onerror="this.onerror=null;this.src='${IMG_FALLBACK}';this.classList.add('sin-foto');">
+        <a href="#ficha/${m.id}" aria-label="Ver ficha de ${esc(m.marca)} ${esc(m.modelo)}">
+          <img class="moto-img ${!m.imagen ? 'sin-foto' : ''}" src="${esc(m.imagen || IMG_FALLBACK)}" alt="${esc(m.marca)} ${esc(m.modelo)}" loading="lazy"
+               onerror="this.onerror=null;this.src='${IMG_FALLBACK}';this.classList.add('sin-foto');">
+        </a>
+        ${etiquetas[m.id] ? `<span class="moto-ribbon">${etiquetas[m.id]}</span>` : ''}
       </div>
       <div class="moto-info">
         <div class="moto-header">
           <span class="moto-brand">${esc(m.marca)}</span>
           <span class="moto-year">${m.anio}</span>
         </div>
-        <h3 class="moto-model">${esc(m.modelo)}</h3>
-        <p class="moto-desc">${esc(m.tipo)} · ${m.cc} cc</p>
-        <div class="moto-footer">
+        <h3 class="moto-model"><a href="#ficha/${m.id}">${esc(m.modelo)}</a></h3>
+        <ul class="moto-chips"><li>${esc(m.tipo)}</li><li>${m.cc} cc</li></ul>
+
+        <div class="moto-pricebox">
           <span class="moto-price">${money(m.precio, m.moneda)}</span>
-          <div class="moto-actions">
-            <a class="btn btn-ghost btn-sm" href="#ficha/${m.id}">Ver ficha</a>
-            <button class="btn btn-primary btn-sm" type="button" data-sol="${m.id}" ${m.stock < 1 ? 'disabled' : ''}>Solicitar</button>
-          </div>
+          <span class="moto-cuota">o desde <b>${money(cuotaMensual(m))}</b> al mes<sup>*</sup></span>
+        </div>
+        ${m.stock > 0 && m.stock <= 3 ? `<p class="moto-urgencia">🔥 ¡Solo quedan ${m.stock} unidad${m.stock === 1 ? '' : 'es'}!</p>` : ''}
+
+        <div class="moto-actions">
+          <button class="btn btn-primary" type="button" data-sol="${m.id}" ${agotada ? 'disabled' : ''}>${agotada ? 'Agotada' : 'Solicitar ahora'}</button>
+          <a class="btn btn-ghost" href="#ficha/${m.id}">Ver ficha técnica</a>
         </div>
       </div>
     </article>`;
@@ -263,11 +293,31 @@ mountPanel({ rol: 'cliente', title: 'Cliente', sections: [
 
     const tipos = ['Todas', ...new Set(motos.map(m => m.tipo))];
     let tipo = tipos.includes(tipoInicial) ? tipoInicial : 'Todas';
-    const TIPO_CAMBIO = 3.75;
     const enUsd = m => m.moneda === 'USD' ? m.precio : m.precio / TIPO_CAMBIO;
+    calcEtiquetas(motos);
+    const nombre = session.user ? session.user.nombre.split(' ')[0] : '';
     v.innerHTML = `
-      <div class="catalog-header animate-up">
-        <div class="catalog-title"><h2>Catálogo de motos</h2><p class="muted" id="conteo"></p></div>
+      <section class="sales-hero animate-up">
+        <div class="sales-hero-text">
+          <h2>${nombre ? esc(nombre) + ', e' : 'E'}lige tu moto y <em>pídela hoy</em></h2>
+          <p>Compara modelos, mira tu cuota estimada y envía tu solicitud en minutos. Un asesor te confirma disponibilidad y financiamiento.</p>
+          <div class="sales-hero-actions">
+            <button type="button" class="btn btn-primary" id="ir-modelos">Ver modelos disponibles</button>
+            <a class="btn btn-ghost" href="${WA}?text=${encodeURIComponent('Hola, quiero información sobre una moto')}" target="_blank" rel="noopener">💬 Hablar con un asesor</a>
+          </div>
+        </div>
+        <img class="sales-hero-img" src="/recursos/image/fondo.jpeg" alt="Motos nuevas Henvi del Sur">
+      </section>
+
+      <ul class="trust-bar animate-up">
+        <li><span>🛡️</span><div><b>Garantía oficial</b><small>En todas las motos nuevas</small></div></li>
+        <li><span>💳</span><div><b>Financiamiento</b><small>12 a 48 meses, inicial desde 10 %</small></div></li>
+        <li><span>📦</span><div><b>${motos.filter(m => m.stock > 0).reduce((t, m) => t + m.stock, 0)} unidades</b><small>Disponibles ahora</small></div></li>
+        <li><span>🛠️</span><div><b>Servicio técnico</b><small>Mantenimiento especializado</small></div></li>
+      </ul>
+
+      <div class="catalog-header animate-up" id="catalogo-lista">
+        <div class="catalog-title"><h2>Modelos disponibles</h2><p class="muted" id="conteo"></p></div>
         <div class="catalog-actions">
           <div class="search-wrapper">
             <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -275,7 +325,7 @@ mountPanel({ rol: 'cliente', title: 'Cliente', sections: [
           </div>
           <div class="sort-wrapper">
             <select id="ord" aria-label="Ordenar">
-              <option value="">Ordenar por</option>
+              <option value="">Destacadas</option>
               <option value="precio-asc">Precio: menor a mayor</option>
               <option value="precio-desc">Precio: mayor a menor</option>
               <option value="anio-desc">Más recientes</option>
@@ -287,7 +337,26 @@ mountPanel({ rol: 'cliente', title: 'Cliente', sections: [
       <div class="category-tabs" id="tabs">
         ${tipos.map(t => `<button type="button" class="category-tab ${t === tipo ? 'active' : ''}" data-tipo="${esc(t)}">${esc(t)}</button>`).join('')}
       </div>
-      <div class="gallery" id="grid"></div>`;
+      <div class="gallery" id="grid"></div>
+      <p class="sales-nota">* Cuota referencial con 20 % de inicial, 36 meses y TEA 15 %. No incluye seguros ni gastos administrativos; el asesor confirma la cuota final.</p>
+
+      <section class="steps-sales animate-up">
+        <h3>Pedir tu moto es fácil</h3>
+        <ol>
+          <li><b>1</b><div><strong>Elige tu moto</strong><span>Compara modelos y revisa su ficha técnica.</span></div></li>
+          <li><b>2</b><div><strong>Envía tu solicitud</strong><span>Con tu cuenta, en un clic y sin salir de casa.</span></div></li>
+          <li><b>3</b><div><strong>Un asesor te contacta</strong><span>Confirma disponibilidad, financiamiento y entrega.</span></div></li>
+        </ol>
+      </section>
+
+      <section class="cta-sales animate-up">
+        <div>
+          <h3>¿Dudas sobre qué moto elegir?</h3>
+          <p>Cuéntanos tu presupuesto y para qué la usarás: te recomendamos la mejor opción.</p>
+        </div>
+        <a class="btn btn-primary" href="${WA}?text=${encodeURIComponent('Hola, necesito ayuda para elegir una moto')}" target="_blank" rel="noopener">💬 Escribir por WhatsApp</a>
+      </section>`;
+    $('#ir-modelos').onclick = () => $('#catalogo-lista').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     const pintar = () => {
       const q = texto.trim().toLowerCase();
@@ -326,7 +395,8 @@ mountPanel({ rol: 'cliente', title: 'Cliente', sections: [
 
   { id: 'favoritos', label: 'Favoritos', async render(v, again) {
     const ids = favs.get();
-    const lista = (await api('/motos')).filter(m => ids.includes(m.id));
+    const todas = await api('/motos'); calcEtiquetas(todas);
+    const lista = todas.filter(m => ids.includes(m.id));
     v.innerHTML = lista.length
       ? `<h2 class="section-title animate-up">Mis favoritos (${lista.length})</h2><div class="gallery">${lista.map(tarjeta).join('')}</div>`
       : vacio('❤️', 'Aún no tienes favoritos', 'Toca el corazón en cualquier moto del <a href="#catalogo">catálogo</a>.');
