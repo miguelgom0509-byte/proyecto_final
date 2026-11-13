@@ -699,3 +699,30 @@ tbody tr:last-child td { border-bottom: none; }
   .ls-perks { display: none; }
   .ls-form { padding: 20px 16px 40px; margin-top: -24px; }
 }
+
+/* Ingreso social */
+.login-card .login-divider { display: flex; align-items: center; gap: 12px; margin: 22px 0 14px; color: var(--text-secondary); font-size: 12.5px; }
+.login-card .login-divider::before, .login-card .login-divider::after { content: ''; flex: 1; height: 1px; background: rgba(143, 184, 255, .2); }
+.social-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 4px; }
+.btn-social { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 10px; font: 600 14px/1 inherit; font-family: inherit; color: #fff; cursor: pointer;
+  background: rgba(255, 255, 255, .04); border: 1px solid rgba(143, 184, 255, .28); border-radius: 0;
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%); transition: background .15s, border-color .15s; }
+.btn-social:hover:not(:disabled) { background: rgba(47, 111, 224, .18); border-color: var(--franja); }
+.btn-social:focus-visible { outline: 2px solid var(--franja-2); outline-offset: 2px; }
+.btn-social:disabled { opacity: .55; cursor: wait; }
+.btn-social svg { width: 20px; height: 20px; flex: none; }
+
+
+/* ============================================ */
+/* --- PULIDO DE DISEÑO · v20261115 --- */
+/* ============================================ */
+/* Hero de bienvenida del cliente: mismo estilo condensado del sitio */
+.hero-cliente .hero-title { font-family: 'Archivo', 'Inter', system-ui, sans-serif; font-stretch: 62%; font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(3rem, 7vw, 5.6rem); line-height: .88; letter-spacing: .005em; }
+.hero-cliente .hero-badge { border-radius: 0; text-transform: none; letter-spacing: .02em; border-left: 3px solid var(--accent-blue); background: rgba(47, 111, 224, .16); }
+.hero-cliente, .hero-cliente .hero-bg { border-radius: 0; }
+.hero-cliente { clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%); }
+/* Foco visible y movimiento reducido */
+.btn:focus-visible, .nav-item:focus-visible, .btn-social:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid #CFE0FF; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+.hero-cliente .hero-badge { display: inline-block; margin-bottom: 16px; }
+.hero-cliente .hero-badge { background: rgba(5, 7, 13, .78); color: #CFE0FF; }

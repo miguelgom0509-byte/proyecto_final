@@ -171,6 +171,20 @@ async function apiLocal(path, { method = 'GET', body } = {}) {
     db.usuarios.push(u); guardar();
     return { token: 'local-' + u.id, usuario: pub(u) };
   }
+  if (a === 'auth' && b === 'social' && method === 'POST') {
+    const email = String(body?.email || '').trim().toLowerCase();
+    if (!EMAIL_RE.test(email)) throw new Error('Tu cuenta no compartió un correo válido');
+    let u = db.usuarios.find(x => x.email === email);
+    if (u && u.rol !== 'cliente') throw new Error('Esta cuenta del equipo debe ingresar con su contraseña');
+    if (u && !u.activo) throw new Error('Cuenta desactivada');
+    if (!u) {
+      const nombre = String(body?.nombre || email.split('@')[0]).trim().slice(0, 80);
+      u = { id: ++db.seq.usuarios, nombre: nombre.length >= 3 ? nombre : nombre.padEnd(3, '_'), email,
+            password_hash: await sha256(crypto.getRandomValues(new Uint32Array(4)).join('-')), rol: 'cliente', activo: true };
+      db.usuarios.push(u); guardar();
+    }
+    return { token: 'local-' + u.id, usuario: pub(u) };
+  }
   if (a === 'auth' && b === 'me') { exigir('admin', 'trabajador', 'cliente'); return pub(yo); }
 
   if (a === 'motos') {

@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <meta name="description" content="Ingresa a Henvi para solicitar tu moto y seguir tus pedidos.">
     <link rel="icon" type="image/jpeg" href="/recursos/image/logo.jpeg">
-    <link rel="stylesheet" href="/assets/css/panel.css?v=20261114">
+    <link rel="stylesheet" href="/assets/css/panel.css?v=20261115">
 </head>
 <body class="login-body login-split-body">
     <main class="ls">
@@ -75,6 +75,18 @@
                 <button class="btn btn-primary btn-block" id="go" type="submit">Ingresar al sistema</button>
             </form>
 
+                <div class="login-divider"><span>o continúa con</span></div>
+                <div class="social-row">
+                    <button type="button" class="btn-social" id="sg" data-prov="google">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#EA4335" d="M12 10.2v3.9h5.5c-.24 1.4-1.7 4.1-5.5 4.1a6.2 6.2 0 0 1 0-12.4c1.96 0 3.27.84 4.02 1.55l2.74-2.64C17 3.2 14.7 2.2 12 2.2a9.8 9.8 0 1 0 0 19.6c5.66 0 9.4-3.98 9.4-9.58 0-.64-.07-1.14-.16-1.62z"/></svg>
+                        Google
+                    </button>
+                    <button type="button" class="btn-social" id="sf" data-prov="facebook">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#1877F2" d="M24 12a12 12 0 1 0-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.7 4.5-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3.5h-2.9v8.4A12 12 0 0 0 24 12z"/></svg>
+                        Facebook
+                    </button>
+                </div>
+
                 <div class="login-footer">
                     <p class="text-muted" id="footer-text">¿No tienes una cuenta?</p>
                     <button class="btn-link" id="sw" type="button">Regístrate aquí</button>
@@ -85,7 +97,11 @@
 
     <div id="toast"></div>
     
-    <script src="/assets/js/core.js?v=20261113"></script>
+    <!-- Firebase Auth: estas rutas las sirve Firebase Hosting con la configuración de tu proyecto -->
+    <script defer src="/__/firebase/10.14.1/firebase-app-compat.js"></script>
+    <script defer src="/__/firebase/10.14.1/firebase-auth-compat.js"></script>
+    <script defer src="/__/firebase/init.js"></script>
+    <script src="/assets/js/core.js?v=20261115"></script>
     <script>
         let reg = false;
         const urlParams = new URLSearchParams(window.location.search);
@@ -121,6 +137,52 @@
             };
         }
         
+        function irDespues(usuario) {
+            if (destinoSeguro && usuario.rol === 'cliente') location.href = destinoSeguro;
+            else if (vieneAComprar && usuario.rol === 'cliente') location.href = '/cliente/';
+            else location.href = HOME[usuario.rol];
+        }
+
+        // Ingreso con Google / Facebook (Firebase Authentication)
+        document.querySelectorAll('.btn-social').forEach(b => {
+            b.onclick = async () => {
+                const msg = document.getElementById('msg');
+                msg.textContent = '';
+                if (typeof firebase === 'undefined' || !firebase.auth) {
+                    msg.textContent = 'El ingreso con Google/Facebook solo funciona en el sitio publicado (motos-henvi.web.app).';
+                    return;
+                }
+                if (await detectarBackend()) {
+                    msg.textContent = 'El ingreso social aún no está disponible con el servidor propio. Usa tu correo y contraseña.';
+                    return;
+                }
+                const botones = document.querySelectorAll('.btn-social');
+                botones.forEach(x => x.disabled = true);
+                try {
+                    const proveedor = b.dataset.prov === 'google'
+                        ? new firebase.auth.GoogleAuthProvider()
+                        : new firebase.auth.FacebookAuthProvider();
+                    proveedor.addScope('email');
+                    const { user } = await firebase.auth().signInWithPopup(proveedor);
+                    const d = await api('/auth/social', { method: 'POST',
+                        body: { nombre: user.displayName, email: user.email, proveedor: b.dataset.prov } });
+                    session.set(d.token, d.usuario);
+                    irDespues(d.usuario);
+                } catch (x) {
+                    const c = x && x.code;
+                    msg.textContent =
+                        c === 'auth/popup-closed-by-user' || c === 'auth/cancelled-popup-request' ? 'Cerraste la ventana antes de terminar.' :
+                        c === 'auth/popup-blocked' ? 'Tu navegador bloqueó la ventana. Permite las ventanas emergentes e inténtalo de nuevo.' :
+                        c === 'auth/configuration-not-found' ? 'Firebase Authentication aún no está iniciado en el proyecto. Actívalo en la consola: Authentication → Comenzar.' :
+                        c === 'auth/operation-not-allowed' ? 'Este método aún no está activado en Firebase (Authentication → Sign-in method).' :
+                        c === 'auth/unauthorized-domain' ? 'Este dominio no está autorizado en Firebase Authentication.' :
+                        c === 'auth/account-exists-with-different-credential' ? 'Ese correo ya se usó con otro método. Prueba con el otro botón.' :
+                        (x && x.message) || 'No se pudo iniciar sesión.';
+                    botones.forEach(y => y.disabled = false);
+                }
+            };
+        });
+
         const form = document.getElementById('f');
         if(form) {
             form.onsubmit = async e => {
@@ -133,13 +195,7 @@
                     const d = await api(reg ? '/auth/registro' : '/auth/login', { method: 'POST', body: formData(e.target) });
                     session.set(d.token, d.usuario); 
                     
-                    if (destinoSeguro && d.usuario.rol === 'cliente') {
-                        location.href = destinoSeguro;
-                    } else if (vieneAComprar && d.usuario.rol === 'cliente') {
-                        location.href = '/cliente/';
-                    } else {
-                        location.href = HOME[d.usuario.rol];
-                    }
+                    irDespues(d.usuario);
                 } catch(x) {
                     document.getElementById('msg').textContent = x.message;
                     btn.disabled = false; 
