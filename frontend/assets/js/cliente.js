@@ -95,6 +95,7 @@ function enlazar(cont, { onFav, again }) {
   cont.querySelectorAll('[data-fav]').forEach(b => b.onclick = () => {
     const activo = favs.toggle(+b.dataset.fav);
     toast(activo ? 'Agregada a favoritos' : 'Quitada de favoritos');
+    dispatchEvent(new Event('favschange'));
     onFav ? onFav() : (b.textContent = activo ? '❤️' : '🤍');
   });
   cont.querySelectorAll('[data-sol]').forEach(b => b.onclick = () => solicitar(+b.dataset.sol, again));
@@ -254,32 +255,7 @@ const fichaId = () => {
 };
 
 // ---------------------------------------------------------------- Paneles
-mountPanel({ rol: 'cliente', title: 'Cliente', sections: [
-  // NUEVA SECCIÓN DE BIENVENIDA (HERO)
-  { id: 'inicio', label: 'Inicio', async render(v) {
-    const nombre = session.user ? session.user.nombre.split(' ')[0] : 'Invitado';
-    
-    v.innerHTML = `
-      <div class="hero-cliente animate-up">
-        <img src="/recursos/image/fondo.jpeg" class="hero-bg" alt="Bienvenida Henvi">
-        <div class="hero-overlay"></div>
-        
-        <div class="hero-content">
-          <span class="hero-badge">Bienvenido, ${esc(nombre)}</span>
-          <h1 class="hero-title">Tu próxima<br>moto ideal</h1>
-          <p class="hero-subtitle">Explora nuestro catálogo exclusivo, simula tu financiamiento al instante y encuentra el modelo perfecto para dominar las calles.</p>
-          <div class="hero-actions">
-            <a href="#catalogo" class="btn btn-primary" style="padding: 14px 28px; font-size: 16px;">Explorar Catálogo</a>
-          </div>
-        </div>
-
-        <a href="#catalogo" class="scroll-down" aria-label="Bajar al catálogo">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-        </a>
-      </div>
-    `;
-  } },
-
+const SECCIONES = [
   { id: 'catalogo', label: 'Catálogo', async render(v, again) {
     const motos = await api('/motos');
     let orden = '';
@@ -291,57 +267,119 @@ mountPanel({ rol: 'cliente', title: 'Cliente', sections: [
     if (!(ccMax > 0)) ccMin = ccMax = null;
     let precioMax = +leer('filtro_precio') || null;   // en US$
 
-    const tipos = ['Todas', ...new Set(motos.map(m => m.tipo))];
+    const tipos = ['Todas', ...new Set(motos.map(m => m.tipo))];   // 'Todas' = sin filtro
     let tipo = tipos.includes(tipoInicial) ? tipoInicial : 'Todas';
     const enUsd = m => m.moneda === 'USD' ? m.precio : m.precio / TIPO_CAMBIO;
     calcEtiquetas(motos);
     const nombre = session.user ? session.user.nombre.split(' ')[0] : '';
+    const disponibles = motos.filter(m => m.stock > 0);
+    const unidades = disponibles.reduce((t, m) => t + m.stock, 0);
+    const desde = disponibles.length ? disponibles.reduce((a, b) => enSoles(a) <= enSoles(b) ? a : b) : null;
+    const recortadas = disponibles.filter(m => (m.imagen || '').endsWith('.webp'));
+    const estrella = recortadas.find(m => /RS200/i.test(m.modelo)) || [...recortadas].sort((a, b) => enSoles(b) - enSoles(a))[0] || null;
+    const fotoTipo = {};
+    const PREF = { Utilitaria: 'ct-125', Urbana: 'discover-125-st', Naked: 'pulsar-n160-fi', Deportiva: 'pulsar-rs200', Touring: 'dominar-400-2' };
+    motos.forEach(m => { if (m.imagen && !fotoTipo[m.tipo]) fotoTipo[m.tipo] = m.imagen; });
+    motos.forEach(m => { if (PREF[m.tipo] && (m.imagen || '').includes(PREF[m.tipo])) fotoTipo[m.tipo] = m.imagen; });
+    const tiposSolo = tipos.slice(1);
+    const cinta = [...motos].sort((a, b) => enSoles(a) - enSoles(b)).map(m => `<span class="tk-item"><b>${esc(m.modelo)}</b> ${esc(money(m.precio, m.moneda))}</span>`).join('<i class="tk-sep" aria-hidden="true"></i>');
+    const ico = {
+      garantia: '<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>',
+      credito: '<svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
+      taller: '<svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+    };
+
     v.innerHTML = `
-      <section class="sales-hero animate-up">
-        <div class="sales-hero-text">
-          <h2>${nombre ? esc(nombre) + ', e' : 'E'}lige tu moto y <em>pídela hoy</em></h2>
-          <p>Compara modelos, mira tu cuota estimada y envía tu solicitud en minutos. Un asesor te confirma disponibilidad y financiamiento.</p>
-          <div class="sales-hero-actions">
-            <button type="button" class="btn btn-primary" id="ir-modelos">Ver modelos disponibles</button>
-            <a class="btn btn-ghost" href="${WA}?text=${encodeURIComponent('Hola, quiero información sobre una moto')}" target="_blank" rel="noopener">💬 Hablar con un asesor</a>
+      <section class="sh-hero">
+        <div class="sh-hero-text">
+          <span class="sh-pill"><i></i>${motos.length} modelos listos para pedir</span>
+          <h1>Elige tu moto.<span>Pídela hoy.</span></h1>
+          <p>${nombre ? esc(nombre) + ', c' : 'C'}ompara modelos, mira tu cuota estimada y envía tu solicitud en minutos. Un asesor te confirma stock y financiamiento.</p>
+          <div class="sh-actions">
+            <button type="button" class="btn btn-primary btn-xl" id="ir-modelos">Ver modelos</button>
+            <a class="btn btn-ghost btn-xl" href="${WA}?text=${encodeURIComponent('Hola, quiero información sobre una moto')}" target="_blank" rel="noopener">Hablar con un asesor</a>
           </div>
+          <ul class="sh-stats">
+            ${desde ? `<li><b>${esc(money(desde.precio, desde.moneda))}</b><span>precio desde</span></li>` : ''}
+            <li><b>36</b><span>meses de financiamiento</span></li>
+            <li><b>${unidades}</b><span>unidades en stock</span></li>
+          </ul>
         </div>
-        <img class="sales-hero-img" src="/recursos/image/fondo.jpeg" alt="Motos nuevas Henvi del Sur">
+        <div class="sh-hero-bike">
+          ${estrella ? `<span class="sh-ghost" aria-hidden="true">${esc(estrella.modelo.replace(/^Pulsar\s+/i, ''))}</span>
+          <img src="${esc(estrella.imagen)}" alt="${esc(estrella.marca)} ${esc(estrella.modelo)}">
+          <a class="sh-tag" href="#ficha/${estrella.id}"><small>${esc(estrella.marca)} ${esc(estrella.modelo)}</small><b>${esc(money(estrella.precio, estrella.moneda))}</b><span>Ver ficha</span></a>`
+          : `<img class="sh-fondo" src="/recursos/image/fondo.jpeg" alt="Motos nuevas Henvi del Sur">`}
+        </div>
       </section>
 
-      <ul class="trust-bar animate-up">
-        <li><span>🛡️</span><div><b>Garantía oficial</b><small>En todas las motos nuevas</small></div></li>
-        <li><span>💳</span><div><b>Financiamiento</b><small>12 a 48 meses, inicial desde 10 %</small></div></li>
-        <li><span>📦</span><div><b>${motos.filter(m => m.stock > 0).reduce((t, m) => t + m.stock, 0)} unidades</b><small>Disponibles ahora</small></div></li>
-        <li><span>🛠️</span><div><b>Servicio técnico</b><small>Mantenimiento especializado</small></div></li>
-      </ul>
+      <div class="ticker" aria-hidden="true"><div class="ticker-track"><div class="tk-set">${cinta}<i class="tk-sep"></i></div><div class="tk-set">${cinta}<i class="tk-sep"></i></div></div></div>
 
-      <div class="catalog-header animate-up" id="catalogo-lista">
-        <div class="catalog-title"><h2>Modelos disponibles</h2><p class="muted" id="conteo"></p></div>
-        <div class="catalog-actions">
-          <div class="search-wrapper">
-            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input id="q" type="search" placeholder="Buscar por marca o modelo..." value="${esc(texto)}">
-          </div>
-          <div class="sort-wrapper">
-            <select id="ord" aria-label="Ordenar">
-              <option value="">Destacadas</option>
-              <option value="precio-asc">Precio: menor a mayor</option>
-              <option value="precio-desc">Precio: mayor a menor</option>
-              <option value="anio-desc">Más recientes</option>
-            </select>
+      <section class="sh-sec" id="tipos">
+        <div class="sh-head"><h2>¿Qué tipo de moto buscas?</h2><p>Toca un tipo para filtrar el catálogo.</p></div>
+        <div class="sh-tipos" id="tabs">
+          ${tiposSolo.map(t => `<button type="button" class="sh-tipo ${t === tipo ? 'active' : ''}" data-tipo="${esc(t)}" aria-pressed="${t === tipo}">
+            <img src="${esc(fotoTipo[t] || IMG_FALLBACK)}" alt="" loading="lazy"><b>${esc(t)}</b><span>${motos.filter(m => m.tipo === t).length} modelos</span></button>`).join('')}
+        </div>
+      </section>
+
+      <section class="sh-sec" id="catalogo-lista">
+        <div class="catalog-header">
+          <div class="catalog-title"><h2>Modelos disponibles</h2><p class="muted" id="conteo"></p></div>
+          <div class="catalog-actions">
+            <div class="search-wrapper">
+              <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input id="q" type="search" placeholder="Buscar por marca o modelo..." value="${esc(texto)}">
+            </div>
+            <div class="sort-wrapper">
+              <select id="ord" aria-label="Ordenar">
+                <option value="">Destacadas</option>
+                <option value="precio-asc">Precio: menor a mayor</option>
+                <option value="precio-desc">Precio: mayor a menor</option>
+                <option value="anio-desc">Más recientes</option>
+              </select>
+            </div>
           </div>
         </div>
-      </div>
-      <div id="filtros-extra" class="muted" style="margin-bottom:12px"></div>
-      <div class="category-tabs" id="tabs">
-        ${tipos.map(t => `<button type="button" class="category-tab ${t === tipo ? 'active' : ''}" data-tipo="${esc(t)}">${esc(t)}</button>`).join('')}
-      </div>
-      <div class="gallery" id="grid"></div>
-      <p class="sales-nota">* Cuota referencial con 20 % de inicial, 36 meses y TEA 15 %. No incluye seguros ni gastos administrativos; el asesor confirma la cuota final.</p>
+        <div id="filtros-extra" class="muted" style="margin-bottom:12px"></div>
+        <div class="gallery" id="grid"></div>
+        <div class="sh-more" id="mas"></div>
+        <p class="sales-nota">* Cuota referencial con 20 % de inicial, 36 meses y TEA 15 %. No incluye seguros ni gastos administrativos; el asesor confirma la cuota final.</p>
+      </section>
 
-      <section class="steps-sales animate-up">
-        <h3>Pedir tu moto es fácil</h3>
+      <section class="sh-sec sh-why">
+        <div class="sh-head"><h2>Comprar con Henvi del Sur</h2></div>
+        <div class="sh-why-grid">
+          <article><span class="sh-ico">${ico.garantia}</span><h3>Garantía oficial</h3><p>Todas las motos nuevas salen con garantía del fabricante.</p></article>
+          <article><span class="sh-ico">${ico.credito}</span><h3>Financiamiento a tu medida</h3><p>Elige tu inicial y los meses; simula la cuota antes de decidir.</p></article>
+          <article><span class="sh-ico">${ico.taller}</span><h3>Servicio técnico</h3><p>Mantenimiento especializado para que tu moto rinda siempre.</p></article>
+        </div>
+      </section>
+
+      <section class="sh-sec sh-fin" id="financiamiento">
+        <div class="sh-fin-card">
+          <div class="sh-fin-text">
+            <h2>Calcula tu cuota</h2>
+            <p>Mueve la inicial y los meses: ves al instante cuánto pagarías al mes.</p>
+            <label for="f-moto">Moto</label>
+            <select id="f-moto">${disponibles.map(m => `<option value="${m.id}">${esc(m.modelo)}, ${esc(money(m.precio, m.moneda))}</option>`).join('')}</select>
+            <label for="f-ini">Inicial: <b id="f-ini-v">20 %</b></label>
+            <input id="f-ini" type="range" min="10" max="50" step="5" value="20">
+            <label for="f-mes">Plazo</label>
+            <select id="f-mes"><option>12</option><option>24</option><option selected>36</option><option>48</option></select>
+          </div>
+          <div class="sh-fin-out">
+            <span>Tu cuota mensual</span>
+            <b id="f-cuota">—</b>
+            <small id="f-detalle"></small>
+            <button type="button" class="btn btn-primary btn-xl" id="f-pedir">Solicitar esta moto</button>
+            <em>Cuota referencial con TEA 15 %. El asesor confirma la cuota final.</em>
+          </div>
+        </div>
+      </section>
+
+      <section class="sh-sec sh-steps" id="como">
+        <div class="sh-head"><h2>Pedir tu moto es fácil</h2></div>
         <ol>
           <li><b>1</b><div><strong>Elige tu moto</strong><span>Compara modelos y revisa su ficha técnica.</span></div></li>
           <li><b>2</b><div><strong>Envía tu solicitud</strong><span>Con tu cuenta, en un clic y sin salir de casa.</span></div></li>
@@ -349,15 +387,25 @@ mountPanel({ rol: 'cliente', title: 'Cliente', sections: [
         </ol>
       </section>
 
-      <section class="cta-sales animate-up">
-        <div>
-          <h3>¿Dudas sobre qué moto elegir?</h3>
-          <p>Cuéntanos tu presupuesto y para qué la usarás: te recomendamos la mejor opción.</p>
-        </div>
-        <a class="btn btn-primary" href="${WA}?text=${encodeURIComponent('Hola, necesito ayuda para elegir una moto')}" target="_blank" rel="noopener">💬 Escribir por WhatsApp</a>
+      <section class="sh-cta">
+        <div><h2>¿Dudas sobre qué moto elegir?</h2><p>Cuéntanos tu presupuesto y para qué la usarás: te recomendamos la mejor opción.</p></div>
+        <a class="btn btn-primary btn-xl" href="${WA}?text=${encodeURIComponent('Hola, necesito ayuda para elegir una moto')}" target="_blank" rel="noopener">Escribir por WhatsApp</a>
       </section>`;
-    $('#ir-modelos').onclick = () => $('#catalogo-lista').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    $('#ir-modelos').onclick = () => irA('catalogo-lista');
 
+    // Calculadora de cuota
+    const calc = () => {
+      const m = motos.find(x => x.id === +$('#f-moto').value); if (!m) return;
+      const pct = +$('#f-ini').value / 100, n = +$('#f-mes').value;
+      $('#f-ini-v').textContent = Math.round(pct * 100) + ' %';
+      $('#f-cuota').textContent = money(cuotaMensual(m, pct, n));
+      $('#f-detalle').textContent = `Inicial ${money(enSoles(m) * pct)} · a financiar ${money(enSoles(m) * (1 - pct))} en ${n} meses`;
+    };
+    ['f-moto', 'f-ini', 'f-mes'].forEach(id => $('#' + id).addEventListener('input', calc));
+    $('#f-pedir').onclick = () => solicitar(+$('#f-moto').value, again);
+    calc();
+
+    let verTodas = false;
     const pintar = () => {
       const q = texto.trim().toLowerCase();
       const lista = motos
@@ -377,18 +425,25 @@ mountPanel({ rol: 'cliente', title: 'Cliente', sections: [
       if (lf) lf.onclick = () => { ccMin = ccMax = precioMax = null; pintar(); };
       $('#conteo').textContent = `${lista.length} modelo${lista.length === 1 ? '' : 's'}`;
       const grid = $('#grid');
-      grid.innerHTML = lista.length ? lista.map(tarjeta).join('')
+      // Sin filtros se muestran las primeras 8; con filtros o al pedirlo, todas
+      const hayFiltro = tipo !== 'Todas' || q || ccMax !== null || precioMax !== null;
+      const visibles = (verTodas || hayFiltro) ? lista : lista.slice(0, 8);
+      grid.innerHTML = lista.length ? visibles.map(tarjeta).join('')
         : vacio('🏍️', 'Sin resultados', 'Prueba con otra búsqueda o categoría.');
       enlazar(grid, { again });
+      $('#mas').innerHTML = visibles.length < lista.length
+        ? `<button type="button" class="btn btn-ghost btn-xl" id="ver-todas">Ver los ${lista.length} modelos</button>` : '';
+      const vt = $('#ver-todas'); if (vt) vt.onclick = () => { verTodas = true; pintar(); };
     };
 
     $('#q').oninput = e => { texto = e.target.value; pintar(); };
     $('#ord').onchange = e => { orden = e.target.value; pintar(); };
     $('#tabs').onclick = e => {
       const b = e.target.closest('[data-tipo]'); if (!b) return;
-      tipo = b.dataset.tipo;
-      document.querySelectorAll('.category-tab').forEach(x => x.classList.toggle('active', x === b));
+      tipo = (tipo === b.dataset.tipo) ? 'Todas' : b.dataset.tipo;   // tocar de nuevo quita el filtro
+      document.querySelectorAll('.sh-tipo').forEach(x => { const on = x.dataset.tipo === tipo; x.classList.toggle('active', on); x.setAttribute('aria-pressed', on); });
       pintar();
+      if (tipo !== 'Todas') irA('catalogo-lista');
     };
     pintar();
   } },
@@ -414,7 +469,95 @@ mountPanel({ rol: 'cliente', title: 'Cliente', sections: [
       ['Estado', p => estadoTag(p.estado)],
     ], ps, 'Todavía no has solicitado ninguna moto.') + `</div>`;
   } },
-] });
+];
 
-addEventListener('hashchange', () => { const id = fichaId(); if (id) renderFicha(id); });
+mountShop(SECCIONES);
+
 if (fichaId()) renderFicha(fichaId());
+// ---------------------------------------------------------------- Estructura de la tienda (página de ventas)
+let pendienteScroll = null;
+function irA(id) {
+  const el = document.getElementById(id);
+  if (el && ($('#view') || document).contains(el)) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+  pendienteScroll = id;
+  if (location.hash.slice(1) === 'catalogo') dispatchEvent(new Event('hashchange')); else location.hash = 'catalogo';
+}
+
+function mountShop(sections) {
+  const u = session.user;
+  if (session.token && u && u.rol !== 'cliente') { location.href = HOME[u.rol] || '/login.html'; return; }
+  const nombre = u ? (u.nombre || 'Cliente') : '';
+  const volver = encodeURIComponent(location.pathname + location.hash);
+  document.body.className = 'theme-dark shop';
+  document.body.innerHTML = `
+    <a class="skip-link" href="#view">Saltar al contenido</a>
+    <div class="shop-bar">Financiamiento a 36 meses · Atención por <a href="${WA}" target="_blank" rel="noopener">WhatsApp</a></div>
+    <header class="shop-nav">
+      <div class="shop-nav-in">
+        <a href="/" class="shop-logo" aria-label="Henvi del Sur, ir al inicio"><img src="/recursos/image/logo.jpeg" alt="Henvi del Sur"></a>
+        <button class="shop-burger" id="burger" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="shop-links"><span></span><span></span><span></span></button>
+        <nav class="shop-links" id="shop-links" aria-label="Principal">
+          <a href="#catalogo" data-nav="catalogo">Modelos</a>
+          <a href="#catalogo" data-scroll="financiamiento">Financiamiento</a>
+          <a href="#catalogo" data-scroll="como">Cómo comprar</a>
+          <a href="#favoritos" data-nav="favoritos">Favoritos <i class="shop-count" id="fav-count" hidden>0</i></a>
+          <a href="#pedidos" data-nav="pedidos">Mis pedidos</a>
+        </nav>
+        <div class="shop-user">
+          ${u ? `<span class="shop-avatar" aria-hidden="true">${esc(nombre.charAt(0).toUpperCase())}</span><span class="shop-name">${esc(nombre.split(' ')[0])}</span><button id="out" class="btn btn-ghost btn-sm" type="button">Salir</button>`
+              : `<a class="btn btn-primary btn-sm" href="/login.html?comprar=true&next=${volver}">Iniciar sesión</a>`}
+        </div>
+      </div>
+    </header>
+    <main id="view" class="shop-main" aria-live="polite"></main>
+    <footer class="shop-foot">
+      <div class="shop-foot-in">
+        <div><img src="/recursos/image/logo.jpeg" alt="Henvi del Sur"><p>Motos nuevas con financiamiento y atención personalizada.</p></div>
+        <div><b>Tienda</b><a href="#catalogo">Modelos</a><a href="#favoritos">Favoritos</a><a href="#pedidos">Mis pedidos</a></div>
+        <div><b>Contacto</b><a href="${WA}" target="_blank" rel="noopener">WhatsApp 922 681 908</a><a href="/">Volver al inicio</a></div>
+      </div>
+      <p class="shop-copy">© ${new Date().getFullYear()} Henvi del Sur EIRL</p>
+    </footer>
+    <a class="wa-float" href="${WA}?text=${encodeURIComponent('Hola, quiero información sobre una moto')}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11 11 0 0 0 3.6 17.3L2 22l4.8-1.5A11 11 0 1 0 20.5 3.5zm-8.5 17a9 9 0 0 1-4.6-1.3l-.3-.2-2.8.9.9-2.7-.2-.3a9 9 0 1 1 7 3.6zm5-6.7c-.3-.1-1.6-.8-1.9-.9s-.4-.1-.6.1-.7.9-.9 1.1-.3.2-.6.1a7.4 7.4 0 0 1-3.7-3.2c-.3-.5.3-.5.8-1.5.1-.2 0-.4 0-.5l-.9-2.1c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4.1c1.7.7 2.4.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.6-.3z"/></svg>
+    </a>
+    <span id="ttl" hidden></span>
+    <div id="toast" role="status"></div>`;
+
+  if (u) $('#out').onclick = () => { session.clear(); location.href = '/login.html'; };
+  const burger = $('#burger'), links = $('#shop-links');
+  burger.onclick = () => { const a = links.classList.toggle('open'); burger.setAttribute('aria-expanded', a); };
+  links.onclick = e => {
+    const a = e.target.closest('a'); if (!a) return;
+    links.classList.remove('open'); burger.setAttribute('aria-expanded', 'false');
+    if (a.dataset.scroll) { e.preventDefault(); irA(a.dataset.scroll); }
+  };
+  const contarFavs = () => { const n = favs.get().length, c = $('#fav-count'); c.textContent = n; c.hidden = !n; };
+  addEventListener('favschange', contarFavs); contarFavs();
+
+  let ultimo = 0, hashPrevio = null;
+  const go = async (conservar) => {
+    const hash = location.hash.slice(1);
+    const mio = ++ultimo;
+    const cambio = hash !== hashPrevio; hashPrevio = hash;
+    const v = $('#view');
+    const id = fichaId();
+    const s = sections.find(x => x.id === hash) || sections[0];
+    document.querySelectorAll('.shop-links [data-nav]').forEach(a => a.classList.toggle('active', !id && a.dataset.nav === s.id));
+    v.className = 'shop-main' + (s.id === 'catalogo' && !id ? '' : ' shop-narrow');
+    if (cambio && !conservar) window.scrollTo(0, 0);
+    const y = window.scrollY;
+    if (!conservar || id) v.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Cargando...</p></div>';
+    try {
+      if (id) await renderFicha(id);
+      else await s.render(v, () => go(true));
+      if (mio !== ultimo) return;
+      if (conservar && !id) window.scrollTo(0, y);
+      if (pendienteScroll) { const el = document.getElementById(pendienteScroll); pendienteScroll = null; el && el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    } catch (e) {
+      if (mio === ultimo) v.innerHTML = `<div class="error-state"><p>${esc(e.message)}</p></div>`;
+    }
+  };
+  window.onhashchange = () => go();
+  go();
+}
