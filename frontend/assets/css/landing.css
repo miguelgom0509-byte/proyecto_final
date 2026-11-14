@@ -1227,3 +1227,59 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: #2F6F
 .moto-img[src$=".webp"] { object-fit: contain; padding: 7% 6%; }
 .style-card img[src$=".webp"] { object-fit: contain; padding: 8% 8% 26%; background: radial-gradient(circle at 50% 40%, #161B38 0%, #080C15 75%); }
 @media (min-width: 1100px) { .style-grid:has(> :nth-child(6):last-child) { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+
+
+/* ============================================ */
+/* --- MÁS IMPACTO · cinta, destacada, sticker --- */
+/* ============================================ */
+/* Sticker de precio sobre la foto del hero */
+.price-sticker { position: absolute; right: 4%; bottom: -26px; z-index: 3; display: grid; gap: 0; padding: 14px 22px 14px 26px; text-decoration: none; color: #fff;
+  background: linear-gradient(135deg, #4B86F0, #2F6FE0 55%, #1B49A8); transform: skewX(-10deg) rotate(-2deg);
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  box-shadow: 0 18px 40px -12px rgba(47, 111, 224, .9); animation: sticker-pop .9s .6s cubic-bezier(.2, 1.4, .4, 1) both; }
+.price-sticker > * { transform: skewX(10deg); }
+.price-sticker small { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; opacity: .85; font-weight: 700; }
+.price-sticker b { font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1; font-stretch: 75%; font-style: italic; font-weight: 900; }
+.price-sticker span { font-size: .8rem; opacity: .9; }
+.price-sticker:hover { filter: brightness(1.1); }
+.price-sticker:focus-visible { outline: 2px solid #CFE0FF; outline-offset: 4px; }
+@keyframes sticker-pop { from { opacity: 0; transform: skewX(-10deg) rotate(-2deg) scale(.5) translateY(20px); } to { opacity: 1; transform: skewX(-10deg) rotate(-2deg); } }
+@media (max-width: 700px) { .price-sticker { right: 10px; bottom: -20px; padding: 10px 16px 10px 20px; } }
+
+/* Cinta con precios que corre sin parar */
+.ticker { overflow: hidden; background: #2F6FE0; color: #fff; border-block: 3px solid #CFE0FF; transform: skewY(-1.2deg); margin: 3.2rem 0 1rem; position: relative; z-index: 2; }
+.ticker[hidden], .showcase[hidden], .price-sticker[hidden] { display: none; }
+.ticker-track { display: flex; width: max-content; animation: tk-run 55s linear infinite; }
+.ticker:hover .ticker-track { animation-play-state: paused; }
+.tk-set { display: flex; align-items: center; flex: none; }
+.tk-item { padding: .85rem 0; white-space: nowrap; font-stretch: 75%; font-style: italic; font-weight: 800; font-size: 1.15rem; text-transform: uppercase; letter-spacing: .02em; }
+.tk-item b { font-weight: 900; margin-right: .5rem; color: #fff; }
+.tk-item { color: #DCE8FF; }
+.tk-sep { display: inline-block; width: 12px; height: 22px; margin: 0 1.6rem; background: #fff; transform: skewX(-20deg); opacity: .9; }
+@keyframes tk-run { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; overflow-x: auto; } }
+
+/* Moto destacada: nombre gigante detrás y la moto recortada encima */
+.showcase { padding: clamp(3rem, 7vw, 6rem) 0; position: relative; overflow: hidden;
+  background: radial-gradient(60rem 30rem at 75% 50%, rgba(47, 111, 224, .28), transparent 65%), linear-gradient(180deg, transparent, rgba(5, 7, 13, .6)); }
+.showcase-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center; }
+.sc-tag { display: inline-block; padding: .35rem .9rem; font-weight: 800; font-size: .8rem; letter-spacing: .08em; background: #CFE0FF; color: #05070D; transform: skewX(-12deg); margin-bottom: 1rem; }
+.sc-title { font-family: 'Archivo', 'Inter', system-ui, sans-serif; font-stretch: 62%; font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(3rem, 7vw, 6rem); line-height: .86; margin-bottom: 1rem; }
+.sc-title span { display: block; color: transparent; -webkit-text-stroke: 2px #8FB8FF; }
+.sc-lead { color: #AFC0D8; max-width: 26rem; line-height: 1.6; margin-bottom: 1.4rem; }
+.sc-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: .4rem 1rem; margin-bottom: 1.6rem; }
+.sc-price b { font-size: clamp(2rem, 4vw, 3rem); font-stretch: 75%; font-style: italic; font-weight: 900; }
+.sc-price span { color: #8FB8FF; font-weight: 600; }
+.sc-actions { display: flex; flex-wrap: wrap; gap: .8rem; }
+.showcase-bike { position: relative; display: grid; place-items: center; min-height: 320px; }
+.sc-ghost { position: absolute; inset: 50% 0 auto; transform: translateY(-50%); text-align: center; font-family: 'Archivo', 'Inter', system-ui, sans-serif; font-stretch: 62%; font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(6rem, 15vw, 13rem); line-height: .8; color: transparent; -webkit-text-stroke: 2px rgba(143, 184, 255, .22); white-space: nowrap; pointer-events: none; user-select: none; }
+.showcase-bike img { position: relative; width: min(100%, 640px); height: auto; filter: drop-shadow(0 40px 40px rgba(0, 0, 0, .6)); transition: transform .5s cubic-bezier(.2, .7, .2, 1); }
+.showcase:hover .showcase-bike img { transform: translateX(10px) scale(1.03); }
+@media (max-width: 860px) { .showcase-grid { grid-template-columns: 1fr; } .showcase-bike { min-height: 240px; order: -1; } }
+
+/* Tarjetas de moto: el borde se enciende y la tarjeta sube */
+.moto-card { transition: transform .25s cubic-bezier(.2, .7, .2, 1), box-shadow .25s, border-color .25s; }
+.moto-card:hover { transform: translateY(-6px); border-color: #2F6FE0; box-shadow: 0 24px 50px -22px rgba(47, 111, 224, .85); }
+.moto-card:hover .moto-price { filter: brightness(1.25); }
+.btn-primary { box-shadow: 0 10px 30px -10px rgba(47, 111, 224, .9); }
+.btn-primary:hover { box-shadow: 0 14px 38px -8px rgba(75, 134, 240, 1); }

@@ -28,7 +28,7 @@
     <!-- Estilos -->
     <link rel="stylesheet" href="/assets/vendor/aos.css">
     <link rel="stylesheet" href="/assets/vendor/swiper-bundle.min.css">
-    <link rel="stylesheet" href="/assets/css/landing.css?v=20261117">
+    <link rel="stylesheet" href="/assets/css/landing.css?v=20261118">
     
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="/recursos/image/logo.jpeg">
@@ -123,6 +123,9 @@
 
                 <figure class="hero-visual">
                     <img src="/recursos/image/fondo.jpeg" alt="Motos Polux y Pulsar de Henvi del Sur">
+                    <a class="price-sticker" id="price-sticker" href="#modelos" hidden>
+                        <small>Desde</small><b id="sticker-precio"></b><span id="sticker-modelo"></span>
+                    </a>
                 </figure>
             </div>
 
@@ -154,6 +157,10 @@
         </section>
 
         <!-- TIPOS DE MOTO -->
+        <div class="ticker" id="ticker" aria-label="Precios de la lista de noviembre" hidden>
+            <div class="ticker-track" id="ticker-track"></div>
+        </div>
+
         <section id="estilos" class="section">
             <div class="wrap">
                 <div class="section-head reveal">
@@ -169,6 +176,13 @@
         </section>
 
         <!-- MODELOS DESTACADOS -->
+        <section class="showcase" id="showcase" hidden aria-label="Moto destacada">
+            <div class="wrap showcase-grid">
+                <div class="showcase-text" data-sc-text></div>
+                <div class="showcase-bike" data-sc-bike></div>
+            </div>
+        </section>
+
         <section id="modelos" class="section modelos">
             <div class="wrap">
                 <div class="section-head reveal">
@@ -383,7 +397,7 @@
     <script src="/assets/vendor/lucide.min.js"></script>
     <script src="/assets/vendor/aos.js"></script>
     <script src="/assets/vendor/swiper-bundle.min.js"></script>
-    <script src="/assets/js/core.js?v=20261117"></script>
+    <script src="/assets/js/core.js?v=20261118"></script>
     <script>
         const TIPO_CAMBIO = 3.75;
         const TEA = 0.15;
@@ -603,6 +617,39 @@
             stockEl.textContent = '0 unidades en stock';
             animarContador(stockEl, unidades, ' unidades en stock');
             $id('fact-modelos').textContent = `En ${catalogo.length} modelo${catalogo.length === 1 ? '' : 's'} disponibles`;
+
+            // --- Sticker "desde", cinta de precios y moto destacada (datos reales del catálogo) ---
+            const conStock = catalogo.filter(m => m.stock > 0);
+            const baratas = [...(conStock.length ? conStock : catalogo)].sort((a, b) => enSoles(a) - enSoles(b));
+            const barata = baratas[0];
+            $id('sticker-precio').textContent = money(barata.precio, barata.moneda);
+            $id('sticker-modelo').textContent = barata.modelo;
+            $id('price-sticker').hidden = false;
+
+            const itemsCinta = [...catalogo].sort((a, b) => enSoles(a) - enSoles(b)).map(m =>
+                `<span class="tk-item"><b>${esc(m.modelo)}</b> ${esc(money(m.precio, m.moneda))}</span>`).join('<i class="tk-sep" aria-hidden="true"></i>');
+            $id('ticker-track').innerHTML = `<div class="tk-set">${itemsCinta}<i class="tk-sep" aria-hidden="true"></i></div><div class="tk-set" aria-hidden="true">${itemsCinta}<i class="tk-sep" aria-hidden="true"></i></div>`;
+            $id('ticker').hidden = false;
+
+            const recortadas = catalogo.filter(m => (m.imagen || '').endsWith('.webp') && m.stock > 0);
+            const dest = recortadas.find(m => /RS200/i.test(m.modelo)) || [...recortadas].sort((a, b) => enSoles(b) - enSoles(a))[0];
+            if (dest) {
+                const nombre = dest.modelo.replace(/^Pulsar\s+/i, '');
+                const cuota = (() => { const f = enSoles(dest) * 0.8, i = 0.15 / 12, n = 36; return f * i / (1 - Math.pow(1 + i, -n)); })();
+                document.querySelector('[data-sc-text]').innerHTML = `
+                    <span class="sc-tag">Moto destacada</span>
+                    <h2 class="sc-title">${esc(dest.marca)} <span>${esc(nombre)}</span></h2>
+                    <p class="sc-lead">${esc(dest.tipo)} de ${dest.cc} cc. La más deportiva del catálogo: míralas todas, compara y pide la tuya.</p>
+                    <div class="sc-price"><b>${esc(money(dest.precio, dest.moneda))}</b><span>o desde ${esc(money(cuota, 'PEN'))} al mes</span></div>
+                    <div class="sc-actions">
+                        <a class="btn btn-primary" href="/cliente/#ficha/${dest.id}">Ver ficha técnica</a>
+                        <a class="btn btn-ghost" href="#simulador">Simular mi cuota</a>
+                    </div>`;
+                document.querySelector('[data-sc-bike]').innerHTML = `
+                    <span class="sc-ghost" aria-hidden="true">${esc(nombre)}</span>
+                    <img src="${esc(dest.imagen)}" alt="${esc(dest.marca)} ${esc(dest.modelo)}">`;
+                $id('showcase').hidden = false;
+            }
 
             const marcas = [...new Set(catalogo.map(m => m.marca))].slice(0, 6);
             $id('hero-tags').innerHTML = '<span>Marcas populares:</span>' +
