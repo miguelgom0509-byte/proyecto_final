@@ -28,7 +28,7 @@
     <!-- Estilos -->
     <link rel="stylesheet" href="/assets/vendor/aos.css">
     <link rel="stylesheet" href="/assets/vendor/swiper-bundle.min.css">
-    <link rel="stylesheet" href="/assets/css/landing.css?v=20261116">
+    <link rel="stylesheet" href="/assets/css/landing.css?v=20261117">
     
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="/recursos/image/logo.jpeg">
@@ -106,10 +106,10 @@
                                 <label for="qf-precio">Precio máximo</label>
                                 <select id="qf-precio" aria-label="Filtrar por precio máximo">
                                     <option value="">Cualquiera</option>
-                                    <option value="2000">Hasta US$ 2,000</option>
-                                    <option value="3500">Hasta US$ 3,500</option>
-                                    <option value="5000">Hasta US$ 5,000</option>
-                                    <option value="10000">Hasta US$ 10,000</option>
+                                    <option value="1800">Hasta US$ 1,800 (≈ S/ 6,750)</option>
+                                    <option value="2500">Hasta US$ 2,500 (≈ S/ 9,375)</option>
+                                    <option value="3500">Hasta US$ 3,500 (≈ S/ 13,125)</option>
+                                    <option value="5000">Hasta US$ 5,000 (≈ S/ 18,750)</option>
                                 </select>
                             </div>
                             <button class="btn btn-filter" id="qf-aplicar" type="button">Filtrar</button>
@@ -383,7 +383,7 @@
     <script src="/assets/vendor/lucide.min.js"></script>
     <script src="/assets/vendor/aos.js"></script>
     <script src="/assets/vendor/swiper-bundle.min.js"></script>
-    <script src="/assets/js/core.js?v=20261115"></script>
+    <script src="/assets/js/core.js?v=20261117"></script>
     <script>
         const TIPO_CAMBIO = 3.75;
         const TEA = 0.15;
@@ -608,20 +608,18 @@
             $id('hero-tags').innerHTML = '<span>Marcas populares:</span>' +
                 marcas.map(x => `<button type="button" class="chip" data-search="${esc(x)}">${esc(x)}</button>`).join('');
 
-            const IMAGENES_TIPO = {
-                'Scooter': 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600&auto=format&fit=crop',
-                'Naked': 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=600&auto=format&fit=crop',
-                'Utilitaria': 'https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?q=80&w=600&auto=format&fit=crop',
-                'Pistera': 'https://images.unsplash.com/photo-1558980664-10ea292d4342?q=80&w=600&auto=format&fit=crop',
-                'Deportiva': 'https://images.unsplash.com/photo-1558980664-10ea292d4342?q=80&w=600&auto=format&fit=crop'
-            };
-            const getImagenTipo = t => IMAGENES_TIPO[t] || 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600&auto=format&fit=crop';
+            // Foto representativa de cada tipo: la de una moto del catálogo de ese tipo
+            const IMAGEN_TIPO = {};
+            catalogo.forEach(m => { if (m.imagen && !IMAGEN_TIPO[m.tipo]) IMAGEN_TIPO[m.tipo] = m.imagen; });
+            const PREFERIDA = { 'Utilitaria': 'ct-125', 'Urbana': 'discover-125-st', 'Naked': 'pulsar-n160-fi', 'Deportiva': 'pulsar-rs200', 'Touring': 'dominar-400-2' };
+            Object.entries(PREFERIDA).forEach(([t, f]) => { const m = catalogo.find(x => x.tipo === t && (x.imagen || '').includes(f)); if (m) IMAGEN_TIPO[t] = m.imagen; });
+            const getImagenTipo = t => IMAGEN_TIPO[t] || IMG_FALLBACK;
 
             const porTipo = catalogo.reduce((o, m) => (o[m.tipo] = (o[m.tipo] || 0) + 1, o), {});
             $id('style-list').innerHTML = Object.entries(porTipo).map(([t, n]) => `
                 <li class="reveal">
                     <button class="style-card" type="button" data-tipo="${esc(t)}">
-                        <img src="${getImagenTipo(t)}" alt="${esc(t)}" loading="lazy">
+                        <img src="${esc(getImagenTipo(t))}" alt="${esc(t)}" loading="lazy">
                         <div class="style-card-content">
                             <span class="style-name">${esc(t)}</span>
                             <span class="style-count">${n} modelo${n === 1 ? '' : 's'}</span>

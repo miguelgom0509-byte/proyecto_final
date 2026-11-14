@@ -79,24 +79,40 @@ const sha256 = async s => {
   return 'x' + h.toString(16);
 };
 
+// Versión del catálogo: al subirla, los navegadores con datos antiguos reciben el catálogo nuevo.
+const CATALOGO_V = 2;
+
 async function semilla() {
-  const I = 'https://images.unsplash.com/';
   const usr = async (id, nombre, email, pwd, rol) => ({ id, nombre, email, password_hash: await sha256(pwd), rol, activo: true });
+  // Lista sugerida de precios público (PVP zona), en soles, precio contado. Las fotos están en /recursos/image/motos/
   const moto = (id, marca, modelo, anio, tipo, cc, precio, moneda, stock, foto) =>
-    ({ id, marca, modelo, anio, tipo, cc, precio, moneda, stock, activo: true, imagen: I + foto + '?q=80&w=800&auto=format&fit=crop' });
+    ({ id, marca, modelo, anio, tipo, cc, precio, moneda, stock, activo: true, imagen: '/recursos/image/motos/' + foto });
   return {
-    seq: { usuarios: 3, motos: 5, pedidos: 0 },
+    catalogo_v: CATALOGO_V,
+    seq: { usuarios: 3, motos: 17, pedidos: 0 },
     usuarios: [
       await usr(1, 'Administrador', 'admin@motoaltiplano.pe', 'Admin12345', 'admin'),
       await usr(2, 'Carlos Quispe', 'trabajador@motoaltiplano.pe', 'Trabajo12345', 'trabajador'),
       await usr(3, 'Lucía Mamani', 'cliente@motoaltiplano.pe', 'Cliente12345', 'cliente'),
     ],
     motos: [
-      moto(1, 'Honda', 'Elite 125', 2026, 'Scooter', 124, 2369, 'USD', 6, 'photo-1558981403-c5f9899a28bc'),
-      moto(2, 'Yamaha', 'FZS 4.0 ABS Deluxe', 2026, 'Naked', 150, 3399, 'USD', 4, 'photo-1568772585407-9361f9bf3a87'),
-      moto(3, 'Bajaj', 'Boxer 150X UG Disc', 2026, 'Utilitaria', 150, 5432, 'PEN', 10, 'photo-1591637333184-19aa84b3e01f'),
-      moto(4, 'Bajaj', 'Dominar 250', 2026, 'Naked', 250, 15593, 'PEN', 3, 'photo-1558980664-10ea292d4342'),
-      moto(5, 'Hero', 'Hunk 160R 4V', 2027, 'Pistera', 163, 2899, 'USD', 5, 'photo-1558981403-c5f9899a28bc'),
+      moto(1, 'Bajaj', 'CT 125', 2026, 'Utilitaria', 125, 6299, 'PEN', 5, 'ct-125.webp'),
+      moto(2, 'Bajaj', 'Boxer Cargo 150X UG Disc', 2026, 'Utilitaria', 150, 6002, 'PEN', 5, 'boxer-cargo-150x.webp'),
+      moto(3, 'Bajaj', 'Discover 125 ST', 2026, 'Urbana', 125, 7308, 'PEN', 5, 'discover-125-st.webp'),
+      moto(4, 'Bajaj', 'Pulsar LS/NS 125', 2026, 'Urbana', 125, 7916, 'PEN', 5, 'pulsar-ls-ns-125.webp'),
+      moto(5, 'Bajaj', 'Pulsar N125 Carburada', 2026, 'Naked', 125, 7436, 'PEN', 5, 'pulsar-n125-carburada.jpg'),
+      moto(6, 'Bajaj', 'Pulsar N125FI', 2026, 'Naked', 125, 8174, 'PEN', 5, 'pulsar-n125fi.jpg'),
+      moto(7, 'Bajaj', 'Pulsar 150 Neon', 2026, 'Urbana', 150, 8032, 'PEN', 5, 'pulsar-150-neon.webp'),
+      moto(8, 'Bajaj', 'Pulsar 150R', 2026, 'Urbana', 150, 8933, 'PEN', 5, 'pulsar-150r.jpg'),
+      moto(9, 'Bajaj', 'Pulsar N160 FI', 2026, 'Naked', 160, 10815, 'PEN', 5, 'pulsar-n160-fi.webp'),
+      moto(10, 'Bajaj', 'Pulsar NS160 ABS UG2', 2026, 'Naked', 160, 12024, 'PEN', 5, 'pulsar-ns160-abs-ug2.webp'),
+      moto(11, 'Bajaj', 'Pulsar 180 Neon', 2026, 'Urbana', 180, 9806, 'PEN', 5, 'pulsar-180-neon.webp'),
+      moto(12, 'Bajaj', 'Pulsar NS200 ABS UG2', 2026, 'Naked', 200, 14266, 'PEN', 5, 'pulsar-ns200-abs-ug2.webp'),
+      moto(13, 'Bajaj', 'Pulsar RS200', 2026, 'Deportiva', 200, 17646, 'PEN', 5, 'pulsar-rs200.webp'),
+      moto(14, 'Bajaj', 'Pulsar N250 UG', 2026, 'Naked', 250, 15357, 'PEN', 5, 'pulsar-n250-ug.webp'),
+      moto(15, 'Bajaj', 'Pulsar NS400Z', 2026, 'Naked', 373, 19866, 'PEN', 5, 'pulsar-ns400z.jpg'),
+      moto(16, 'Bajaj', 'Dominar 250', 2026, 'Touring', 250, 16234, 'PEN', 5, 'dominar-250.jpg'),
+      moto(17, 'Bajaj', 'Dominar 400 2.0', 2026, 'Touring', 373, 19866, 'PEN', 5, 'dominar-400-2.webp'),
     ],
     pedidos: [],
   };
@@ -111,6 +127,13 @@ async function cargarDB() {
     semillaPromise ??= semilla().then(s => { if (!leer()) { try { guardarDB(s); } catch { /* sin storage */ } } return s; });
     const s = await semillaPromise;
     d = leer() ?? s;
+  }
+  // Datos guardados con un catálogo anterior: se reemplaza el catálogo (y los pedidos de prueba, que apuntaban a motos viejas).
+  if (d.catalogo_v !== CATALOGO_V) {
+    const nuevo = await semilla();
+    d.motos = nuevo.motos; d.seq = { ...d.seq, motos: nuevo.seq.motos, pedidos: 0 };
+    d.pedidos = []; d.catalogo_v = CATALOGO_V;
+    guardarDB(d);
   }
   return d;
 }

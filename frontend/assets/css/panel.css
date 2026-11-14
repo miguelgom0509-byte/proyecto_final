@@ -726,3 +726,7 @@ tbody tr:last-child td { border-bottom: none; }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 .hero-cliente .hero-badge { display: inline-block; margin-bottom: 16px; }
 .hero-cliente .hero-badge { background: rgba(5, 7, 13, .78); color: #CFE0FF; }
+
+/* Fotos recortadas (webp con fondo transparente): se muestran completas, sin recortar */
+.moto-img[src$=".webp"], .ficha-imagen-principal img[src$=".webp"] { object-fit: contain; padding: 6%; }
+.miniatura[src$=".webp"] { object-fit: contain; }
