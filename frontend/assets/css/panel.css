@@ -730,3 +730,7 @@ tbody tr:last-child td { border-bottom: none; }
 /* Fotos recortadas (webp con fondo transparente): se muestran completas, sin recortar */
 .moto-img[src$=".webp"], .ficha-imagen-principal img[src$=".webp"] { object-fit: contain; padding: 6%; }
 .miniatura[src$=".webp"] { object-fit: contain; }
+
+/* Placeholder de moto sin foto propia (SVG) */
+.moto-img[src$=".svg"] { object-fit: contain; padding: 12% 10%; background: radial-gradient(circle at 50% 40%, #16264A 0%, #080B14 75%); }
+.sh-tipo img[src$=".svg"] { object-fit: contain; padding: 8%; }

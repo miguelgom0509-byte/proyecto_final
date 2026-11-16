@@ -219,6 +219,8 @@ mountPanel({ rol: 'admin', title: 'Admin', sections: [
           <select name="moneda"><option value="PEN">Soles (PEN)</option><option value="USD">Dólares (USD)</option></select>
         </label>
         ${field('stock', 'Stock inicial', 'number', 'min=0 value=0')}
+        ${field('bono', 'Bono (opcional)', 'number', 'min=0 step=any')}
+        ${field('precio_tarjeta', 'Precio solo tarjeta (opcional)', 'number', 'min=1 step=any')}
         <label class="form-group" style="grid-column: 1 / -1;">
             <span>URL de la Imagen</span>
             <input name="imagen" type="url" placeholder="https://...">
@@ -236,7 +238,7 @@ mountPanel({ rol: 'admin', title: 'Admin', sections: [
         ${table([
           ['Foto', m => m.imagen ? `<div style="width:60px; height:40px; border-radius:6px; overflow:hidden; border:1px solid var(--border-subtle);"><img src="${esc(m.imagen)}" style="width:100%; height:100%; object-fit:cover;"></div>` : '—'],
           ['Moto', m => `<b>${esc(m.marca)}</b> ${esc(m.modelo)} <br><small style="color:var(--text-muted)">${m.anio}</small>`], 
-          ['Precio', m => `<b style="color:var(--accent-blue)">${money(m.precio, m.moneda)}</b>`],
+          ['Precio', m => `<b style="color:var(--accent-blue)">${money(m.precio, m.moneda)}</b>${m.precio_tarjeta ? `<br><small style="color:var(--text-muted)">Tarjeta ${money(m.precio_tarjeta, m.moneda)}${m.bono ? ' · Bono ' + money(m.bono, m.moneda) : ''}</small>` : ''}`],
           ['Stock', m => `<span class="tag ${m.stock > 3 ? 'on' : (m.stock > 0 ? 'en_proceso' : 'off')}">${m.stock} un.</span>`], 
           ['Acciones', m => m.activo ? `<button class="btn btn-danger btn-sm" data-del="${m.id}">Dar de baja</button>` : '<span class="tag off">Inactiva</span>']
         ], motos)}
@@ -249,6 +251,7 @@ mountPanel({ rol: 'admin', title: 'Admin', sections: [
       btn.disabled = true; btn.textContent = 'Guardando...';
       const d = formData(e.target);
       ['anio', 'cc', 'precio', 'stock'].forEach(k => d[k] = +d[k]);
+      ['bono', 'precio_tarjeta'].forEach(k => d[k] = d[k] === '' || d[k] == null ? null : +d[k]);
       
       try {
         await api('/motos', { method: 'POST', body: d });
@@ -261,7 +264,7 @@ mountPanel({ rol: 'admin', title: 'Admin', sections: [
     $('#btn-export-motos').onclick = () => {
         const datosLimpios = motos.map(m => ({
             'Marca': m.marca, 'Modelo': m.modelo, 'Año': m.anio, 'Tipo': m.tipo,
-            'Cilindrada (cc)': m.cc, 'Precio': m.precio, 'Moneda': m.moneda,
+            'Cilindrada (cc)': m.cc, 'Precio': m.precio, 'Bono': m.bono ?? '', 'Precio solo tarjeta': m.precio_tarjeta ?? '', 'Moneda': m.moneda,
             'Stock': m.stock, 'Estado': m.activo ? 'Activa' : 'Inactiva'
         }));
         exportarExcel(datosLimpios, 'Inventario_MotoAltiplano');

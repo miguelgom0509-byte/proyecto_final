@@ -80,39 +80,81 @@ const sha256 = async s => {
 };
 
 // Versión del catálogo: al subirla, los navegadores con datos antiguos reciben el catálogo nuevo.
-const CATALOGO_V = 2;
+const CATALOGO_V = 6;
 
 async function semilla() {
   const usr = async (id, nombre, email, pwd, rol) => ({ id, nombre, email, password_hash: await sha256(pwd), rol, activo: true });
   // Lista sugerida de precios público (PVP zona), en soles, precio contado. Las fotos están en /recursos/image/motos/
-  const moto = (id, marca, modelo, anio, tipo, cc, precio, moneda, stock, foto) =>
-    ({ id, marca, modelo, anio, tipo, cc, precio, moneda, stock, activo: true, imagen: '/recursos/image/motos/' + foto });
+  // bono / tarjeta: Bajaj (lista Zona 4, noviembre 2026). Marcas sin foto propia usan proximamente.svg
+  const moto = (id, marca, modelo, anio, tipo, cc, precio, moneda, stock, foto = 'proximamente.svg', bono = null, tarjeta = null, nota = '') =>
+    ({ id, marca, modelo, anio, tipo, cc, precio, moneda, stock, activo: true, imagen: '/recursos/image/motos/' + foto,
+       bono, precio_tarjeta: tarjeta, precio_nota: nota });
   return {
     catalogo_v: CATALOGO_V,
-    seq: { usuarios: 3, motos: 17, pedidos: 0 },
+    seq: { usuarios: 3, motos: 57, pedidos: 0 },
     usuarios: [
       await usr(1, 'Administrador', 'admin@motoaltiplano.pe', 'Admin12345', 'admin'),
       await usr(2, 'Carlos Quispe', 'trabajador@motoaltiplano.pe', 'Trabajo12345', 'trabajador'),
       await usr(3, 'Lucía Mamani', 'cliente@motoaltiplano.pe', 'Cliente12345', 'cliente'),
     ],
     motos: [
-      moto(1, 'Bajaj', 'CT 125', 2026, 'Utilitaria', 125, 6299, 'PEN', 5, 'ct-125.webp'),
-      moto(2, 'Bajaj', 'Boxer Cargo 150X UG Disc', 2026, 'Utilitaria', 150, 6002, 'PEN', 5, 'boxer-cargo-150x.webp'),
-      moto(3, 'Bajaj', 'Discover 125 ST', 2026, 'Urbana', 125, 7308, 'PEN', 5, 'discover-125-st.webp'),
-      moto(4, 'Bajaj', 'Pulsar LS/NS 125', 2026, 'Urbana', 125, 7916, 'PEN', 5, 'pulsar-ls-ns-125.webp'),
-      moto(5, 'Bajaj', 'Pulsar N125 Carburada', 2026, 'Naked', 125, 7436, 'PEN', 5, 'pulsar-n125-carburada.jpg'),
-      moto(6, 'Bajaj', 'Pulsar N125FI', 2026, 'Naked', 125, 8174, 'PEN', 5, 'pulsar-n125fi.jpg'),
-      moto(7, 'Bajaj', 'Pulsar 150 Neon', 2026, 'Urbana', 150, 8032, 'PEN', 5, 'pulsar-150-neon.webp'),
-      moto(8, 'Bajaj', 'Pulsar 150R', 2026, 'Urbana', 150, 8933, 'PEN', 5, 'pulsar-150r.jpg'),
-      moto(9, 'Bajaj', 'Pulsar N160 FI', 2026, 'Naked', 160, 10815, 'PEN', 5, 'pulsar-n160-fi.webp'),
-      moto(10, 'Bajaj', 'Pulsar NS160 ABS UG2', 2026, 'Naked', 160, 12024, 'PEN', 5, 'pulsar-ns160-abs-ug2.webp'),
-      moto(11, 'Bajaj', 'Pulsar 180 Neon', 2026, 'Urbana', 180, 9806, 'PEN', 5, 'pulsar-180-neon.webp'),
-      moto(12, 'Bajaj', 'Pulsar NS200 ABS UG2', 2026, 'Naked', 200, 14266, 'PEN', 5, 'pulsar-ns200-abs-ug2.webp'),
-      moto(13, 'Bajaj', 'Pulsar RS200', 2026, 'Deportiva', 200, 17646, 'PEN', 5, 'pulsar-rs200.webp'),
-      moto(14, 'Bajaj', 'Pulsar N250 UG', 2026, 'Naked', 250, 15357, 'PEN', 5, 'pulsar-n250-ug.webp'),
-      moto(15, 'Bajaj', 'Pulsar NS400Z', 2026, 'Naked', 373, 19866, 'PEN', 5, 'pulsar-ns400z.jpg'),
-      moto(16, 'Bajaj', 'Dominar 250', 2026, 'Touring', 250, 16234, 'PEN', 5, 'dominar-250.jpg'),
-      moto(17, 'Bajaj', 'Dominar 400 2.0', 2026, 'Touring', 373, 19866, 'PEN', 5, 'dominar-400-2.webp'),
+      moto(1, 'Bajaj', 'CT 125', 2026, 'Utilitaria', 125, 6299, 'PEN', 5, 'ct-125.webp', 1050, 4900),
+      moto(2, 'Bajaj', 'Boxer Cargo 150X UG Disc', 2026, 'Utilitaria', 150, 6002, 'PEN', 5, 'boxer-cargo-150x.webp', null, 5600),
+      moto(3, 'Bajaj', 'Discover 125 ST', 2026, 'Urbana', 125, 7308, 'PEN', 5, 'discover-125-st.webp', 1100, 5800),
+      moto(4, 'Bajaj', 'Pulsar LS/NS 125', 2026, 'Urbana', 125, 7916, 'PEN', 5, 'pulsar-ls-ns-125.webp', 1250, 6300),
+      moto(5, 'Bajaj', 'Pulsar N125 Carburada', 2026, 'Naked', 125, 7436, 'PEN', 5, 'pulsar-n125-carburada.jpg', 200, 6900),
+      moto(6, 'Bajaj', 'Pulsar N125FI', 2026, 'Naked', 125, 8174, 'PEN', 5, 'pulsar-n125fi.jpg', 400, 7400),
+      moto(7, 'Bajaj', 'Pulsar 150 Neon', 2026, 'Urbana', 150, 8032, 'PEN', 5, 'pulsar-150-neon.webp', null, 7600),
+      moto(8, 'Bajaj', 'Pulsar 150R', 2026, 'Urbana', 150, 8933, 'PEN', 5, 'pulsar-150r.jpg', 300, 8300),
+      moto(9, 'Bajaj', 'Pulsar N160 FI', 2026, 'Naked', 160, 10815, 'PEN', 5, 'pulsar-n160-fi.webp', 500, 9900, 'S/ 9,750 solo en color rojo'),
+      moto(10, 'Bajaj', 'Pulsar NS160 ABS UG2', 2026, 'Naked', 160, 12024, 'PEN', 5, 'pulsar-ns160-abs-ug2.webp', 850, 10800),
+      moto(11, 'Bajaj', 'Pulsar 180 Neon', 2026, 'Urbana', 180, 9806, 'PEN', 5, 'pulsar-180-neon.webp', 900, 8500),
+      moto(12, 'Bajaj', 'Pulsar NS200 ABS UG2', 2026, 'Naked', 200, 14266, 'PEN', 5, 'pulsar-ns200-abs-ug2.webp', 900, 13000),
+      moto(13, 'Bajaj', 'Pulsar RS200', 2026, 'Deportiva', 200, 17646, 'PEN', 5, 'pulsar-rs200.webp', null, 17200),
+      moto(14, 'Bajaj', 'Pulsar N250 UG', 2026, 'Naked', 250, 15357, 'PEN', 5, 'pulsar-n250-ug.webp', null, 15000),
+      moto(15, 'Bajaj', 'Pulsar NS400Z', 2026, 'Naked', 373, 19866, 'PEN', 5, 'pulsar-ns400z.jpg', null, 19500),
+      moto(16, 'Bajaj', 'Dominar 250', 2026, 'Touring', 250, 16234, 'PEN', 5, 'dominar-250.jpg', 1200, 14600),
+      moto(17, 'Bajaj', 'Dominar 400 2.0', 2026, 'Touring', 373, 19866, 'PEN', 5, 'dominar-400-2.webp', 1900, 17600),
+      moto(18, 'Polux', 'FMJ250P', 2026, 'Carguero', 250, 7800, 'PEN', 5, 'fmj250p.webp'),
+      moto(19, 'Polux', 'Tanke 350P', 2026, 'Carguero', 350, 11500, 'PEN', 5, 'tanke-350p.webp'),
+      moto(20, 'Polux', 'Full 400P', 2026, 'Carguero', 400, 15200, 'PEN', 5, 'full-400p.webp'),
+      moto(21, 'Polux', 'FMJ330P Carguero', 2026, 'Carguero', 330, 7900, 'PEN', 5, 'fmj330p.webp'),
+      moto(22, 'Polux', 'FMS260P Carguero Selvático', 2026, 'Carguero', 260, 8000, 'PEN', 5, 'fms260p.webp'),
+      moto(23, 'Polux', 'Jungla 350P', 2026, 'Carguero', 350, 11350, 'PEN', 5),
+      moto(24, 'Polux', 'Raptor 400 Cuatricarga', 2026, 'Carguero', 400, 16200, 'PEN', 5, 'raptor-400.webp'),
+      moto(25, 'Polux', 'Venom 250 Max 250Pi', 2026, 'Pistera', 250, 7200, 'PEN', 5, 'venom-250-max.webp'),
+      moto(26, 'Polux', 'Venom Max 400P', 2026, 'Pistera', 400, 9300, 'PEN', 5, 'venom-max-400p.webp'),
+      moto(27, 'Polux', 'Vemon 400 P', 2026, 'Pistera', 400, 9000, 'PEN', 5, 'vemon-400p.webp'),
+      moto(28, 'Polux', 'Venom 250P', 2026, 'Pistera', 250, 7500, 'PEN', 5, 'venom-250p.webp'),
+      moto(29, 'Polux', 'Kripton 250P Antigua', 2026, 'Pistera', 250, 5200, 'PEN', 5, 'kripton-250p.webp'),
+      moto(30, 'Polux', 'Logan 200P', 2026, 'Pistera', 200, 5100, 'PEN', 5, 'logan-200p.webp'),
+      moto(31, 'Polux', 'Ken 200P', 2026, 'Pistera', 200, 5100, 'PEN', 5, 'ken-200p.webp'),
+      moto(32, 'Polux', 'Iron 250P 2024', 2026, 'Pistera', 250, 6700, 'PEN', 5),
+      moto(33, 'Polux', 'Spirit 200P', 2026, 'Pistera', 200, 5200, 'PEN', 5, 'spirit-200p.webp'),
+      moto(34, 'Polux', 'Z400P', 2026, 'Pistera', 400, 9000, 'PEN', 5),
+      moto(35, 'Polux', 'Vio 150P', 2026, 'Urbana', 150, 3150, 'PEN', 5),
+      moto(36, 'Polux', 'Jumax 150P', 2026, 'Urbana', 150, 3200, 'PEN', 5),
+      moto(37, 'Polux', 'Diva 125P', 2026, 'Urbana', 125, 2500, 'PEN', 5),
+      moto(38, 'Polux', 'Jawar 200P', 2026, 'Urbana', 200, 4100, 'PEN', 5),
+      moto(39, 'Polux', 'Yango 150 P', 2026, 'Urbana', 150, 2900, 'PEN', 5),
+      moto(40, 'Polux', 'Nero 150P', 2026, 'Urbana', 150, 2900, 'PEN', 5),
+      moto(41, 'Polux', 'Bizon 200P', 2026, 'Todo terreno', 200, 3750, 'PEN', 5),
+      moto(42, 'Polux', 'Terran 200P', 2026, 'Todo terreno', 200, 3200, 'PEN', 5),
+      moto(43, 'Polux', 'BZX 200P', 2026, 'Todo terreno', 200, 3900, 'PEN', 5),
+      moto(44, 'Polux', 'GTS 250P', 2026, 'Todo terreno', 250, 6100, 'PEN', 5),
+      moto(45, 'Polux', 'GTS 300Pi', 2026, 'Todo terreno', 300, 8800, 'PEN', 5),
+      moto(46, 'Polux', 'Ranger 200 P', 2026, 'Todo terreno', 200, 3900, 'PEN', 5),
+      moto(47, 'Polux', 'Ranger 250 P', 2026, 'Todo terreno', 250, 4100, 'PEN', 5),
+      moto(48, 'Polux', 'Xram 200P', 2026, 'Todo terreno', 200, 3300, 'PEN', 5),
+      moto(49, 'Polux', 'Max 200P', 2026, 'Todo terreno', 200, 3900, 'PEN', 5),
+      moto(50, 'Polux', 'SR 250P', 2026, 'Todo terreno', 250, 6600, 'PEN', 5),
+      moto(51, 'Polux', 'Gol 150P', 2026, 'Todo terreno', 150, 2900, 'PEN', 5),
+      moto(52, 'Polux', 'Way 125P', 2026, 'Todo terreno', 125, 3000, 'PEN', 5),
+      moto(53, 'Polux', 'Prisma 150P', 2026, 'Todo terreno', 150, 3600, 'PEN', 5),
+      moto(54, 'Polux', 'Zeta 400P', 2026, 'Todo terreno', 400, 9050, 'PEN', 5),
+      moto(55, 'Polux', 'ZF 200P', 2026, 'Todo terreno', 200, 5600, 'PEN', 5),
+      moto(56, 'Rezzio', 'RZ200 Velox', 2026, 'Todo terreno', 200, 4450, 'PEN', 5),
+      moto(57, 'Rezzio', 'RZ250-FMX', 2026, 'Todo terreno', 250, 4400, 'PEN', 5),
     ],
     pedidos: [],
   };
@@ -149,6 +191,12 @@ function validarMoto(d) {
     ['PEN', 'USD'].includes(moneda) && Number.isInteger(stock) && stock >= 0;
   if (!ok) throw new Error('Revisa los datos ingresados');
   const r = { marca, modelo, anio, tipo, cc, precio, moneda, stock };
+  const bono = d.bono === '' || d.bono == null ? null : Number(d.bono);
+  const tarjeta = d.precio_tarjeta === '' || d.precio_tarjeta == null ? null : Number(d.precio_tarjeta);
+  if ((bono !== null && !(bono >= 0)) || (tarjeta !== null && !(tarjeta > 0))) throw new Error('Revisa los datos ingresados');
+  if ('bono' in d) r.bono = bono;
+  if ('precio_tarjeta' in d) r.precio_tarjeta = tarjeta;
+  if (d.precio_nota !== undefined) r.precio_nota = String(d.precio_nota || '').slice(0, 120);
   if (d.imagen !== undefined) r.imagen = String(d.imagen || '').slice(0, 500);
   return r;
 }

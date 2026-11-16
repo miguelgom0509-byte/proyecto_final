@@ -22,6 +22,13 @@ mimetypes.add_type("image/svg+xml", ".svg")
 # =====================================================================
 # Crea las tablas si no existen y carga los datos iniciales (motos, usuarios)
 Base.metadata.create_all(engine)
+# Bases creadas antes de existir bono / precio_tarjeta / precio_nota: se agregan las columnas que falten
+from sqlalchemy import inspect, text
+_cols = {c["name"] for c in inspect(engine).get_columns("motos")}
+with engine.begin() as _cx:
+    for _n, _t in (("bono", "FLOAT"), ("precio_tarjeta", "FLOAT"), ("precio_nota", "VARCHAR(120) DEFAULT ''")):
+        if _n not in _cols:
+            _cx.execute(text(f"ALTER TABLE motos ADD COLUMN {_n} {_t}"))
 seed()
 
 # =====================================================================

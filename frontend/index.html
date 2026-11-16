@@ -28,7 +28,7 @@
     <!-- Estilos -->
     <link rel="stylesheet" href="/assets/vendor/aos.css">
     <link rel="stylesheet" href="/assets/vendor/swiper-bundle.min.css">
-    <link rel="stylesheet" href="/assets/css/landing.css?v=20261118">
+    <link rel="stylesheet" href="/assets/css/landing.css?v=20261123">
     
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="/recursos/image/logo.jpeg">
@@ -106,6 +106,7 @@
                                 <label for="qf-precio">Precio máximo</label>
                                 <select id="qf-precio" aria-label="Filtrar por precio máximo">
                                     <option value="">Cualquiera</option>
+                                    <option value="1000">Hasta US$ 1,000 (≈ S/ 3,750)</option>
                                     <option value="1800">Hasta US$ 1,800 (≈ S/ 6,750)</option>
                                     <option value="2500">Hasta US$ 2,500 (≈ S/ 9,375)</option>
                                     <option value="3500">Hasta US$ 3,500 (≈ S/ 13,125)</option>
@@ -397,11 +398,11 @@
     <script src="/assets/vendor/lucide.min.js"></script>
     <script src="/assets/vendor/aos.js"></script>
     <script src="/assets/vendor/swiper-bundle.min.js"></script>
-    <script src="/assets/js/core.js?v=20261118"></script>
+    <script src="/assets/js/core.js?v=20261123"></script>
     <script>
         const TIPO_CAMBIO = 3.75;
         const TEA = 0.15;
-        const IMG_FALLBACK = '/recursos/image/logo.jpeg';
+        const IMG_FALLBACK = '/recursos/image/motos/proximamente.svg';
         const $id = id => document.getElementById(id);
 
         // --- Barra superior ---
@@ -510,6 +511,7 @@
                     <h3 class="moto-model">${esc(m.modelo)}</h3>
                     <p class="moto-specs">${esc(m.tipo)}, ${m.cc} cc</p>
                     <span class="moto-price">${money(m.precio, m.moneda)}</span>
+                    ${m.precio_tarjeta > 0 && m.precio_tarjeta < m.precio ? `<span class="moto-tarjeta"><b>${money(m.precio_tarjeta, m.moneda)}</b> solo con tarjeta</span>` : ''}
                 </div>
             </a>`;
         }

@@ -174,3 +174,21 @@ html:has(body.shop) { overflow-x: clip; }
 
 .sh-more { display: flex; justify-content: center; margin-top: 26px; }
 .sh-more:empty { display: none; }
+
+/* Precio con tarjeta y nota de precio */
+.moto-tarjeta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: 6px; padding: 7px 10px; font-size: .82rem; color: #CFE0FF;
+  background: rgba(47,111,224,.14); border-left: 3px solid #2F6FE0; }
+.moto-tarjeta svg { width: 16px; height: 16px; fill: none; stroke: #8FB4FF; stroke-width: 2; flex: none; }
+.moto-tarjeta b { font-size: 1.05rem; color: #fff; }
+.moto-tarjeta em { font-style: normal; font-weight: 700; color: #7DE3A8; margin-left: auto; }
+.moto-nota { display: block; margin-top: 4px; font-size: .76rem; color: #9FB3D9; }
+.ficha-precio-box .moto-tarjeta { margin-top: 10px; }
+
+/* Filtro por marca */
+.sh-marcas { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+.sh-marca { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; font: 800 .9rem/1 Archivo, Inter, sans-serif; font-style: italic; text-transform: uppercase; letter-spacing: .04em;
+  color: #CFE0FF; background: #0B1220; border: 1px solid #1E2C4A; cursor: pointer; clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%); transition: background .2s, color .2s; }
+.sh-marca span { font: 600 .75rem Inter, sans-serif; opacity: .7; }
+.sh-marca:hover { background: #12203D; }
+.sh-marca.active { background: #2F6FE0; color: #fff; border-color: #2F6FE0; }
+.sh-marca:focus-visible { outline: 2px solid #CFE0FF; outline-offset: 2px; }

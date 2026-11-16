@@ -28,6 +28,9 @@ class Moto(Base):
     stock: Mapped[int] = mapped_column(Integer, default=0)
     activo: Mapped[bool] = mapped_column(Boolean, default=True)
     imagen: Mapped[str] = mapped_column(String(500), default="") # <-- NUEVO CAMPO
+    bono: Mapped[float | None] = mapped_column(Float, nullable=True, default=None)
+    precio_tarjeta: Mapped[float | None] = mapped_column(Float, nullable=True, default=None)
+    precio_nota: Mapped[str] = mapped_column(String(120), default="")
 
     def public(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}

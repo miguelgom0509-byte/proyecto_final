@@ -1,5 +1,5 @@
 const FAV_KEY = 'ma_favs';
-const IMG_FALLBACK = '/recursos/image/logo.jpeg';
+const IMG_FALLBACK = '/recursos/image/motos/proximamente.svg';
 
 const favs = {
   get() { try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch { return []; } },
@@ -42,6 +42,14 @@ function calcEtiquetas(motos) {
   etiquetas[barata.id] = '💰 Mejor precio';
 }
 
+// Precio final pagando con tarjeta (lista de precios de la marca) y cuánto se ahorra frente al precio lista
+function bloqueTarjeta(m) {
+  if (!(m.precio_tarjeta > 0) || m.precio_tarjeta >= m.precio) return '';
+  return `<span class="moto-tarjeta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+    <b>${money(m.precio_tarjeta, m.moneda)}</b> solo con tarjeta<em>Ahorras ${money(m.precio - m.precio_tarjeta, m.moneda)}</em></span>
+    ${m.precio_nota ? `<small class="moto-nota">${esc(m.precio_nota)}</small>` : ''}`;
+}
+
 function tarjeta(m) {
   const [clase, texto] = stockInfo(m);
   const badgeTexto = texto === 'Últimas unidades' ? `Quedan ${m.stock}` : texto;
@@ -68,6 +76,7 @@ function tarjeta(m) {
 
         <div class="moto-pricebox">
           <span class="moto-price">${money(m.precio, m.moneda)}</span>
+          ${bloqueTarjeta(m)}
           <span class="moto-cuota">o desde <b>${money(cuotaMensual(m))}</b> al mes<sup>*</sup></span>
         </div>
         ${m.stock > 0 && m.stock <= 3 ? `<p class="moto-urgencia">🔥 ¡Solo quedan ${m.stock} unidad${m.stock === 1 ? '' : 'es'}!</p>` : ''}
@@ -170,8 +179,9 @@ async function renderFicha(id) {
             <h1 class="ficha-titulo">${esc(m.marca)} ${esc(m.modelo)}</h1>
             
             <div class="ficha-precio-box">
-              <span class="ficha-precio-label">Precio referencial</span>
+              <span class="ficha-precio-label">Precio lista</span>
               <span class="ficha-precio-valor">${money(m.precio, m.moneda)}</span>
+              ${bloqueTarjeta(m)}
               ${m.moneda === 'PEN' ? `<span class="ficha-precio-alt">Aprox. US$ ${Math.round(m.precio / 3.75).toLocaleString('es-PE')}</span>` : ''}
             </div>
 
@@ -258,7 +268,7 @@ const fichaId = () => {
 const SECCIONES = [
   { id: 'catalogo', label: 'Catálogo', async render(v, again) {
     const motos = await api('/motos');
-    let orden = '';
+    let orden = '', marca = '';
     // Filtros que vienen de la landing (buscador, tipo, cilindrada y precio máximo)
     const leer = k => { try { const v = sessionStorage.getItem(k) || ''; sessionStorage.removeItem(k); return v; } catch { return ''; } };
     let texto = leer('busqueda_inicial');
@@ -267,6 +277,10 @@ const SECCIONES = [
     if (!(ccMax > 0)) ccMin = ccMax = null;
     let precioMax = +leer('filtro_precio') || null;   // en US$
 
+    // Pulsar se separa de Bajaj porque es su línea más conocida; el resto va por marca
+    const grupoDe = m => /^pulsar/i.test(m.modelo) ? 'Pulsar' : m.marca;
+    const ORDEN_G = ['Pulsar', 'Bajaj', 'Polux'];
+    const grupos = [...new Set(motos.map(grupoDe))].sort((a, b) => (ORDEN_G.indexOf(a) + 1 || 9) - (ORDEN_G.indexOf(b) + 1 || 9));
     const tipos = ['Todas', ...new Set(motos.map(m => m.tipo))];   // 'Todas' = sin filtro
     let tipo = tipos.includes(tipoInicial) ? tipoInicial : 'Todas';
     const enUsd = m => m.moneda === 'USD' ? m.precio : m.precio / TIPO_CAMBIO;
@@ -341,9 +355,13 @@ const SECCIONES = [
             </div>
           </div>
         </div>
+        <div class="sh-marcas" id="marcas" role="group" aria-label="Marca">
+          ${['', ...grupos].map(g => `<button type="button" class="sh-marca ${g === marca ? 'active' : ''}" data-marca="${esc(g)}" aria-pressed="${g === marca}">${g ? esc(g) : 'Todas'}<span>${g ? motos.filter(m => grupoDe(m) === g).length : motos.length}</span></button>`).join('')}
+        </div>
         <div id="filtros-extra" class="muted" style="margin-bottom:12px"></div>
         <div class="gallery" id="grid"></div>
         <div class="sh-more" id="mas"></div>
+        <p class="sales-nota">Precios en soles. Bajaj: lista vigente del 1 al 30 de noviembre de 2026 (Cusco, Puno y Madre de Dios); el precio con tarjeta aplica solo pagando con tarjeta. Otras marcas: precios publicados al 16-11-2026. El asesor confirma stock, color y precio final.</p>
         <p class="sales-nota">* Cuota referencial con 20 % de inicial, 36 meses y TEA 15 %. No incluye seguros ni gastos administrativos; el asesor confirma la cuota final.</p>
       </section>
 
@@ -409,7 +427,7 @@ const SECCIONES = [
     const pintar = () => {
       const q = texto.trim().toLowerCase();
       const lista = motos
-        .filter(m => (tipo === 'Todas' || m.tipo === tipo)
+        .filter(m => (tipo === 'Todas' || m.tipo === tipo) && (!marca || grupoDe(m) === marca)
                   && `${m.marca} ${m.modelo} ${m.tipo}`.toLowerCase().includes(q)
                   && (ccMax === null || (m.cc >= ccMin && m.cc <= ccMax))
                   && (precioMax === null || enUsd(m) <= precioMax))
@@ -426,7 +444,7 @@ const SECCIONES = [
       $('#conteo').textContent = `${lista.length} modelo${lista.length === 1 ? '' : 's'}`;
       const grid = $('#grid');
       // Sin filtros se muestran las primeras 8; con filtros o al pedirlo, todas
-      const hayFiltro = tipo !== 'Todas' || q || ccMax !== null || precioMax !== null;
+      const hayFiltro = tipo !== 'Todas' || marca || q || ccMax !== null || precioMax !== null;
       const visibles = (verTodas || hayFiltro) ? lista : lista.slice(0, 8);
       grid.innerHTML = lista.length ? visibles.map(tarjeta).join('')
         : vacio('🏍️', 'Sin resultados', 'Prueba con otra búsqueda o categoría.');
@@ -437,6 +455,12 @@ const SECCIONES = [
     };
 
     $('#q').oninput = e => { texto = e.target.value; pintar(); };
+    $('#marcas').onclick = e => {
+      const b = e.target.closest('[data-marca]'); if (!b) return;
+      marca = b.dataset.marca;
+      document.querySelectorAll('.sh-marca').forEach(x => { const on = x.dataset.marca === marca; x.classList.toggle('active', on); x.setAttribute('aria-pressed', on); });
+      pintar();
+    };
     $('#ord').onchange = e => { orden = e.target.value; pintar(); };
     $('#tabs').onclick = e => {
       const b = e.target.closest('[data-tipo]'); if (!b) return;

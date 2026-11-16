@@ -24,6 +24,9 @@ class MotoIn(BaseModel):
     moneda: str = Field(default="PEN", pattern="^(PEN|USD)$")
     stock: int = Field(default=0, ge=0)
     imagen: str = Field(default="", max_length=500) # <-- NUEVO
+    bono: float | None = Field(default=None, ge=0)
+    precio_tarjeta: float | None = Field(default=None, gt=0)
+    precio_nota: str = Field(default="", max_length=120)
     activo: bool = True
 
 class StockIn(BaseModel):
