@@ -192,3 +192,76 @@ html:has(body.shop) { overflow-x: clip; }
 .sh-marca:hover { background: #12203D; }
 .sh-marca.active { background: #2F6FE0; color: #fff; border-color: #2F6FE0; }
 .sh-marca:focus-visible { outline: 2px solid #CFE0FF; outline-offset: 2px; }
+
+/* ============================================================
+   FICHA TÉCNICA
+   ============================================================ */
+.fx { padding-top: 8px; }
+.fx .breadcrumb { margin-bottom: 18px; }
+.fx-top { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.fx-stage { position: relative; aspect-ratio: 4 / 3; display: grid; place-items: center; padding: clamp(16px, 4vw, 40px); overflow: hidden;
+  background: radial-gradient(ellipse at 50% 45%, #1A2C57 0%, #0B1226 55%, #060912 100%);
+  border: 1px solid rgba(143, 184, 255, .18); clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%); }
+.fx-stage::after { content: ''; position: absolute; left: 0; bottom: 0; width: 46%; height: 5px; background: linear-gradient(90deg, var(--azul) 78%, transparent 78%, transparent 84%, var(--hielo) 84%); }
+.fx-stage img { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 22px 22px rgba(0, 0, 0, .55)); }
+.fx-stage img.sin-foto { max-width: 70%; opacity: .75; filter: none; }
+.fx-tipo { position: absolute; z-index: 2; top: 16px; left: 16px; padding: 7px 18px; background: var(--azul); color: #fff; font: 800 12px/1 inherit; letter-spacing: .08em; text-transform: uppercase; transform: skewX(-12deg); }
+
+.fx-buy { position: sticky; top: 88px; display: flex; flex-direction: column; gap: 14px; }
+.fx-brand { color: var(--azul-claro); font-weight: 700; font-size: 14px; }
+.fx-title { font-size: clamp(2.2rem, 4.6vw, 3.6rem); line-height: .92; margin: 0; }
+.fx-tags { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0; }
+.fx-tags li { padding: 6px 12px; font-size: 13px; font-weight: 600; color: var(--hielo); border: 1px solid rgba(143, 184, 255, .28); }
+.fx-tags .fx-stock.badge-success { color: #6EE7B7; border-color: rgba(16, 185, 129, .45); background: rgba(16, 185, 129, .12); }
+.fx-tags .fx-stock.badge-warning { color: #FCD34D; border-color: rgba(245, 158, 11, .5); background: rgba(245, 158, 11, .12); }
+.fx-tags .fx-stock.badge-danger { color: #FCA5A5; border-color: rgba(239, 68, 68, .5); background: rgba(239, 68, 68, .12); }
+.fx-price { padding: 18px 20px; background: #0A1020; border: 1px solid rgba(143, 184, 255, .2); border-left: 4px solid var(--azul); }
+.fx-price-label { display: block; font-size: 13px; color: var(--text-secondary); font-weight: 600; }
+.fx-price-val { display: block; font-family: 'Archivo', 'Montserrat', sans-serif; font-stretch: 75%; font-style: italic; font-weight: 900; font-size: clamp(2.2rem, 5vw, 3rem); line-height: 1.05; color: #fff; font-variant-numeric: tabular-nums; }
+.fx-price .moto-tarjeta { margin-top: 10px; }
+.fx-cuota { margin: 12px 0 0; color: var(--text-secondary); font-size: 14px; }
+.fx-cuota b { color: var(--hielo); font-size: 1.1rem; }
+.fx-cta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fx-cta .btn-primary { grid-column: 1 / -1; padding: 15px; font-size: 16px; }
+.fx-cta .btn { justify-content: center; }
+.btn-wa { background: #25D366; color: #06210F; font-weight: 800; border: 0; }
+.btn-wa:hover { background: #2BE371; transform: translateY(-1px); }
+.fx-fine { margin: 0; font-size: 12px; color: var(--text-muted); }
+
+.fx-keys { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1px; margin: 36px 0 28px; background: rgba(143, 184, 255, .16); border: 1px solid rgba(143, 184, 255, .16); }
+.fx-keys div { background: #080D1A; padding: 20px 22px; }
+.fx-keys small { display: block; color: var(--text-secondary); font-size: 13px; font-weight: 600; }
+.fx-keys b { display: block; margin-top: 6px; font-family: 'Archivo', 'Montserrat', sans-serif; font-stretch: 75%; font-style: italic; font-weight: 900; font-size: clamp(1.4rem, 3vw, 2rem); line-height: 1.05; color: #fff; }
+
+.fx-specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; align-items: start; }
+.fx-card { background: #0A1020; border: 1px solid rgba(143, 184, 255, .16); padding: 22px 24px; }
+.fx-card h2 { font-size: 1.05rem; font-weight: 800; color: #fff; margin: 0 0 8px; padding-bottom: 12px; border-bottom: 3px solid var(--azul); width: fit-content; font-family: 'Archivo', 'Montserrat', sans-serif; font-style: italic; text-transform: uppercase; letter-spacing: .02em; }
+.fx-card dl { margin: 0; }
+.fx-card dl div { display: grid; grid-template-columns: 42% 1fr; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(143, 184, 255, .1); }
+.fx-card dl div:last-child { border-bottom: 0; }
+.fx-card dt { color: var(--text-secondary); font-size: 14px; }
+.fx-card dd { margin: 0; color: #fff; font-weight: 600; font-size: 14px; line-height: 1.4; }
+.fx-pend p { color: var(--text-secondary); line-height: 1.6; margin: 12px 0 18px; }
+.fx-note { margin: 22px 0 0; padding: 14px 18px; font-size: 13px; line-height: 1.6; color: var(--text-secondary); border-left: 3px solid rgba(143, 184, 255, .4); background: rgba(143, 184, 255, .05); }
+.fx-note a { color: var(--azul-claro); text-decoration: underline; }
+.fx-note b { color: var(--hielo); }
+.fx-rel { margin-top: clamp(40px, 6vw, 72px); }
+.fx-rel h2 { font-size: clamp(1.5rem, 3.4vw, 2.3rem); line-height: 1; margin: 0 0 22px; }
+
+.fx-bar { display: none; }
+@media (max-width: 900px) {
+  .fx-top { grid-template-columns: 1fr; gap: 22px; }
+  .fx-buy { position: static; }
+  .fx-stage { aspect-ratio: 16 / 11; }
+  .fx-cta .btn-primary { display: none; }   /* en móvil el botón principal va en la barra fija */
+  .fx-cta { grid-template-columns: 1fr 1fr; }
+  .fx-card dl div { grid-template-columns: 1fr; gap: 2px; }
+  .fx-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 70; display: flex; align-items: center; gap: 10px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    background: rgba(5, 7, 13, .96); backdrop-filter: blur(12px); border-top: 1px solid rgba(143, 184, 255, .25); }
+  .fx-bar div { margin-right: auto; line-height: 1.15; }
+  .fx-bar small { display: block; font-size: 11px; color: var(--text-secondary); }
+  .fx-bar b { font-size: 1.15rem; color: #fff; }
+  body:has(.fx-bar) .wa-float { display: none; }
+  body:has(.fx-bar) .shop-foot { padding-bottom: 72px; }
+}
+@media (max-width: 540px) { .fx-cta { grid-template-columns: 1fr; } }

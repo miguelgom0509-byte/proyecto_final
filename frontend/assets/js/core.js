@@ -198,6 +198,7 @@ function validarMoto(d) {
   if ('precio_tarjeta' in d) r.precio_tarjeta = tarjeta;
   if (d.precio_nota !== undefined) r.precio_nota = String(d.precio_nota || '').slice(0, 120);
   if (d.imagen !== undefined) r.imagen = String(d.imagen || '').slice(0, 500);
+  if ('activo' in d) r.activo = !!d.activo;
   return r;
 }
 
@@ -339,6 +340,19 @@ async function apiLocal(path, { method = 'GET', body } = {}) {
       if (!['admin', 'trabajador', 'cliente'].includes(body?.rol)) throw new Error('Revisa los datos ingresados');
       const u = await crearUsuario(body, body.rol);
       db.usuarios.push(u); guardar(); return pub(u);
+    }
+    if (b === 'usuarios' && c && !d && method === 'PUT') {
+      const u = db.usuarios.find(x => x.id === +c);
+      if (!u) throw new Error('Usuario no encontrado');
+      const nombre = String(body?.nombre || '').trim(), email = String(body?.email || '').trim().toLowerCase();
+      if (nombre.length < 3 || !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email) || !['admin', 'trabajador', 'cliente'].includes(body?.rol)
+          || (body.password && String(body.password).length < 8)) throw new Error('Revisa los datos ingresados');
+      if (db.usuarios.some(x => x.id !== u.id && x.email === email)) throw new Error('Ese correo ya está registrado');
+      const activo = body.activo !== false;
+      if (u.id === yo.id && (body.rol !== 'admin' || !activo)) throw new Error('No puedes quitarte el rol de admin ni desactivar tu propia cuenta');
+      u.nombre = nombre; u.email = email; u.rol = body.rol; u.activo = activo;
+      if (body.password) u.password_hash = await sha256(String(body.password));
+      guardar(); return pub(u);
     }
     if (b === 'usuarios' && d === 'activo' && method === 'PATCH') {
       const u = db.usuarios.find(x => x.id === +c);
