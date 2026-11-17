@@ -17,16 +17,29 @@ const HOME = { admin: '/admin/', trabajador: '/trabajador/', cliente: '/cliente/
 const session = {
   get token() { try { return localStorage.getItem('ma_token'); } catch { return null; } },
   get user() { try { return JSON.parse(localStorage.getItem('ma_user')); } catch { return null; } },
-  set(t, u) { localStorage.setItem('ma_token', t); localStorage.setItem('ma_user', JSON.stringify(u)); },
+  set(t, u) { try { localStorage.setItem('ma_token', t); localStorage.setItem('ma_user', JSON.stringify(u)); } catch { /* sin acceso a storage */ } },
   clear() { try { localStorage.removeItem('ma_token'); localStorage.removeItem('ma_user'); } catch { /* sin acceso a storage */ } },
 };
 
-// true  = usa el backend FastAPI (uvicorn backend.main:app)
-// false = modo Firebase Hosting: todo se guarda en el navegador (localStorage)
-const USAR_BACKEND = false;
+// Modo automático: si el servidor FastAPI responde en /api/health se usa el backend real
+// (uvicorn backend.main:app); si no (Firebase Hosting, archivo abierto a mano, etc.)
+// todo se guarda en el navegador (localStorage).
+let backendDisponible = null;
+function detectarBackend() {
+  backendDisponible ??= (async () => {
+    if (location.protocol === 'file:') return false;
+    try {
+      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 2500);
+      const r = await fetch('/api/health', { signal: ctl.signal, cache: 'no-store' });
+      clearTimeout(t);
+      return r.ok && (await r.json().catch(() => null))?.ok === true;
+    } catch { return false; }
+  })();
+  return backendDisponible;
+}
 
 async function api(path, opts = {}) {
-  return USAR_BACKEND ? apiRemota(path, opts) : apiLocal(path, opts);
+  return (await detectarBackend()) ? apiRemota(path, opts) : apiLocal(path, opts);
 }
 
 async function apiRemota(path, { method = 'GET', body } = {}) {
@@ -66,30 +79,88 @@ const sha256 = async s => {
   return 'x' + h.toString(16);
 };
 
+// Versión del catálogo: al subirla, los navegadores con datos antiguos reciben el catálogo nuevo.
+const CATALOGO_V = 6;
+
 async function semilla() {
-  const I = 'https://images.unsplash.com/';
   const usr = async (id, nombre, email, pwd, rol) => ({ id, nombre, email, password_hash: await sha256(pwd), rol, activo: true });
-  const moto = (id, marca, modelo, anio, tipo, cc, precio, moneda, stock, foto) =>
-    ({ id, marca, modelo, anio, tipo, cc, precio, moneda, stock, activo: true, imagen: I + foto + '?q=80&w=800&auto=format&fit=crop' });
+  // Lista sugerida de precios público (PVP zona), en soles, precio contado. Las fotos están en /recursos/image/motos/
+  // bono / tarjeta: Bajaj (lista Zona 4, noviembre 2026). Marcas sin foto propia usan proximamente.svg
+  const moto = (id, marca, modelo, anio, tipo, cc, precio, moneda, stock, foto = 'proximamente.svg', bono = null, tarjeta = null, nota = '') =>
+    ({ id, marca, modelo, anio, tipo, cc, precio, moneda, stock, activo: true, imagen: '/recursos/image/motos/' + foto,
+       bono, precio_tarjeta: tarjeta, precio_nota: nota });
   return {
-    seq: { usuarios: 3, motos: 5, pedidos: 0 },
+    catalogo_v: CATALOGO_V,
+    seq: { usuarios: 3, motos: 57, pedidos: 0 },
     usuarios: [
       await usr(1, 'Administrador', 'admin@motoaltiplano.pe', 'Admin12345', 'admin'),
       await usr(2, 'Carlos Quispe', 'trabajador@motoaltiplano.pe', 'Trabajo12345', 'trabajador'),
       await usr(3, 'Lucía Mamani', 'cliente@motoaltiplano.pe', 'Cliente12345', 'cliente'),
     ],
     motos: [
-      moto(1, 'Honda', 'Elite 125', 2026, 'Scooter', 124, 2369, 'USD', 6, 'photo-1558981403-c5f9899a28bc'),
-      moto(2, 'Yamaha', 'FZS 4.0 ABS Deluxe', 2026, 'Naked', 150, 3399, 'USD', 4, 'photo-1568772585407-9361f9bf3a87'),
-      moto(3, 'Bajaj', 'Boxer 150X UG Disc', 2026, 'Utilitaria', 150, 5432, 'PEN', 10, 'photo-1591637333184-19aa84b3e01f'),
-      moto(4, 'Bajaj', 'Dominar 250', 2026, 'Naked', 250, 15593, 'PEN', 3, 'photo-1558980664-10ea292d4342'),
-      moto(5, 'Hero', 'Hunk 160R 4V', 2027, 'Pistera', 163, 2899, 'USD', 5, 'photo-1558981403-c5f9899a28bc'),
+      moto(1, 'Bajaj', 'CT 125', 2026, 'Utilitaria', 125, 6299, 'PEN', 5, 'ct-125.webp', 1050, 4900),
+      moto(2, 'Bajaj', 'Boxer Cargo 150X UG Disc', 2026, 'Utilitaria', 150, 6002, 'PEN', 5, 'boxer-cargo-150x.webp', null, 5600),
+      moto(3, 'Bajaj', 'Discover 125 ST', 2026, 'Urbana', 125, 7308, 'PEN', 5, 'discover-125-st.webp', 1100, 5800),
+      moto(4, 'Bajaj', 'Pulsar LS/NS 125', 2026, 'Urbana', 125, 7916, 'PEN', 5, 'pulsar-ls-ns-125.webp', 1250, 6300),
+      moto(5, 'Bajaj', 'Pulsar N125 Carburada', 2026, 'Naked', 125, 7436, 'PEN', 5, 'pulsar-n125-carburada.jpg', 200, 6900),
+      moto(6, 'Bajaj', 'Pulsar N125FI', 2026, 'Naked', 125, 8174, 'PEN', 5, 'pulsar-n125fi.jpg', 400, 7400),
+      moto(7, 'Bajaj', 'Pulsar 150 Neon', 2026, 'Urbana', 150, 8032, 'PEN', 5, 'pulsar-150-neon.webp', null, 7600),
+      moto(8, 'Bajaj', 'Pulsar 150R', 2026, 'Urbana', 150, 8933, 'PEN', 5, 'pulsar-150r.jpg', 300, 8300),
+      moto(9, 'Bajaj', 'Pulsar N160 FI', 2026, 'Naked', 160, 10815, 'PEN', 5, 'pulsar-n160-fi.webp', 500, 9900, 'S/ 9,750 solo en color rojo'),
+      moto(10, 'Bajaj', 'Pulsar NS160 ABS UG2', 2026, 'Naked', 160, 12024, 'PEN', 5, 'pulsar-ns160-abs-ug2.webp', 850, 10800),
+      moto(11, 'Bajaj', 'Pulsar 180 Neon', 2026, 'Urbana', 180, 9806, 'PEN', 5, 'pulsar-180-neon.webp', 900, 8500),
+      moto(12, 'Bajaj', 'Pulsar NS200 ABS UG2', 2026, 'Naked', 200, 14266, 'PEN', 5, 'pulsar-ns200-abs-ug2.webp', 900, 13000),
+      moto(13, 'Bajaj', 'Pulsar RS200', 2026, 'Deportiva', 200, 17646, 'PEN', 5, 'pulsar-rs200.webp', null, 17200),
+      moto(14, 'Bajaj', 'Pulsar N250 UG', 2026, 'Naked', 250, 15357, 'PEN', 5, 'pulsar-n250-ug.webp', null, 15000),
+      moto(15, 'Bajaj', 'Pulsar NS400Z', 2026, 'Naked', 373, 19866, 'PEN', 5, 'pulsar-ns400z.jpg', null, 19500),
+      moto(16, 'Bajaj', 'Dominar 250', 2026, 'Touring', 250, 16234, 'PEN', 5, 'dominar-250.jpg', 1200, 14600),
+      moto(17, 'Bajaj', 'Dominar 400 2.0', 2026, 'Touring', 373, 19866, 'PEN', 5, 'dominar-400-2.webp', 1900, 17600),
+      moto(18, 'Polux', 'FMJ250P', 2026, 'Carguero', 250, 7800, 'PEN', 5, 'fmj250p.webp'),
+      moto(19, 'Polux', 'Tanke 350P', 2026, 'Carguero', 350, 11500, 'PEN', 5, 'tanke-350p.webp'),
+      moto(20, 'Polux', 'Full 400P', 2026, 'Carguero', 400, 15200, 'PEN', 5, 'full-400p.webp'),
+      moto(21, 'Polux', 'FMJ330P Carguero', 2026, 'Carguero', 330, 7900, 'PEN', 5, 'fmj330p.webp'),
+      moto(22, 'Polux', 'FMS260P Carguero Selvático', 2026, 'Carguero', 260, 8000, 'PEN', 5, 'fms260p.webp'),
+      moto(23, 'Polux', 'Jungla 350P', 2026, 'Carguero', 350, 11350, 'PEN', 5),
+      moto(24, 'Polux', 'Raptor 400 Cuatricarga', 2026, 'Carguero', 400, 16200, 'PEN', 5, 'raptor-400.webp'),
+      moto(25, 'Polux', 'Venom 250 Max 250Pi', 2026, 'Pistera', 250, 7200, 'PEN', 5, 'venom-250-max.webp'),
+      moto(26, 'Polux', 'Venom Max 400P', 2026, 'Pistera', 400, 9300, 'PEN', 5, 'venom-max-400p.webp'),
+      moto(27, 'Polux', 'Vemon 400 P', 2026, 'Pistera', 400, 9000, 'PEN', 5, 'vemon-400p.webp'),
+      moto(28, 'Polux', 'Venom 250P', 2026, 'Pistera', 250, 7500, 'PEN', 5, 'venom-250p.webp'),
+      moto(29, 'Polux', 'Kripton 250P Antigua', 2026, 'Pistera', 250, 5200, 'PEN', 5, 'kripton-250p.webp'),
+      moto(30, 'Polux', 'Logan 200P', 2026, 'Pistera', 200, 5100, 'PEN', 5, 'logan-200p.webp'),
+      moto(31, 'Polux', 'Ken 200P', 2026, 'Pistera', 200, 5100, 'PEN', 5, 'ken-200p.webp'),
+      moto(32, 'Polux', 'Iron 250P 2024', 2026, 'Pistera', 250, 6700, 'PEN', 5),
+      moto(33, 'Polux', 'Spirit 200P', 2026, 'Pistera', 200, 5200, 'PEN', 5, 'spirit-200p.webp'),
+      moto(34, 'Polux', 'Z400P', 2026, 'Pistera', 400, 9000, 'PEN', 5),
+      moto(35, 'Polux', 'Vio 150P', 2026, 'Urbana', 150, 3150, 'PEN', 5),
+      moto(36, 'Polux', 'Jumax 150P', 2026, 'Urbana', 150, 3200, 'PEN', 5),
+      moto(37, 'Polux', 'Diva 125P', 2026, 'Urbana', 125, 2500, 'PEN', 5),
+      moto(38, 'Polux', 'Jawar 200P', 2026, 'Urbana', 200, 4100, 'PEN', 5),
+      moto(39, 'Polux', 'Yango 150 P', 2026, 'Urbana', 150, 2900, 'PEN', 5),
+      moto(40, 'Polux', 'Nero 150P', 2026, 'Urbana', 150, 2900, 'PEN', 5),
+      moto(41, 'Polux', 'Bizon 200P', 2026, 'Todo terreno', 200, 3750, 'PEN', 5),
+      moto(42, 'Polux', 'Terran 200P', 2026, 'Todo terreno', 200, 3200, 'PEN', 5),
+      moto(43, 'Polux', 'BZX 200P', 2026, 'Todo terreno', 200, 3900, 'PEN', 5),
+      moto(44, 'Polux', 'GTS 250P', 2026, 'Todo terreno', 250, 6100, 'PEN', 5),
+      moto(45, 'Polux', 'GTS 300Pi', 2026, 'Todo terreno', 300, 8800, 'PEN', 5),
+      moto(46, 'Polux', 'Ranger 200 P', 2026, 'Todo terreno', 200, 3900, 'PEN', 5),
+      moto(47, 'Polux', 'Ranger 250 P', 2026, 'Todo terreno', 250, 4100, 'PEN', 5),
+      moto(48, 'Polux', 'Xram 200P', 2026, 'Todo terreno', 200, 3300, 'PEN', 5),
+      moto(49, 'Polux', 'Max 200P', 2026, 'Todo terreno', 200, 3900, 'PEN', 5),
+      moto(50, 'Polux', 'SR 250P', 2026, 'Todo terreno', 250, 6600, 'PEN', 5),
+      moto(51, 'Polux', 'Gol 150P', 2026, 'Todo terreno', 150, 2900, 'PEN', 5),
+      moto(52, 'Polux', 'Way 125P', 2026, 'Todo terreno', 125, 3000, 'PEN', 5),
+      moto(53, 'Polux', 'Prisma 150P', 2026, 'Todo terreno', 150, 3600, 'PEN', 5),
+      moto(54, 'Polux', 'Zeta 400P', 2026, 'Todo terreno', 400, 9050, 'PEN', 5),
+      moto(55, 'Polux', 'ZF 200P', 2026, 'Todo terreno', 200, 5600, 'PEN', 5),
+      moto(56, 'Rezzio', 'RZ200 Velox', 2026, 'Todo terreno', 200, 4450, 'PEN', 5),
+      moto(57, 'Rezzio', 'RZ250-FMX', 2026, 'Todo terreno', 250, 4400, 'PEN', 5),
     ],
     pedidos: [],
   };
 }
 
-const guardarDB = d => localStorage.setItem(DB_KEY, JSON.stringify(d));
+const guardarDB = d => { try { localStorage.setItem(DB_KEY, JSON.stringify(d)); } catch { /* sin acceso a storage */ } };
 let semillaPromise = null;
 async function cargarDB() {
   const leer = () => { try { return JSON.parse(localStorage.getItem(DB_KEY)); } catch { return null; } };
@@ -98,6 +169,13 @@ async function cargarDB() {
     semillaPromise ??= semilla().then(s => { if (!leer()) { try { guardarDB(s); } catch { /* sin storage */ } } return s; });
     const s = await semillaPromise;
     d = leer() ?? s;
+  }
+  // Datos guardados con un catálogo anterior: se reemplaza el catálogo (y los pedidos de prueba, que apuntaban a motos viejas).
+  if (d.catalogo_v !== CATALOGO_V) {
+    const nuevo = await semilla();
+    d.motos = nuevo.motos; d.seq = { ...d.seq, motos: nuevo.seq.motos, pedidos: 0 };
+    d.pedidos = []; d.catalogo_v = CATALOGO_V;
+    guardarDB(d);
   }
   return d;
 }
@@ -113,7 +191,14 @@ function validarMoto(d) {
     ['PEN', 'USD'].includes(moneda) && Number.isInteger(stock) && stock >= 0;
   if (!ok) throw new Error('Revisa los datos ingresados');
   const r = { marca, modelo, anio, tipo, cc, precio, moneda, stock };
+  const bono = d.bono === '' || d.bono == null ? null : Number(d.bono);
+  const tarjeta = d.precio_tarjeta === '' || d.precio_tarjeta == null ? null : Number(d.precio_tarjeta);
+  if ((bono !== null && !(bono >= 0)) || (tarjeta !== null && !(tarjeta > 0))) throw new Error('Revisa los datos ingresados');
+  if ('bono' in d) r.bono = bono;
+  if ('precio_tarjeta' in d) r.precio_tarjeta = tarjeta;
+  if (d.precio_nota !== undefined) r.precio_nota = String(d.precio_nota || '').slice(0, 120);
   if (d.imagen !== undefined) r.imagen = String(d.imagen || '').slice(0, 500);
+  if ('activo' in d) r.activo = !!d.activo;
   return r;
 }
 
@@ -156,6 +241,20 @@ async function apiLocal(path, { method = 'GET', body } = {}) {
   if (a === 'auth' && b === 'registro' && method === 'POST') {
     const u = await crearUsuario(body, 'cliente');
     db.usuarios.push(u); guardar();
+    return { token: 'local-' + u.id, usuario: pub(u) };
+  }
+  if (a === 'auth' && b === 'social' && method === 'POST') {
+    const email = String(body?.email || '').trim().toLowerCase();
+    if (!EMAIL_RE.test(email)) throw new Error('Tu cuenta no compartió un correo válido');
+    let u = db.usuarios.find(x => x.email === email);
+    if (u && u.rol !== 'cliente') throw new Error('Esta cuenta del equipo debe ingresar con su contraseña');
+    if (u && !u.activo) throw new Error('Cuenta desactivada');
+    if (!u) {
+      const nombre = String(body?.nombre || email.split('@')[0]).trim().slice(0, 80);
+      u = { id: ++db.seq.usuarios, nombre: nombre.length >= 3 ? nombre : nombre.padEnd(3, '_'), email,
+            password_hash: await sha256(crypto.getRandomValues(new Uint32Array(4)).join('-')), rol: 'cliente', activo: true };
+      db.usuarios.push(u); guardar();
+    }
     return { token: 'local-' + u.id, usuario: pub(u) };
   }
   if (a === 'auth' && b === 'me') { exigir('admin', 'trabajador', 'cliente'); return pub(yo); }
@@ -232,7 +331,7 @@ async function apiLocal(path, { method = 'GET', body } = {}) {
     exigir('admin');
     if (b === 'stats') return {
       motos: db.motos.filter(m => m.activo).length,
-      unidades: db.motos.reduce((s, m) => s + m.stock, 0),
+      unidades: db.motos.filter(m => m.activo).reduce((s, m) => s + m.stock, 0),
       pedidos: contar(db.pedidos, 'estado'),
       usuarios: contar(db.usuarios, 'rol'),
     };
@@ -241,6 +340,19 @@ async function apiLocal(path, { method = 'GET', body } = {}) {
       if (!['admin', 'trabajador', 'cliente'].includes(body?.rol)) throw new Error('Revisa los datos ingresados');
       const u = await crearUsuario(body, body.rol);
       db.usuarios.push(u); guardar(); return pub(u);
+    }
+    if (b === 'usuarios' && c && !d && method === 'PUT') {
+      const u = db.usuarios.find(x => x.id === +c);
+      if (!u) throw new Error('Usuario no encontrado');
+      const nombre = String(body?.nombre || '').trim(), email = String(body?.email || '').trim().toLowerCase();
+      if (nombre.length < 3 || !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email) || !['admin', 'trabajador', 'cliente'].includes(body?.rol)
+          || (body.password && String(body.password).length < 8)) throw new Error('Revisa los datos ingresados');
+      if (db.usuarios.some(x => x.id !== u.id && x.email === email)) throw new Error('Ese correo ya está registrado');
+      const activo = body.activo !== false;
+      if (u.id === yo.id && (body.rol !== 'admin' || !activo)) throw new Error('No puedes quitarte el rol de admin ni desactivar tu propia cuenta');
+      u.nombre = nombre; u.email = email; u.rol = body.rol; u.activo = activo;
+      if (body.password) u.password_hash = await sha256(String(body.password));
+      guardar(); return pub(u);
     }
     if (b === 'usuarios' && d === 'activo' && method === 'PATCH') {
       const u = db.usuarios.find(x => x.id === +c);
@@ -302,7 +414,7 @@ function mountPanel({ rol, title, sections }) {
   const nombreUsuario = esInvitado ? 'Invitado' : (u.nombre || 'Usuario');
   const inicial = nombreUsuario.charAt(0).toUpperCase();
   const botonSesion = esInvitado
-      ? `<button class="btn btn-primary w-full" onclick="location.href='/login.html?comprar=true'">Iniciar Sesión</button>`
+      ? `<button class="btn btn-primary w-full" onclick="location.href='/login.html?comprar=true&next='+encodeURIComponent(location.pathname+location.hash)">Iniciar Sesión</button>`
       : `<button id="out" class="btn btn-logout w-full" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Cerrar Sesión</button>`;
 
   // Aplicamos el tema oscuro al body
@@ -374,12 +486,10 @@ function mountPanel({ rol, title, sections }) {
     collapseBtn.onclick = () => {
       sidebar.classList.toggle('collapsed');
       // Guardar preferencia
-      localStorage.setItem('sidebar-collapsed', sidebar.classList.contains('collapsed'));
+      try { localStorage.setItem('sidebar-collapsed', sidebar.classList.contains('collapsed')); } catch { /* sin storage */ }
     };
     // Restaurar preferencia al cargar
-    if (localStorage.getItem('sidebar-collapsed') === 'true') {
-      sidebar.classList.add('collapsed');
-    }
+    try { if (localStorage.getItem('sidebar-collapsed') === 'true') sidebar.classList.add('collapsed'); } catch { /* sin storage */ }
   }
 
   let ultimo = 0;
