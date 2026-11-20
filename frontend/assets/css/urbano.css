@@ -4,17 +4,17 @@
    ========================================================= */
 :root { --llanta: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40'%3E%3Cdefs%3E%0A%3Cfilter id='r' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.07' numOctaves='2' seed='3' result='d'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='d' scale='1.6' result='s'/%3E%0A%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='2' seed='9' result='n'/%3E%3CfeColorMatrix in='n' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -4.5 3.9' result='m'/%3E%3CfeComposite in='s' in2='m' operator='in'/%3E%3C/filter%3E%3C/defs%3E%0A%3Cg filter='url(%23r)' fill='%2302040a' fill-opacity='.62'%3E%3Cpath d='M0 13 L7 0 L15 0 L8 13Z'/%3E%3Cpath d='M7 27 L14 40 L22 40 L15 27Z'/%3E%3Cpath d='M1 16 H17 V24 H1Z'/%3E%3Cpath d='M20 13 L27 0 L35 0 L28 13Z'/%3E%3Cpath d='M27 27 L34 40 L42 40 L35 27Z'/%3E%3Cpath d='M21 16 H37 V24 H21Z'/%3E%3Cpath d='M40 13 L47 0 L55 0 L48 13Z'/%3E%3Cpath d='M47 27 L54 40 L62 40 L55 27Z'/%3E%3Cpath d='M41 16 H57 V24 H41Z'/%3E%3Cpath d='M60 13 L67 0 L75 0 L68 13Z'/%3E%3Cpath d='M67 27 L74 40 L82 40 L75 27Z'/%3E%3Cpath d='M61 16 H77 V24 H61Z'/%3E%3C/g%3E%3C/svg%3E"); --llanta-clara: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40'%3E%3Cdefs%3E%0A%3Cfilter id='r' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.07' numOctaves='2' seed='3' result='d'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='d' scale='1.6' result='s'/%3E%0A%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='2' seed='9' result='n'/%3E%3CfeColorMatrix in='n' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -4.5 3.9' result='m'/%3E%3CfeComposite in='s' in2='m' operator='in'/%3E%3C/filter%3E%3C/defs%3E%0A%3Cg filter='url(%23r)' fill='%23ffffff' fill-opacity='.42'%3E%3Cpath d='M0 13 L7 0 L15 0 L8 13Z'/%3E%3Cpath d='M7 27 L14 40 L22 40 L15 27Z'/%3E%3Cpath d='M1 16 H17 V24 H1Z'/%3E%3Cpath d='M20 13 L27 0 L35 0 L28 13Z'/%3E%3Cpath d='M27 27 L34 40 L42 40 L35 27Z'/%3E%3Cpath d='M21 16 H37 V24 H21Z'/%3E%3Cpath d='M40 13 L47 0 L55 0 L48 13Z'/%3E%3Cpath d='M47 27 L54 40 L62 40 L55 27Z'/%3E%3Cpath d='M41 16 H57 V24 H41Z'/%3E%3Cpath d='M60 13 L67 0 L75 0 L68 13Z'/%3E%3Cpath d='M67 27 L74 40 L82 40 L75 27Z'/%3E%3Cpath d='M61 16 H77 V24 H61Z'/%3E%3C/g%3E%3C/svg%3E"); --vial: #FFD21F; }
 
-/* Botones con huella de llanta de moto */
-.btn-primary, .btn-ghost, .btn-xl, .btn-block, .btn-filter { position: relative; overflow: hidden; isolation: isolate; }
-:is(.btn-primary, .btn-ghost, .btn-xl, .btn-block, .btn-filter)::before {
+/* Botones con huella de llanta de moto (solo tienda y login; los paneles quedan limpios) */
+:is(body.shop, body.login-body) :is(.btn-primary, .btn-ghost, .btn-xl, .btn-block, .btn-filter) { position: relative; overflow: hidden; isolation: isolate; }
+:is(body.shop, body.login-body) :is(.btn-primary, .btn-ghost, .btn-xl, .btn-block, .btn-filter)::before {
   content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: var(--ll, var(--llanta)) 0 50% / auto 100% repeat-x;
   -webkit-mask-image: linear-gradient(90deg, #000 0%, rgba(0,0,0,.5) 30%, rgba(0,0,0,.5) 70%, #000 100%);
           mask-image: linear-gradient(90deg, #000 0%, rgba(0,0,0,.5) 30%, rgba(0,0,0,.5) 70%, #000 100%);
 }
-.btn-ghost:not(:hover)::before { --ll: var(--llanta-clara); }
-.btn-ghost:hover { background: var(--accent-blue, #2F6FE0); border-color: transparent; color: #fff; }
-.btn-danger::before, .btn-wa::before, .btn-primary:disabled::before { display: none; }
+:is(body.shop, body.login-body) .btn-ghost:not(:hover)::before { --ll: var(--llanta-clara); }
+:is(body.shop, body.login-body) .btn-ghost:hover { background: var(--accent-blue, #2F6FE0); border-color: transparent; color: #fff; }
+:is(body.shop, body.login-body) :is(.btn-danger, .btn-wa)::before, :is(body.shop, body.login-body) .btn-primary:disabled::before { display: none; }
 
 /* Grano de concreto */
 body::after {
