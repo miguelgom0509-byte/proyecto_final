@@ -76,8 +76,6 @@ function tarjeta(m) {
 
         <div class="moto-pricebox">
           <span class="moto-price">${money(m.precio, m.moneda)}</span>
-          ${bloqueTarjeta(m)}
-          <span class="moto-cuota">o desde <b>${money(cuotaMensual(m))}</b> al mes<sup>*</sup></span>
         </div>
         ${m.stock > 0 && m.stock <= 3 ? `<p class="moto-urgencia">🔥 ¡Solo quedan ${m.stock} unidad${m.stock === 1 ? '' : 'es'}!</p>` : ''}
 
@@ -155,7 +153,6 @@ async function renderFicha(id) {
     const otras = todas.filter(x => x.id !== m.id);
     const relacionadas = [...otras.filter(x => x.tipo === m.tipo).sort(cercano), ...otras.filter(x => x.tipo !== m.tipo).sort(cercano)].slice(0, 3);
 
-    const cuota = money(cuotaMensual(m));
     v.innerHTML = `
       <div class="fx">
         <nav class="breadcrumb" aria-label="Ruta">
@@ -179,8 +176,6 @@ async function renderFicha(id) {
             <div class="fx-price">
               <span class="fx-price-label">Precio lista</span>
               <b class="fx-price-val">${money(m.precio, m.moneda)}</b>
-              ${bloqueTarjeta(m)}
-              <p class="fx-cuota">O desde <b>${cuota}</b> al mes<sup>*</sup></p>
             </div>
 
             <div class="fx-cta">
@@ -188,7 +183,6 @@ async function renderFicha(id) {
               <a class="btn btn-wa" href="${wa}" target="_blank" rel="noopener">Consultar por WhatsApp</a>
               <button class="btn btn-ghost fx-fav" type="button" data-fav="${m.id}" aria-label="Guardar en favoritos">${favTexto(m.id)}</button>
             </div>
-            <p class="fx-fine">* Cuota referencial: 20 % de inicial, 36 meses, TEA 15 %. El asesor confirma el monto final.</p>
           </aside>
         </section>
 
