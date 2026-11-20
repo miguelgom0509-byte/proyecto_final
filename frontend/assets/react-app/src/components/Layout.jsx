@@ -59,7 +59,7 @@ export default function Layout() {
       <main className="flex-1 flex flex-col overflow-hidden">
         <header className="h-20 bg-surface border-b border-borderSubtle flex items-center justify-between px-8 shrink-0">
           <h1 className="text-xl font-bold text-white capitalize">
-            {location.pathname === '/' ? 'Inicio' : location.pathname.replace('/', '')}
+            {location.pathname === '/' ? 'Inicio' : location.pathname.startsWith('/ficha') ? 'Ficha técnica' : 'Catálogo'}
           </h1>
         </header>
         

@@ -175,4 +175,17 @@ body.admin .btn svg { flex: none; }
 @media (max-width: 640px) {
   body.admin #toast { top: 14px; bottom: auto; left: 14px; right: 14px; transform: translateY(-120px); }
   body.admin #toast.show { transform: none; }
+<<<<<<< HEAD
+=======
+}
+
+/* Tarjetas de cifras: el icono no pisa la etiqueta */
+body.admin .kpi-header { gap: 12px; }
+body.admin .kpi-label { min-width: 0; font-size: 12px; }
+body.admin .kpi-icon { flex: none; }
+/* Filtros a todo el ancho en móvil */
+@media (max-width: 640px) {
+  .toolbar > select, .toolbar .tb-search { flex: 1 1 100%; width: 100%; }
+  .toolbar .tb-count { margin-left: 0; }
+>>>>>>> f9b6e9b9d25e2b893c5fd8ae09540ece1493d0aa
 }

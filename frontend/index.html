@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="theme-color" content="#07121C">
+    <meta name="theme-color" content="#060915">
     
     <!-- SEO Básico -->
     <title>Henvi | Motos nuevas, stock real y financiamiento en Perú</title>
@@ -14,7 +14,10 @@
     <!-- Open Graph -->
     <meta property="og:title" content="Henvi | Encuentra tu próxima moto">
     <meta property="og:description" content="Compara modelos, revisa stock real y simula tu cuota. Pídela hoy sin salir de casa.">
-    <meta property="og:image" content="/recursos/image/fondo.jpeg">
+    <meta property="og:image" content="https://motos-henvi.web.app/recursos/image/fondo.jpeg">
+    <meta property="og:url" content="https://motos-henvi.web.app/">
+    <meta property="og:locale" content="es_PE">
+    <meta name="twitter:card" content="summary_large_image">
     <meta property="og:type" content="website">
 
     <!-- Fuentes -->
@@ -23,10 +26,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
     
     <!-- Estilos -->
-    <link rel="stylesheet" href="/assets/css/landing.css">
+    <link rel="stylesheet" href="/assets/vendor/aos.css">
+    <link rel="stylesheet" href="/assets/vendor/swiper-bundle.min.css">
+    <link rel="stylesheet" href="/assets/css/landing.css?v=20261123">
     
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="/recursos/image/logo.jpeg">
+    <style>.hero h1 span{display:block}</style>
 </head>
 <body class="landing-body">
     <a class="skip" href="#modelos">Saltar al contenido</a>
@@ -63,9 +69,8 @@
 
             <div class="wrap hero-main">
                 <div class="hero-inner">
-                    <span class="hero-badge">🏁 Distribuidor oficial · Perú</span>
-                    <h1>Encuentra tu&nbsp;moto.<br>Pídela hoy.</h1>
-                    <p class="hero-lead">Compara modelos, filtra por cilindrada y precio, revisa el stock y simula tu cuota al instante.</p>
+                    <h1><span>Elige.</span><span>Compara.</span><span>Pide.</span></h1>
+                    <p class="hero-lead">Filtra por cilindrada y precio, revisa el stock y simula tu cuota al instante. Tu moto nueva, sin dar vueltas.</p>
 
                     <!-- Panel Unificado de Búsqueda y Filtros -->
                     <div class="search-widget">
@@ -101,10 +106,11 @@
                                 <label for="qf-precio">Precio máximo</label>
                                 <select id="qf-precio" aria-label="Filtrar por precio máximo">
                                     <option value="">Cualquiera</option>
-                                    <option value="2000">Hasta US$ 2,000</option>
-                                    <option value="3500">Hasta US$ 3,500</option>
-                                    <option value="5000">Hasta US$ 5,000</option>
-                                    <option value="10000">Hasta US$ 10,000</option>
+                                    <option value="1000">Hasta US$ 1,000 (≈ S/ 3,750)</option>
+                                    <option value="1800">Hasta US$ 1,800 (≈ S/ 6,750)</option>
+                                    <option value="2500">Hasta US$ 2,500 (≈ S/ 9,375)</option>
+                                    <option value="3500">Hasta US$ 3,500 (≈ S/ 13,125)</option>
+                                    <option value="5000">Hasta US$ 5,000 (≈ S/ 18,750)</option>
                                 </select>
                             </div>
                             <button class="btn btn-filter" id="qf-aplicar" type="button">Filtrar</button>
@@ -115,24 +121,31 @@
                         <span>Marcas populares:</span>
                     </div>
                 </div>
+
+                <figure class="hero-visual">
+                    <img src="/recursos/image/fondo.jpeg" alt="Motos Polux y Pulsar de Henvi del Sur">
+                    <a class="price-sticker" id="price-sticker" href="#modelos" hidden>
+                        <small>Desde</small><b id="sticker-precio"></b><span id="sticker-modelo"></span>
+                    </a>
+                </figure>
             </div>
 
             <div class="wrap">
                 <div class="hero-facts">
                     <div class="fact">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"/><polyline points="3.3 7 12 12 20.7 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>
+                        <i data-lucide="package" aria-hidden="true"></i>
                         <div><b id="fact-stock" data-count="0">Stock actualizado</b><span id="fact-modelos">Catálogo en línea</span></div>
                     </div>
                     <div class="fact">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                        <i data-lucide="shield-check" aria-hidden="true"></i>
                         <div><b>Garantía oficial</b><span>En todas las motos nuevas</span></div>
                     </div>
                     <div class="fact">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                        <i data-lucide="credit-card" aria-hidden="true"></i>
                         <div><b>Financiamiento</b><span>Simula tu cuota antes de decidir</span></div>
                     </div>
                     <div class="fact">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                        <i data-lucide="wrench" aria-hidden="true"></i>
                         <div><b>Servicio técnico</b><span>Mantenimiento especializado</span></div>
                     </div>
                 </div>
@@ -145,6 +158,10 @@
         </section>
 
         <!-- TIPOS DE MOTO -->
+        <div class="ticker" id="ticker" aria-label="Precios de la lista de noviembre" hidden>
+            <div class="ticker-track" id="ticker-track"></div>
+        </div>
+
         <section id="estilos" class="section">
             <div class="wrap">
                 <div class="section-head reveal">
@@ -160,6 +177,13 @@
         </section>
 
         <!-- MODELOS DESTACADOS -->
+        <section class="showcase" id="showcase" hidden aria-label="Moto destacada">
+            <div class="wrap showcase-grid">
+                <div class="showcase-text" data-sc-text></div>
+                <div class="showcase-bike" data-sc-bike></div>
+            </div>
+        </section>
+
         <section id="modelos" class="section modelos">
             <div class="wrap">
                 <div class="section-head reveal">
@@ -170,8 +194,15 @@
                     <!-- AHORA VA AL PANEL DE CLIENTE -->
                     <a href="/cliente/#catalogo" class="btn btn-line">Ver catálogo completo</a>
                 </div>
-                <div class="gallery" id="featured-gallery" aria-live="polite">
-                    <p class="vacio">Cargando catálogo...</p>
+                <div class="models-carousel no-swiper" id="models-carousel">
+                    <div class="swiper models-swiper" aria-live="polite">
+                        <div class="swiper-wrapper" id="featured-gallery">
+                            <p class="vacio">Cargando catálogo...</p>
+                        </div>
+                    </div>
+                    <button class="mc-btn mc-prev" type="button" aria-label="Modelos anteriores"><i data-lucide="chevron-left"></i></button>
+                    <button class="mc-btn mc-next" type="button" aria-label="Más modelos"><i data-lucide="chevron-right"></i></button>
+                    <div class="swiper-pagination models-pagination"></div>
                 </div>
             </div>
         </section>
@@ -205,17 +236,17 @@
                 </div>
                 <div class="benefits-grid">
                     <article class="benefit-card reveal">
-                        <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+                        <div class="benefit-icon"><i data-lucide="shield-check" aria-hidden="true"></i></div>
                         <h3>Garantía oficial</h3>
                         <p>Todas nuestras motos vienen con garantía de fábrica y respaldo técnico certificado.</p>
                     </article>
                     <article class="benefit-card reveal">
-                        <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+                        <div class="benefit-icon"><i data-lucide="credit-card" aria-hidden="true"></i></div>
                         <h3>Financiamiento flexible</h3>
-                        <p>Cuotas desde 12 hasta 48 meses, con o sin inicial. Simula antes de decidir.</p>
+                        <p>Cuotas de 12 a 48 meses con inicial desde 10 %. Simula antes de decidir.</p>
                     </article>
                     <article class="benefit-card reveal">
-                        <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 7h-3V5a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3v2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/></svg></div>
+                        <div class="benefit-icon"><i data-lucide="boxes" aria-hidden="true"></i></div>
                         <h3>Stock en tiempo real</h3>
                         <p>Consulta unidades disponibles al instante. Sin sorpresas, sin esperas innecesarias.</p>
                     </article>
@@ -337,8 +368,6 @@
                     <h3>HENVI</h3>
                     <p>Plataforma para encontrar, comparar y pedir tu moto nueva en Perú.</p>
                     <div class="footer-social">
-                        <a href="#" aria-label="Facebook"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
-                        <a href="#" aria-label="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="18" cy="6" r="1" fill="currentColor"/></svg></a>
                         <a href="https://wa.me/51922681908" aria-label="WhatsApp" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
                     </div>
                 </div>
@@ -350,14 +379,9 @@
                     <a href="/login.html">Ingresar</a>
                 </div>
                 <div class="footer-newsletter">
-                    <h4>Recibe ofertas</h4>
-                    <p>Promociones y nuevos modelos directo a tu correo.</p>
-                    <form id="newsletter-form">
-                        <input type="email" placeholder="tu@correo.com" required aria-label="Correo electrónico">
-                        <button type="submit" aria-label="Suscribirme">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                        </button>
-                    </form>
+                    <h4>¿Tienes dudas?</h4>
+                    <p>Escríbenos y un asesor te ayuda a elegir tu moto.</p>
+                    <a href="https://wa.me/51922681908?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20una%20moto" class="btn" target="_blank" rel="noopener">Hablar por WhatsApp</a>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -371,11 +395,14 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="/assets/js/core.js"></script>
+    <script src="/assets/vendor/lucide.min.js"></script>
+    <script src="/assets/vendor/aos.js"></script>
+    <script src="/assets/vendor/swiper-bundle.min.js"></script>
+    <script src="/assets/js/core.js?v=20261123"></script>
     <script>
         const TIPO_CAMBIO = 3.75;
         const TEA = 0.15;
-        const IMG_FALLBACK = '/recursos/image/logo.jpeg';
+        const IMG_FALLBACK = '/recursos/image/motos/proximamente.svg';
         const $id = id => document.getElementById(id);
 
         // --- Barra superior ---
@@ -383,7 +410,7 @@
         // Si está logueado, muestra "Mi Panel". Si no, muestra "Catálogo" y "Ingresar".
         navActions.innerHTML = (session.user && session.token)
             ? `<a href="${esc(HOME[session.user.rol] || '/login.html')}" class="btn btn-ghost btn-sm">Mi panel</a>`
-            : `<a href="/cliente/" class="btn btn-ghost btn-sm">Catálogo</a> <a href="/login.html" class="btn btn-primary btn-sm" style="margin-left:10px;">Ingresar</a>`;
+            : `<a href="/cliente/#catalogo" class="btn btn-ghost btn-sm">Catálogo</a> <a href="/login.html" class="btn btn-primary btn-sm" style="margin-left:10px;">Ingresar</a>`;
 
         const navbar = $id('navbar');
         const alScroll = () => navbar.classList.toggle('scrolled', window.scrollY > 40);
@@ -403,18 +430,26 @@
             });
         }
 
-        // --- Scroll reveal ---
-        const io = 'IntersectionObserver' in window
-            ? new IntersectionObserver(entries => {
-                entries.forEach(e => {
-                    if (e.isIntersecting) {
-                        e.target.classList.add('visible');
-                        io.unobserve(e.target);
-                    }
+        // --- Animaciones al hacer scroll (AOS) e iconos (Lucide) ---
+        // Si las librerías no cargan, el contenido queda visible igual.
+        const reducirMovimiento = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        function animar() {
+            if (window.AOS) {
+                document.querySelectorAll('.reveal').forEach((el, i) => {
+                    el.classList.remove('reveal');
+                    el.setAttribute('data-aos', 'fade-up');
+                    const hermanos = el.parentElement.children;
+                    const pos = [...hermanos].indexOf(el);
+                    if (hermanos.length > 1 && pos > 0) el.setAttribute('data-aos-delay', String(Math.min(pos, 5) * 80));
                 });
-            }, { threshold: 0.12 })
-            : null;
-        document.querySelectorAll('.reveal').forEach(el => io ? io.observe(el) : el.classList.add('visible'));
+                AOS.init({ duration: 700, easing: 'ease-out-cubic', once: true, offset: 60, disable: reducirMovimiento });
+                AOS.refreshHard();
+            } else {
+                document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+            }
+        }
+        function iconos() { if (window.lucide) lucide.createIcons(); }
+        animar(); iconos();
 
         // --- Ir al catálogo (AHORA VA AL PANEL DE CLIENTE DIRECTAMENTE) ---
         function irAlCatalogo(filtros = {}) {
@@ -447,20 +482,6 @@
             if (tarjetaTipo && tarjetaTipo.dataset.tipo !== undefined) irAlCatalogo({ tipo: tarjetaTipo.dataset.tipo });
         });
 
-        // --- Newsletter (demo) ---
-        const nlForm = $id('newsletter-form');
-        if (nlForm) {
-            nlForm.onsubmit = e => {
-                e.preventDefault();
-                const input = nlForm.querySelector('input');
-                if (!input.value || !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(input.value)) {
-                    alert('Ingresa un correo válido'); return;
-                }
-                alert('¡Gracias! Te avisaremos de nuestras ofertas.');
-                input.value = '';
-            };
-        }
-
         // --- Contador animado ---
         function animarContador(el, fin, sufijo = '') {
             const inicio = 0, dur = 1200, t0 = performance.now();
@@ -479,7 +500,7 @@
                        : m.stock <= 3 ? `<span class="moto-flag poco">Quedan ${m.stock}</span>` : '';
             // EL ENLACE AHORA VA A LA FICHA DEL CLIENTE
             return `
-            <a class="moto-card reveal" href="/cliente/#ficha/${m.id}">
+            <a class="moto-card" href="/cliente/#ficha/${m.id}">
                 <div class="moto-media">
                     ${flag}
                     <img class="moto-img" src="${esc(m.imagen || IMG_FALLBACK)}" alt="${esc(m.marca)} ${esc(m.modelo)}" loading="lazy"
@@ -490,6 +511,7 @@
                     <h3 class="moto-model">${esc(m.modelo)}</h3>
                     <p class="moto-specs">${esc(m.tipo)}, ${m.cc} cc</p>
                     <span class="moto-price">${money(m.precio, m.moneda)}</span>
+                    ${m.precio_tarjeta > 0 && m.precio_tarjeta < m.precio ? `<span class="moto-tarjeta"><b>${money(m.precio_tarjeta, m.moneda)}</b> solo con tarjeta</span>` : ''}
                 </div>
             </a>`;
         }
@@ -579,6 +601,7 @@
                 catalogo = await api('/motos');
             } catch (e) {
                 galeria.innerHTML = '<p class="vacio">No pudimos cargar el catálogo. Recarga la página para intentarlo de nuevo.</p>';
+                $id('sim-moto').innerHTML = '<option>Catálogo no disponible</option>';
                 return;
             }
             
@@ -597,24 +620,55 @@
             animarContador(stockEl, unidades, ' unidades en stock');
             $id('fact-modelos').textContent = `En ${catalogo.length} modelo${catalogo.length === 1 ? '' : 's'} disponibles`;
 
+            // --- Sticker "desde", cinta de precios y moto destacada (datos reales del catálogo) ---
+            const conStock = catalogo.filter(m => m.stock > 0);
+            const baratas = [...(conStock.length ? conStock : catalogo)].sort((a, b) => enSoles(a) - enSoles(b));
+            const barata = baratas[0];
+            $id('sticker-precio').textContent = money(barata.precio, barata.moneda);
+            $id('sticker-modelo').textContent = barata.modelo;
+            $id('price-sticker').hidden = false;
+
+            const itemsCinta = [...catalogo].sort((a, b) => enSoles(a) - enSoles(b)).map(m =>
+                `<span class="tk-item"><b>${esc(m.modelo)}</b> ${esc(money(m.precio, m.moneda))}</span>`).join('<i class="tk-sep" aria-hidden="true"></i>');
+            $id('ticker-track').innerHTML = `<div class="tk-set">${itemsCinta}<i class="tk-sep" aria-hidden="true"></i></div><div class="tk-set" aria-hidden="true">${itemsCinta}<i class="tk-sep" aria-hidden="true"></i></div>`;
+            $id('ticker').hidden = false;
+
+            const recortadas = catalogo.filter(m => (m.imagen || '').endsWith('.webp') && m.stock > 0);
+            const dest = recortadas.find(m => /RS200/i.test(m.modelo)) || [...recortadas].sort((a, b) => enSoles(b) - enSoles(a))[0];
+            if (dest) {
+                const nombre = dest.modelo.replace(/^Pulsar\s+/i, '');
+                const cuota = (() => { const f = enSoles(dest) * 0.8, i = 0.15 / 12, n = 36; return f * i / (1 - Math.pow(1 + i, -n)); })();
+                document.querySelector('[data-sc-text]').innerHTML = `
+                    <span class="sc-tag">Moto destacada</span>
+                    <h2 class="sc-title">${esc(dest.marca)} <span>${esc(nombre)}</span></h2>
+                    <p class="sc-lead">${esc(dest.tipo)} de ${dest.cc} cc. La más deportiva del catálogo: míralas todas, compara y pide la tuya.</p>
+                    <div class="sc-price"><b>${esc(money(dest.precio, dest.moneda))}</b><span>o desde ${esc(money(cuota, 'PEN'))} al mes</span></div>
+                    <div class="sc-actions">
+                        <a class="btn btn-primary" href="/cliente/#ficha/${dest.id}">Ver ficha técnica</a>
+                        <a class="btn btn-ghost" href="#simulador">Simular mi cuota</a>
+                    </div>`;
+                document.querySelector('[data-sc-bike]').innerHTML = `
+                    <span class="sc-ghost" aria-hidden="true">${esc(nombre)}</span>
+                    <img src="${esc(dest.imagen)}" alt="${esc(dest.marca)} ${esc(dest.modelo)}">`;
+                $id('showcase').hidden = false;
+            }
+
             const marcas = [...new Set(catalogo.map(m => m.marca))].slice(0, 6);
             $id('hero-tags').innerHTML = '<span>Marcas populares:</span>' +
                 marcas.map(x => `<button type="button" class="chip" data-search="${esc(x)}">${esc(x)}</button>`).join('');
 
-            const IMAGENES_TIPO = {
-                'Scooter': 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600&auto=format&fit=crop',
-                'Naked': 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=600&auto=format&fit=crop',
-                'Utilitaria': 'https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?q=80&w=600&auto=format&fit=crop',
-                'Pistera': 'https://images.unsplash.com/photo-1558980664-10ea292d4342?q=80&w=600&auto=format&fit=crop',
-                'Deportiva': 'https://images.unsplash.com/photo-1558980664-10ea292d4342?q=80&w=600&auto=format&fit=crop'
-            };
-            const getImagenTipo = t => IMAGENES_TIPO[t] || 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600&auto=format&fit=crop';
+            // Foto representativa de cada tipo: la de una moto del catálogo de ese tipo
+            const IMAGEN_TIPO = {};
+            catalogo.forEach(m => { if (m.imagen && !IMAGEN_TIPO[m.tipo]) IMAGEN_TIPO[m.tipo] = m.imagen; });
+            const PREFERIDA = { 'Utilitaria': 'ct-125', 'Urbana': 'discover-125-st', 'Naked': 'pulsar-n160-fi', 'Deportiva': 'pulsar-rs200', 'Touring': 'dominar-400-2' };
+            Object.entries(PREFERIDA).forEach(([t, f]) => { const m = catalogo.find(x => x.tipo === t && (x.imagen || '').includes(f)); if (m) IMAGEN_TIPO[t] = m.imagen; });
+            const getImagenTipo = t => IMAGEN_TIPO[t] || IMG_FALLBACK;
 
             const porTipo = catalogo.reduce((o, m) => (o[m.tipo] = (o[m.tipo] || 0) + 1, o), {});
             $id('style-list').innerHTML = Object.entries(porTipo).map(([t, n]) => `
                 <li class="reveal">
                     <button class="style-card" type="button" data-tipo="${esc(t)}">
-                        <img src="${getImagenTipo(t)}" alt="${esc(t)}" loading="lazy">
+                        <img src="${esc(getImagenTipo(t))}" alt="${esc(t)}" loading="lazy">
                         <div class="style-card-content">
                             <span class="style-name">${esc(t)}</span>
                             <span class="style-count">${n} modelo${n === 1 ? '' : 's'}</span>
@@ -630,11 +684,21 @@
                     </button>
                 </li>`;
             
-            document.querySelectorAll('#style-list .reveal').forEach(el => io ? io.observe(el) : el.classList.add('visible'));
+            animar();
 
             const destacadas = [...catalogo].sort((a, b) => (b.stock > 0) - (a.stock > 0)).slice(0, 8);
-            galeria.innerHTML = destacadas.map(tarjeta).join('');
-            document.querySelectorAll('#featured-gallery .reveal').forEach(el => io ? io.observe(el) : el.classList.add('visible'));
+            galeria.innerHTML = destacadas.map(m => `<div class="swiper-slide">${tarjeta(m)}</div>`).join('');
+            if (window.Swiper) {
+                $id('models-carousel').classList.remove('no-swiper');
+                new Swiper('.models-swiper', {
+                    slidesPerView: 1.25, spaceBetween: 14, grabCursor: true, watchOverflow: true,
+                    navigation: { prevEl: '.mc-prev', nextEl: '.mc-next' },
+                    pagination: { el: '.models-pagination', clickable: true },
+                    keyboard: { enabled: true },
+                    breakpoints: { 560: { slidesPerView: 2.2 }, 900: { slidesPerView: 3.2, spaceBetween: 18 }, 1200: { slidesPerView: 4.2, spaceBetween: 20 } },
+                    a11y: { enabled: true },
+                });
+            }
 
             $id('sim-moto').innerHTML = catalogo.map(m =>
                 `<option value="${m.id}">${esc(m.marca)} ${esc(m.modelo)}, ${esc(money(m.precio, m.moneda))}</option>`).join('');

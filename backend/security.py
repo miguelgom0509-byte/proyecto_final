@@ -22,7 +22,11 @@ def hash_password(password: str) -> str:
 
 
 def verify_password(password: str, stored: str) -> bool:
-    salt, digest = stored.split("$")
+    try:
+        salt, digest = stored.split("$")
+        bytes.fromhex(salt)
+    except ValueError:
+        return False
     calc = hashlib.pbkdf2_hmac("sha256", password.encode(), bytes.fromhex(salt), ITER).hex()
     return hmac.compare_digest(calc, digest)
 
@@ -43,6 +47,14 @@ def current_user(cred: HTTPAuthorizationCredentials | None = Depends(bearer), db
     if not user or not user.activo:
         raise HTTPException(401, "Usuario inactivo")
     return user
+
+
+def optional_user(cred: HTTPAuthorizationCredentials | None = Depends(bearer), db: Session = Depends(get_db)) -> Usuario | None:
+    """Usuario si hay un token válido; None si no (no lanza error)."""
+    try:
+        return current_user(cred, db) if cred else None
+    except HTTPException:
+        return None
 
 
 def require(*roles: str):

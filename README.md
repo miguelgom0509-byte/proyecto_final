@@ -6,6 +6,21 @@ Desarrollado con **Python (FastAPI)** en el backend y **HTML, CSS y JavaScript p
 
 ---
 
+## ▶️ Cómo ejecutarlo
+
+```bash
+pip install -r requirements.txt
+cp .env.example .env          # opcional: define tu SECRET_KEY
+python -m uvicorn backend.main:app --reload
+# abre http://localhost:8000
+```
+
+El frontend detecta solo si el backend está disponible (`/api/health`). Si no lo está
+(por ejemplo en Firebase Hosting o abriendo los HTML sin servidor), funciona en **modo local**:
+los datos se guardan en el navegador (`localStorage`) con las mismas cuentas de prueba.
+
+---
+
 ## 🔐 Cuentas de Acceso y Roles
 
 El sistema cuenta con 3 roles definidos. Las cuentas de prueba se generan automáticamente al iniciar el servidor por primera vez (archivo `seed.py`).

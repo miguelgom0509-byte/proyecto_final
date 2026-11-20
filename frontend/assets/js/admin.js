@@ -238,7 +238,13 @@ function modalMoto(m, guardado) {
 }
 
 async function renderInventario(v) {
+<<<<<<< HEAD
   let motos = await api('/motos?todas=true');
+=======
+  const tk = v._tk = (v._tk || 0) + 1;
+  let motos = await api('/motos?todas=true');
+  if (v._tk !== tk) return;
+>>>>>>> f9b6e9b9d25e2b893c5fd8ae09540ece1493d0aa
   window.__marcas = [...new Set(motos.map(m => m.marca))].sort();
   window.__tipos = [...new Set(motos.map(m => m.tipo))].sort();
 
@@ -352,7 +358,13 @@ async function renderInventario(v) {
    PEDIDOS
    ========================================================= */
 async function renderPedidos(v) {
+<<<<<<< HEAD
   let ps = await api('/pedidos');
+=======
+  const tk = v._tk = (v._tk || 0) + 1;
+  let ps = await api('/pedidos');
+  if (v._tk !== tk) return;
+>>>>>>> f9b6e9b9d25e2b893c5fd8ae09540ece1493d0aa
   v.innerHTML = `
     <div class="pg-head animate-up">
       <div><h2>Pedidos</h2><p>Revisa las solicitudes de los clientes y actualiza su estado.</p></div>
@@ -444,7 +456,13 @@ function modalUsuario(u, guardado) {
 }
 
 async function renderUsuarios(v) {
+<<<<<<< HEAD
   let us = await api('/admin/usuarios');
+=======
+  const tk = v._tk = (v._tk || 0) + 1;
+  let us = await api('/admin/usuarios');
+  if (v._tk !== tk) return;
+>>>>>>> f9b6e9b9d25e2b893c5fd8ae09540ece1493d0aa
   v.innerHTML = `
     <div class="pg-head animate-up">
       <div><h2>Usuarios</h2><p>Gestiona quién puede entrar al sistema y con qué permisos.</p></div>
@@ -615,7 +633,10 @@ mountPanel({ rol: 'admin', title: 'Admin', sections: [
       Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
 
       const ctxPedidos = document.getElementById('chart-pedidos').getContext('2d');
-      chartPedidos = new Chart(ctxPedidos, {
+      const totalPed = (p.pendiente || 0) + (p.en_proceso || 0) + (p.entregado || 0) + (p.cancelado || 0);
+      if (!totalPed) {
+        document.getElementById('chart-pedidos').parentElement.innerHTML = '<div class="empty-state" style="border:0;min-height:260px"><p>Aún no hay pedidos para graficar.</p></div>';
+      } else chartPedidos = new Chart(ctxPedidos, {
         type: 'doughnut',
         data: {
           labels: ['Pendientes', 'En Proceso', 'Entregados', 'Cancelados'],
