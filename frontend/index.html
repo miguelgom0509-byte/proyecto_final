@@ -23,12 +23,12 @@
     <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Permanent+Marker&display=swap" rel="stylesheet">
     
     <!-- Estilos -->
     <link rel="stylesheet" href="/assets/vendor/aos.css">
     <link rel="stylesheet" href="/assets/vendor/swiper-bundle.min.css">
-    <link rel="stylesheet" href="/assets/css/landing.css?v=20261123">
+    <link rel="stylesheet" href="/assets/css/landing.css?v=20261141">
     
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="/recursos/image/logo.jpeg">
@@ -38,6 +38,7 @@
     <a class="skip" href="#modelos">Saltar al contenido</a>
 
     <!-- HEADER -->
+    <div class="scroll-bar" id="scroll-bar" aria-hidden="true"></div>
     <header class="landing-navbar" id="navbar">
         <div class="wrap nav-container">
             <a href="/" class="nav-brand" aria-label="Henvi, inicio">
@@ -217,9 +218,12 @@
                     </div>
                 </div>
                 <div class="comparador-grid">
-                    <div class="comparador-selector" id="comparador-selector"></div>
+                    <div class="comparador-lado">
+                        <div class="comp-top"><input type="search" id="comp-buscar" class="comp-buscar" placeholder="Buscar moto..." aria-label="Buscar moto para comparar"><span class="comp-cuenta" id="comp-cuenta">0 de 3</span></div>
+                        <div class="comparador-selector" id="comparador-selector"></div>
+                    </div>
                     <div class="comparador-tabla-wrapper reveal" id="comparador-tabla-wrapper">
-                        <p class="muted" style="text-align:center; padding:2rem;">Selecciona al menos 2 motos para comparar.</p>
+                        <p class="comp-vacio"><b>Elige 2 o 3 motos</b>Marca las que te interesan en la lista y aquí verás precio, cilindrada y stock lado a lado.</p>
                     </div>
                 </div>
             </div>
@@ -496,21 +500,27 @@
 
         // --- Tarjeta de moto (Landing) ---
         function tarjeta(m) {
-            const flag = m.stock < 1 ? '<span class="moto-flag">Agotada</span>'
-                       : m.stock <= 3 ? `<span class="moto-flag poco">Quedan ${m.stock}</span>` : '';
-            // EL ENLACE AHORA VA A LA FICHA DEL CLIENTE
+            const agotada = m.stock < 1;
+            const flag = agotada ? '<span class="moto-flag">Agotada</span>'
+                       : m.stock <= 3 ? `<span class="moto-flag poco">Quedan ${m.stock}</span>`
+                       : '<span class="moto-flag ok">Disponible</span>';
+            // EL ENLACE VA A LA FICHA DEL CLIENTE
             return `
             <a class="moto-card" href="/cliente/#ficha/${m.id}">
                 <div class="moto-media">
                     ${flag}
                     <img class="moto-img" src="${esc(m.imagen || IMG_FALLBACK)}" alt="${esc(m.marca)} ${esc(m.modelo)}" loading="lazy"
                          onerror="this.onerror=null; this.src='${IMG_FALLBACK}'; this.classList.add('sin-foto');">
+                    <span class="moto-tipo">${esc(m.tipo)}</span>
                 </div>
                 <div class="moto-body">
-                    <span class="moto-brand">${esc(m.marca)}, ${m.anio}</span>
+                    <div class="moto-top"><span class="moto-brand">${esc(m.marca)}</span><span class="moto-anio">${m.anio}</span></div>
                     <h3 class="moto-model">${esc(m.modelo)}</h3>
-                    <p class="moto-specs">${esc(m.tipo)}, ${m.cc} cc</p>
-                    <span class="moto-price">${money(m.precio, m.moneda)}</span>
+                    <p class="moto-specs"><b>${m.cc}</b> cc</p>
+                    <div class="moto-foot">
+                        <span class="moto-price-wrap"><small>Precio lista</small><span class="moto-price">${money(m.precio, m.moneda)}</span></span>
+                        <span class="btn btn-primary btn-sm moto-go">Ver ficha</span>
+                    </div>
                 </div>
             </a>`;
         }
@@ -547,11 +557,17 @@
             const wrapper = $id('comparador-tabla-wrapper');
             if (!cont) return;
 
-            cont.innerHTML = catalogo.map(m => `
-                <label class="comp-check">
+            const q = ($id('comp-buscar')?.value || '').trim().toLowerCase();
+            const lista = catalogo.filter(m => !q || `${m.marca} ${m.modelo} ${m.tipo}`.toLowerCase().includes(q));
+            $id('comp-cuenta').textContent = `${seleccionadas.length} de 3`;
+            cont.innerHTML = lista.map(m => `
+                <label class="comp-check ${seleccionadas.includes(m.id) ? 'on' : ''}">
                     <input type="checkbox" value="${m.id}" ${seleccionadas.includes(m.id) ? 'checked' : ''}>
-                    <span>${esc(m.marca)} ${esc(m.modelo)}</span>
-                </label>`).join('');
+                    <img src="${esc(m.imagen || IMG_FALLBACK)}" alt="" loading="lazy">
+                    <span><b>${esc(m.modelo)}</b><small>${esc(m.marca)} · ${m.cc} cc · ${money(m.precio, m.moneda)}</small></span>
+                </label>`).join('') || '<p class="muted" style="padding:1rem">No hay motos con ese nombre.</p>';
+            const buscar = $id('comp-buscar');
+            if (buscar && !buscar._ok) { buscar._ok = 1; buscar.addEventListener('input', renderComparador); }
 
             cont.querySelectorAll('input[type=checkbox]').forEach(chk => {
                 chk.onchange = () => {
@@ -567,7 +583,7 @@
             });
 
             if (seleccionadas.length < 2) {
-                wrapper.innerHTML = '<p class="muted" style="text-align:center; padding:2rem;">Selecciona al menos 2 motos para comparar.</p>';
+                wrapper.innerHTML = `<p class="comp-vacio"><b>${seleccionadas.length ? 'Elige una moto más' : 'Elige 2 o 3 motos'}</b>Marca las que te interesan en la lista y aquí verás precio, cilindrada y stock lado a lado.</p>`;
                 return;
             }
 
@@ -580,12 +596,13 @@
                 ['Cilindrada', m => `${m.cc} cc`],
                 ['Precio', m => `<b style="color:var(--azul-vivo)">${money(m.precio, m.moneda)}</b>`],
                 ['Stock', m => m.stock > 0 ? `${m.stock} un.` : 'Agotada'],
+                ['', m => `<a class="btn btn-ghost" href="/cliente/#ficha/${m.id}">Ver ficha técnica</a>`],
             ];
 
             wrapper.innerHTML = `
                 <div class="tbl" style="border:none; box-shadow:none;">
                     <table>
-                        <thead><tr><th>Especificación</th>${motos.map(m => `<th>${esc(m.marca)} ${esc(m.modelo)}</th>`).join('')}</tr></thead>
+                        <thead><tr><th></th>${motos.map(m => `<th class="comp-th"><img src="${esc(m.imagen || IMG_FALLBACK)}" alt=""><span>${esc(m.marca)} ${esc(m.modelo)}</span></th>`).join('')}</tr></thead>
                         <tbody>
                             ${filas.map(([label, fn]) => `<tr><td><b>${label}</b></td>${motos.map(m => `<td>${fn(m)}</td>`).join('')}</tr>`).join('')}
                         </tbody>
@@ -657,7 +674,7 @@
 
             // Foto representativa de cada tipo: la de una moto del catálogo de ese tipo
             const IMAGEN_TIPO = {};
-            catalogo.forEach(m => { if (m.imagen && !IMAGEN_TIPO[m.tipo]) IMAGEN_TIPO[m.tipo] = m.imagen; });
+            catalogo.forEach(m => { if (m.imagen && !/proximamente/.test(m.imagen) && !IMAGEN_TIPO[m.tipo]) IMAGEN_TIPO[m.tipo] = m.imagen; });
             const PREFERIDA = { 'Utilitaria': 'ct-125', 'Urbana': 'discover-125-st', 'Naked': 'pulsar-n160-fi', 'Deportiva': 'pulsar-rs200', 'Touring': 'dominar-400-2' };
             Object.entries(PREFERIDA).forEach(([t, f]) => { const m = catalogo.find(x => x.tipo === t && (x.imagen || '').includes(f)); if (m) IMAGEN_TIPO[t] = m.imagen; });
             const getImagenTipo = t => IMAGEN_TIPO[t] || IMG_FALLBACK;
@@ -686,17 +703,6 @@
 
             const destacadas = [...catalogo].sort((a, b) => (b.stock > 0) - (a.stock > 0)).slice(0, 8);
             galeria.innerHTML = destacadas.map(m => `<div class="swiper-slide">${tarjeta(m)}</div>`).join('');
-            if (window.Swiper) {
-                $id('models-carousel').classList.remove('no-swiper');
-                new Swiper('.models-swiper', {
-                    slidesPerView: 1.25, spaceBetween: 14, grabCursor: true, watchOverflow: true,
-                    navigation: { prevEl: '.mc-prev', nextEl: '.mc-next' },
-                    pagination: { el: '.models-pagination', clickable: true },
-                    keyboard: { enabled: true },
-                    breakpoints: { 560: { slidesPerView: 2.2 }, 900: { slidesPerView: 3.2, spaceBetween: 18 }, 1200: { slidesPerView: 4.2, spaceBetween: 20 } },
-                    a11y: { enabled: true },
-                });
-            }
 
             $id('sim-moto').innerHTML = catalogo.map(m =>
                 `<option value="${m.id}">${esc(m.marca)} ${esc(m.modelo)}, ${esc(money(m.precio, m.moneda))}</option>`).join('');
@@ -716,5 +722,14 @@
         .wa-float:focus-visible{outline:3px solid #fff;outline-offset:3px}
         .wa-float svg{width:32px;height:32px}
     </style>
+
+    <script>
+        (function () {
+            var b = document.getElementById('scroll-bar'); if (!b) return;
+            var t = 0;
+            function f() { t = 0; var h = document.documentElement.scrollHeight - innerHeight; b.style.transform = 'scaleX(' + (h > 0 ? Math.min(1, scrollY / h) : 0) + ')'; }
+            addEventListener('scroll', function () { if (!t) t = requestAnimationFrame(f); }, { passive: true }); f();
+        })();
+    </script>
 </body>
 </html>
