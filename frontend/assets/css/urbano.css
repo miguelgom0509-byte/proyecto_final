@@ -36,3 +36,51 @@ body.admin::after { display: none; }
 .shop .tk-sep { background: #7CC0FF; box-shadow: 0 0 8px #5AA9FF, 0 0 18px #2F6FE0; }
 .shop-foot { position: relative; border-top: 0; }
 .shop-foot::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 10px; background: repeating-linear-gradient(-45deg, #0A0D14 0 12px, var(--vial) 12px 24px); }
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+.ls-card { position: relative; }
+.ls-card::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: repeating-linear-gradient(90deg, var(--vial) 0 26px, transparent 26px 40px); }
+.ls-back { transition: transform .2s, color .2s; }
+.ls-back:hover { transform: translateX(-3px); }
+
+/* Pestañas Ingresar / Crear cuenta */
+.ls-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 0 0 24px; padding: 4px; background: rgba(7,10,18,.8); border: 1px solid var(--border-strong, #1E2A4A); }
+.ls-tabs button { padding: 11px 8px; font: 800 .82rem/1 inherit; font-family: inherit; letter-spacing: .06em; text-transform: uppercase; color: var(--text-secondary, #9DA9BB); background: transparent; border: 0; cursor: pointer; transition: color .2s, background .2s; position: relative; overflow: hidden; isolation: isolate; }
+.ls-tabs button:hover { color: #fff; }
+.ls-tabs button.on { color: #fff; background: var(--grad-boton, linear-gradient(135deg, #2F6FE0, #1B3F86)); }
+.ls-tabs button.on::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--llanta) 0 50% / auto 100% repeat-x; opacity: .8; -webkit-mask-image: linear-gradient(90deg,#000,rgba(0,0,0,.35) 30%,rgba(0,0,0,.35) 70%,#000); mask-image: linear-gradient(90deg,#000,rgba(0,0,0,.35) 30%,rgba(0,0,0,.35) 70%,#000); }
+.ls-tabs button:focus-visible { outline: 2px solid #CFE0FF; outline-offset: -2px; }
+
+/* Campos */
+.input-wrapper input { transition: border-color .2s, box-shadow .2s, background .2s; }
+.input-wrapper input[name="password"] { padding-right: 48px; }
+.pw-toggle { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; display: grid; place-items: center; background: transparent; border: 0; color: var(--text-secondary, #9DA9BB); cursor: pointer; transition: color .2s; }
+.pw-toggle svg { width: 20px; height: 20px; }
+.pw-toggle:hover, .pw-toggle.on { color: #fff; }
+.pw-toggle.on { color: var(--accent-blue, #2F6FE0); }
+.pw-toggle:focus-visible { outline: 2px solid var(--accent-blue, #2F6FE0); border-radius: 4px; }
+.pw-hint { display: flex; align-items: center; gap: 10px; margin: 8px 0 0; }
+.pw-hint[hidden] { display: none; }
+#pw-bar { display: flex; gap: 4px; }
+#pw-bar i { width: 34px; height: 5px; background: rgba(255,255,255,.14); transform: skewX(-20deg); transition: background .2s; }
+#pw-bar[data-n="1"] i:nth-child(1) { background: #F2B134; }
+#pw-bar[data-n="2"] i:nth-child(-n+2) { background: #5AA9FF; }
+#pw-bar[data-n="3"] i { background: #34D399; }
+.pw-hint small { font-size: 12px; color: var(--text-secondary, #9DA9BB); }
+
+/* Mensaje de error */
+#msg:not(:empty) { padding: 10px 12px; background: rgba(239,68,68,.1); border-left: 3px solid #EF4444; color: #FCA5A5; line-height: 1.4; }
+
+/* Botón principal con estado de carga */
+.btn-primary.cargando::after { content: ''; display: inline-block; width: 15px; height: 15px; margin-left: 10px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: giro .7s linear infinite; }
+@keyframes giro { to { transform: rotate(360deg); } }
+.btn-primary:disabled { opacity: .85; cursor: progress; }
+
+/* Lado visual: cinta neón al pie y titular con sombra de cartel */
+.ls-visual::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 12px; z-index: 3; background: repeating-linear-gradient(-45deg, #060915 0 12px, #2F6FE0 12px 24px); filter: drop-shadow(0 0 8px rgba(90,169,255,.9)); }
+.ls-title { text-shadow: 4px 4px 0 #1B3F86, 0 8px 40px rgba(0,0,0,.6); }
+.ls-perks li > span { box-shadow: 0 0 12px rgba(47,111,224,.8); }
+.login-footer a.btn-link { font-size: 14px; }
+@media (max-width: 900px) { .ls-visual::after { bottom: 28px; transform: skewY(-3deg); } }

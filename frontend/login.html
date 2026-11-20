@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <meta name="description" content="Ingresa a Henvi para solicitar tu moto y seguir tus pedidos.">
     <link rel="icon" type="image/jpeg" href="/recursos/image/logo.jpeg">
-    <link rel="stylesheet" href="/assets/css/panel.css?v=20261120"><link rel="stylesheet" href="/assets/css/urbano.css?v=20261140">
+    <link rel="stylesheet" href="/assets/css/panel.css?v=20261120"><link rel="stylesheet" href="/assets/css/urbano.css?v=20261142">
 </head>
 <body class="login-body login-split-body">
     <main class="ls">
@@ -35,7 +35,11 @@
         <!-- Lado del formulario -->
         <section class="ls-form">
             <div class="login-card ls-card">
-                <a class="ls-back" href="/">Volver al inicio</a>
+                <a class="ls-back" href="/">&larr; Volver al inicio</a>
+                <div class="ls-tabs" role="tablist" aria-label="Ingresar o crear cuenta">
+                    <button type="button" role="tab" class="on" aria-selected="true" data-modo="login">Ingresar</button>
+                    <button type="button" role="tab" aria-selected="false" data-modo="registro">Crear cuenta</button>
+                </div>
                 <div class="login-header ls-header">
                     <h1 id="t">Bienvenido de nuevo</h1>
                     <p id="subtitle" class="text-muted">Ingresa tus credenciales para continuar</p>
@@ -57,7 +61,7 @@
                     <label>Correo electrónico</label>
                     <div class="input-wrapper">
                         <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                        <input name="email" type="email" placeholder="tu@correo.com" required>
+                        <input name="email" type="email" placeholder="tu@correo.com" required autocomplete="email" autofocus>
                     </div>
                 </div>
 
@@ -66,8 +70,12 @@
                     <label>Contraseña</label>
                     <div class="input-wrapper">
                         <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                        <input name="password" type="password" placeholder="••••••••" required minlength="8">
+                        <input name="password" id="pw" type="password" placeholder="••••••••" required minlength="8" autocomplete="current-password">
+                        <button type="button" class="pw-toggle" id="pw-toggle" aria-label="Mostrar contraseña" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
                     </div>
+                    <p class="pw-hint" id="pw-hint" hidden><span id="pw-bar"><i></i><i></i><i></i></span><small id="pw-txt">Mínimo 8 caracteres</small></p>
                 </div>
 
                 <p id="msg" class="text-red" role="alert" style="font-size: 13px; margin-bottom: 16px; font-weight: 600;"></p>
@@ -88,8 +96,7 @@
                 </div>
 
                 <div class="login-footer">
-                    <p class="text-muted" id="footer-text">¿No tienes una cuenta?</p>
-                    <button class="btn-link" id="sw" type="button">Regístrate aquí</button>
+                    <p class="text-muted">¿Problemas para ingresar? <a class="btn-link" href="https://wa.me/51922681908?text=Hola%2C%20necesito%20ayuda%20para%20ingresar%20a%20mi%20cuenta" target="_blank" rel="noopener">Escríbenos por WhatsApp</a></p>
                 </div>
             </div>
         </section>
@@ -116,27 +123,46 @@
 
         if (session.user && session.token) location.href = (destinoSeguro && session.user.rol === 'cliente') ? destinoSeguro : HOME[session.user.rol];
         
-        const btnSwitch = document.getElementById('sw');
-        if(btnSwitch) {
-            btnSwitch.onclick = () => {
-                reg = !reg;
-                // Muestra u oculta el campo nombre
-                document.getElementById('group-nombre').hidden = !reg;
-                
-                document.getElementById('t').textContent = reg ? 'Crea tu cuenta' : 'Bienvenido de nuevo';
-                
-                if (vieneAComprar && !reg) {
-                    document.getElementById('subtitle').innerHTML = '<b style="color:var(--accent-blue)">¡Estás a un paso!</b><br>Inicia sesión para solicitar tu moto.';
-                } else {
-                    document.getElementById('subtitle').textContent = reg ? 'Regístrate para empezar a comprar' : 'Ingresa tus credenciales para continuar';
-                }
-                
-                document.getElementById('go').textContent = reg ? 'Crear cuenta' : 'Ingresar al sistema';
-                document.getElementById('footer-text').textContent = reg ? '¿Ya tienes una cuenta?' : '¿No tienes una cuenta?';
-                btnSwitch.textContent = reg ? 'Inicia sesión' : 'Regístrate aquí';
-            };
+        const subtituloLogin = () => vieneAComprar
+            ? '<b style="color:var(--accent-blue)">¡Estás a un paso!</b><br>Inicia sesión para solicitar tu moto.'
+            : 'Ingresa tus credenciales para continuar';
+        function setModo(r) {
+            reg = r;
+            document.getElementById('group-nombre').hidden = !reg;
+            document.getElementById('t').textContent = reg ? 'Crea tu cuenta' : 'Bienvenido de nuevo';
+            document.getElementById('subtitle').innerHTML = reg ? 'Regístrate para empezar a comprar' : subtituloLogin();
+            document.getElementById('go').textContent = reg ? 'Crear cuenta' : 'Ingresar al sistema';
+            document.getElementById('pw').autocomplete = reg ? 'new-password' : 'current-password';
+            document.getElementById('pw-hint').hidden = !reg;
+            document.getElementById('msg').textContent = '';
+            document.querySelectorAll('.ls-tabs button').forEach(t => {
+                const on = (t.dataset.modo === 'registro') === reg;
+                t.classList.toggle('on', on); t.setAttribute('aria-selected', on);
+            });
         }
-        
+        document.querySelectorAll('.ls-tabs button').forEach(t => t.onclick = () => setModo(t.dataset.modo === 'registro'));
+        if (urlParams.get('registro') === 'true') setModo(true);
+
+        // Mostrar / ocultar contraseña
+        document.getElementById('pw-toggle').onclick = e => {
+            const i = document.getElementById('pw'), ver = i.type === 'password';
+            i.type = ver ? 'text' : 'password';
+            e.currentTarget.setAttribute('aria-pressed', ver);
+            e.currentTarget.setAttribute('aria-label', ver ? 'Ocultar contraseña' : 'Mostrar contraseña');
+            e.currentTarget.classList.toggle('on', ver);
+        };
+        // Fuerza de la contraseña (solo al crear cuenta)
+        document.getElementById('pw').addEventListener('input', e => {
+            const v = e.target.value;
+            let n = 0;
+            if (v.length >= 8) n++;
+            if (/[A-Z]/.test(v) && /[a-z]/.test(v)) n++;
+            if (/\d/.test(v) && (v.length >= 10 || /[^A-Za-z0-9]/.test(v))) n++;
+            const bar = document.getElementById('pw-bar');
+            bar.dataset.n = v ? Math.max(n, 1) : 0;
+            document.getElementById('pw-txt').textContent = !v ? 'Mínimo 8 caracteres' : v.length < 8 ? 'Muy corta: mínimo 8 caracteres' : ['', 'Aceptable', 'Buena', 'Fuerte'][n] || 'Aceptable';
+        });
+
         function irDespues(usuario) {
             if (destinoSeguro && usuario.rol === 'cliente') location.href = destinoSeguro;
             else if (vieneAComprar && usuario.rol === 'cliente') location.href = '/cliente/';
@@ -189,7 +215,7 @@
                 e.preventDefault(); 
                 document.getElementById('msg').textContent = '';
                 const btn = document.getElementById('go');
-                btn.disabled = true; btn.textContent = 'Procesando...';
+                btn.disabled = true; btn.classList.add('cargando'); btn.textContent = reg ? 'Creando cuenta...' : 'Ingresando...';
 
                 try {
                     const d = await api(reg ? '/auth/registro' : '/auth/login', { method: 'POST', body: formData(e.target) });
@@ -198,7 +224,7 @@
                     irDespues(d.usuario);
                 } catch(x) {
                     document.getElementById('msg').textContent = x.message;
-                    btn.disabled = false; 
+                    btn.disabled = false; btn.classList.remove('cargando');
                     btn.textContent = reg ? 'Crear cuenta' : 'Ingresar al sistema';
                 }
             };
