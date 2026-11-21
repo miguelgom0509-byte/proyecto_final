@@ -10,6 +10,32 @@
     <link rel="stylesheet" href="../assets/css/admin.css?v=20261124"><link rel="stylesheet" href="../assets/css/urbano.css?v=20261143">
 </head>
 <body>
+<script>
+    /* Diagnóstico: si el panel no carga, muestra el motivo en pantalla en vez de dejarla en blanco */
+    (function () {
+        var log = [], box = null;
+        function crear() {
+            var st = document.createElement('style');
+            st.textContent = '#diag{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#070A12;color:#E6ECF8;font:15px/1.5 system-ui,sans-serif;padding:24px}#diag div{max-width:560px}#diag h1{font-size:22px;margin:0 0 8px}#diag pre{white-space:pre-wrap;word-break:break-word;background:#0F1626;border:1px solid #25324F;padding:12px;font-size:12.5px;color:#FCA5A5;max-height:220px;overflow:auto}#diag button{margin:6px 8px 0 0;padding:10px 16px;border:0;background:#2F6FE0;color:#fff;font:700 14px system-ui;cursor:pointer}#diag button.sec{background:#1B2540}';
+            box = document.createElement('div'); box.id = 'diag'; box.setAttribute('role', 'alert');
+            box.innerHTML = '<div><h1>No se pudo cargar el panel</h1><p>Prueba reiniciar los datos guardados en este navegador. Si sigue igual, envía una captura de este mensaje.</p><pre id="diag-log"></pre><button id="diag-reset" type="button">Reiniciar datos y volver a ingresar</button><button class="sec" id="diag-retry" type="button">Reintentar</button></div>';
+            document.documentElement.appendChild(st); document.documentElement.appendChild(box);
+            box.querySelector('#diag-reset').onclick = function () {
+                try { Object.keys(localStorage).filter(function (k) { return k.indexOf('ma_') === 0; }).forEach(function (k) { localStorage.removeItem(k); }); } catch (x) {}
+                location.href = '/login.html';
+            };
+            box.querySelector('#diag-retry').onclick = function () { location.reload(); };
+        }
+        function show(m) { log.push(m); if (!box) crear(); box.querySelector('#diag-log').textContent = log.join('\n'); }
+        window.addEventListener('error', function (e) {
+            if (e.target && e.target !== window && e.target.tagName) { if (/^SCRIPT$/.test(e.target.tagName) && !/fonts|chart|cdn/.test(e.target.src || e.target.href || '')) show('No cargó: ' + (e.target.src || e.target.href)); }
+            else show((e.message || 'Error') + (e.filename ? ' (' + e.filename.split('/').pop() + ':' + e.lineno + ')' : ''));
+        }, true);
+        window.addEventListener('unhandledrejection', function (e) { show('Promesa rechazada: ' + ((e.reason && e.reason.message) || e.reason)); });
+        setTimeout(function () { if (!document.querySelector('.sidebar')) show('El panel no se dibujó (sin menú lateral).'); }, 4000);
+    })();
+</script>
+
     <!-- 1. IMPORTAR CHART.JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
