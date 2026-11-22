@@ -1,138 +1,6 @@
-const estadoTag = e => `<span class="tag ${esc(e)}">${ESTADOS[e] || esc(e)}</span>`;
-
 let chartPedidos = null;
 let chartUsuarios = null;
 
-function exportarExcel(datos, nombreArchivo) {
-    if (!datos || datos.length === 0) {
-        toast('No hay datos para exportar');
-        return;
-    }
-    const cabeceras = Object.keys(datos[0]);
-    const filas = datos.map(obj => 
-        cabeceras.map(cabecera => {
-            let valor = obj[cabecera] === null || obj[cabecera] === undefined ? '' : obj[cabecera];
-            valor = String(valor).replace(/"/g, '""');
-            return `"${valor}"`;
-        }).join(',')
-    );
-    const csvContent = [cabeceras.join(','), ...filas].join('\n');
-    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `${nombreArchivo}_${new Date().toISOString().slice(0,10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    toast('Archivo exportado correctamente');
-}
-
-function animarValor(obj, start, end, duration) {
-  let startTimestamp = null;
-  const step = (timestamp) => {
-    if (!startTimestamp) startTimestamp = timestamp;
-    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-    obj.innerHTML = Math.floor(progress * (end - start) + start);
-    if (progress < 1) window.requestAnimationFrame(step);
-  };
-  window.requestAnimationFrame(step);
-}
-
-
-/* =========================================================
-   Utilidades del panel: iconos, modal, confirmación, paginación
-   ========================================================= */
-const I = {
-  plus: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
-  edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
-  off: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.9" y1="4.9" x2="19.1" y2="19.1"/></svg>',
-  on: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>',
-  eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
-  search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
-  dl: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
-  x: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
-};
-const TC_USD = 3.75;
-const norm = s => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-const debounce = (fn, ms = 180) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
-
-/** Abre un cuadro de diálogo. Devuelve { el, cerrar }. Esc, clic fuera y la X lo cierran. */
-function abrirModal({ titulo, subtitulo = '', cuerpo, pie = '', chico = false, alCerrar }) {
-  const previo = document.activeElement;
-  const el = document.createElement('div');
-  el.className = 'am-backdrop';
-  el.innerHTML = `
-    <div class="am-dialog ${chico ? 'am-sm' : ''}" role="dialog" aria-modal="true" aria-labelledby="am-t">
-      <div class="am-head">
-        <div><h3 id="am-t">${esc(titulo)}</h3>${subtitulo ? `<p>${esc(subtitulo)}</p>` : ''}</div>
-        <button type="button" class="am-x" aria-label="Cerrar" data-x>${I.x}</button>
-      </div>
-      <div class="am-body">${cuerpo}</div>
-      ${pie ? `<div class="am-foot">${pie}</div>` : ''}
-    </div>`;
-  document.body.appendChild(el);
-  document.body.style.overflow = 'hidden';
-  const cerrar = (valor) => {
-    document.removeEventListener('keydown', tecla);
-    el.remove();
-    document.body.style.overflow = '';
-    if (previo && previo.focus) previo.focus();
-    if (alCerrar) alCerrar(valor);
-  };
-  const tecla = e => { if (e.key === 'Escape') cerrar(); };
-  document.addEventListener('keydown', tecla);
-  el.addEventListener('mousedown', e => { if (e.target === el) cerrar(); });
-  el.querySelector('[data-x]').onclick = () => cerrar();
-  const primero = el.querySelector('input:not([type=hidden]):not(:disabled), select:not(:disabled), button.btn');
-  if (primero) setTimeout(() => primero.focus(), 30);
-  return { el, cerrar };
-}
-
-/** Confirmación con botones propios. Devuelve una promesa con true / false. */
-function confirmar({ titulo, texto, ok = 'Confirmar', peligro = false }) {
-  return new Promise(res => {
-    let hecho = false;
-    const m = abrirModal({
-      titulo, chico: true, cuerpo: `<p class="am-text">${texto}</p>`,
-      pie: `<button type="button" class="btn btn-ghost" data-no>Cancelar</button>
-            <button type="button" class="btn ${peligro ? 'btn-danger-solid' : 'btn-primary'}" data-si>${esc(ok)}</button>`,
-      alCerrar: () => { if (!hecho) res(false); },
-    });
-    m.el.querySelector('[data-no]').onclick = () => m.cerrar();
-    m.el.querySelector('[data-si]').onclick = () => { hecho = true; res(true); m.cerrar(); };
-  });
-}
-
-/** Campo de formulario del modal. */
-function campo(name, label, { type = 'text', val = '', req = false, span = '', attrs = '', hint = '', prefix = '', list = '' } = {}) {
-  const input = `<input name="${name}" type="${type}" value="${esc(val)}" ${req ? 'required' : ''} ${list ? `list="${list}"` : ''} ${attrs}>`;
-  return `<label class="am-f ${span}"><span>${label}${req ? '<i>*</i>' : ''}</span>${prefix ? `<div class="am-prefix"><em>${prefix}</em>${input}</div>` : input}${hint ? `<small>${hint}</small>` : ''}</label>`;
-}
-const interruptor = (name, titulo, desc, on, disabled = false) =>
-  `<label class="am-switch"><input type="checkbox" name="${name}" ${on ? 'checked' : ''} ${disabled ? 'disabled' : ''}><span class="trk"></span><span><b>${titulo}</b><small>${desc}</small></span></label>`;
-
-/** Paginación simple: devuelve el HTML del pie y el recorte de la lista. */
-function paginar(lista, pag, por = 12) {
-  const total = lista.length, pags = Math.max(1, Math.ceil(total / por));
-  pag = Math.min(Math.max(1, pag), pags);
-  const ini = (pag - 1) * por;
-  const nums = [];
-  for (let i = 1; i <= pags; i++) if (i === 1 || i === pags || Math.abs(i - pag) <= 1) nums.push(i); else if (nums[nums.length - 1] !== '…') nums.push('…');
-  const html = total <= por ? `<div class="pager"><span>${total} registro${total === 1 ? '' : 's'}</span></div>` : `
-    <div class="pager"><span>Mostrando ${ini + 1}–${Math.min(total, ini + por)} de ${total}</span>
-      <div class="pager-btns">
-        <button type="button" data-pag="${pag - 1}" ${pag === 1 ? 'disabled' : ''} aria-label="Anterior">‹</button>
-        ${nums.map(n => n === '…' ? '<span>…</span>' : `<button type="button" data-pag="${n}" ${n === pag ? 'aria-current="page"' : ''}>${n}</button>`).join('')}
-        <button type="button" data-pag="${pag + 1}" ${pag === pags ? 'disabled' : ''} aria-label="Siguiente">›</button>
-      </div></div>`;
-  return { pag, filas: lista.slice(ini, ini + por), html };
-}
-
-const enSoles = m => (m.moneda === 'USD' ? m.precio * TC_USD : m.precio);
-const iniciales = n => String(n || '?').trim().charAt(0).toUpperCase();
-const miId = () => session.user && session.user.id;
 
 /* ---------- Estado de filtros (se conserva al cambiar de sección) ---------- */
 const inv = { q: '', marca: '', tipo: '', estado: '', orden: 'moto', dir: 1, pag: 1 };
@@ -330,9 +198,9 @@ async function renderInventario(v) {
   $('#inv-tipo').onchange = e => { inv.tipo = e.target.value; inv.pag = 1; pintar(); };
   $('#inv-estado').onchange = e => { inv.estado = e.target.value; inv.pag = 1; pintar(); };
   $('#inv-new').onclick = () => modalMoto(null, recargar);
-  $('#inv-exp').onclick = () => exportarExcel(filtrar().map(m => ({
+  enlazarExport('inv-exp', () => filtrar().map(m => ({
     'Marca': m.marca, 'Modelo': m.modelo, 'Año': m.anio, 'Tipo': m.tipo, 'Cilindrada (cc)': m.cc, 'Moneda': m.moneda, 'Precio lista': m.precio,
-    'Bono': m.bono ?? '', 'Precio solo tarjeta': m.precio_tarjeta ?? '', 'Stock': m.stock, 'Estado': m.activo ? 'Visible' : 'De baja' })), 'Inventario_MotoAltiplano');
+    'Bono': m.bono ?? '', 'Precio solo tarjeta': m.precio_tarjeta ?? '', 'Stock': m.stock, 'Estado': m.activo ? 'Visible' : 'De baja' })), 'Inventario_MotoAltiplano', 'Inventario de motos');
 
   $('#inv-tabla').onclick = async e => {
     const t = e.target.closest('button, a'); if (!t) return;
@@ -380,20 +248,25 @@ async function renderPedidos(v) {
     const lista = filtrar(), p = paginar(lista, ped.pag, 12); ped.pag = p.pag;
     $('#ped-tabla').innerHTML = !lista.length
       ? '<div class="empty-state" style="border:0;border-radius:0"><p>No hay pedidos con esos filtros.</p></div>'
-      : `<div class="table-responsive"><table class="data-table"><thead><tr><th>N.º</th><th>Fecha</th><th>Cliente</th><th>Moto</th><th>Nota</th><th>Estado</th></tr></thead><tbody>
+      : `<div class="table-responsive"><table class="data-table"><thead><tr><th>N.º</th><th>Fecha</th><th>Cliente</th><th>Moto</th><th>Nota</th><th>Estado</th><th></th></tr></thead><tbody>
         ${p.filas.map(x => `<tr>
           <td><b>#${x.id}</b></td><td>${fecha(x.creado)}</td><td><b>${esc(x.cliente)}</b></td><td>${esc(x.moto)}</td>
           <td class="nota-cell" title="${esc(x.nota || '')}">${esc(x.nota) || '<span style="opacity:.4">—</span>'}</td>
           <td><select class="select-estado ${esc(x.estado)}" data-id="${x.id}" aria-label="Estado del pedido ${x.id}">
-            ${Object.entries(ESTADOS).map(([k, l]) => `<option value="${k}" ${k === x.estado ? 'selected' : ''}>${l}</option>`).join('')}</select></td></tr>`).join('')}
+            ${Object.entries(ESTADOS).map(([k, l]) => `<option value="${k}" ${k === x.estado ? 'selected' : ''}>${l}</option>`).join('')}</select></td>
+          <td><div class="row-actions"><button type="button" class="icon-action" data-det="${x.id}" title="Ver detalle" aria-label="Ver detalle del pedido ${x.id}">${I.eye}</button></div></td></tr>`).join('')}
         </tbody></table></div>${p.html}`;
   };
   pintar();
 
   $('#ped-q').oninput = debounce(e => { ped.q = e.target.value; ped.pag = 1; pintar(); });
   $('#ped-chips').onclick = e => { const b = e.target.closest('[data-est]'); if (!b) return; ped.estado = b.dataset.est; ped.pag = 1; pintar(); };
-  $('#ped-exp').onclick = () => exportarExcel(filtrar().map(p => ({ 'N° Pedido': p.id, 'Fecha': fecha(p.creado), 'Cliente': p.cliente, 'Moto': p.moto, 'Estado': ESTADOS[p.estado], 'Nota': p.nota || '' })), 'Pedidos_MotoAltiplano');
-  $('#ped-tabla').onclick = e => { const b = e.target.closest('[data-pag]'); if (b) { ped.pag = +b.dataset.pag; pintar(); } };
+  enlazarExport('ped-exp', () => filtrar().map(p => ({ 'N° Pedido': p.id, 'Fecha': fecha(p.creado), 'Cliente': p.cliente, 'Moto': p.moto, 'Estado': ESTADOS[p.estado], 'Nota': p.nota || '' })), 'Pedidos_MotoAltiplano', 'Pedidos');
+  $('#ped-tabla').onclick = async e => {
+    const b = e.target.closest('[data-pag]'); if (b) { ped.pag = +b.dataset.pag; pintar(); return; }
+    const d = e.target.closest('[data-det]');
+    if (d) { const motos = await api('/motos?todas=true'); detallePedido(ps.find(x => x.id === +d.dataset.det), { motos, alCambiar: async () => { ps = await api('/pedidos'); pintar(); } }); }
+  };
   $('#ped-tabla').onchange = async e => {
     const s = e.target.closest('.select-estado'); if (!s) return;
     try { await api(`/pedidos/${s.dataset.id}/estado`, { method: 'PATCH', body: { estado: s.value } }); toast('Estado actualizado'); }
@@ -494,7 +367,7 @@ async function renderUsuarios(v) {
   $('#usu-q').oninput = debounce(e => { usu.q = e.target.value; usu.pag = 1; pintar(); });
   $('#usu-rol').onchange = e => { usu.rol = e.target.value; usu.pag = 1; pintar(); };
   $('#usu-new').onclick = () => modalUsuario(null, recargar);
-  $('#usu-exp').onclick = () => exportarExcel(filtrar().map(u => ({ 'Nombre': u.nombre, 'Correo': u.email, 'Rol': ROLES[u.rol], 'Estado': u.activo ? 'Activo' : 'Inactivo' })), 'Usuarios_MotoAltiplano');
+  enlazarExport('usu-exp', () => filtrar().map(u => ({ 'Nombre': u.nombre, 'Correo': u.email, 'Rol': ROLES[u.rol], 'Estado': u.activo ? 'Activo' : 'Inactivo' })), 'Usuarios_MotoAltiplano', 'Usuarios');
   $('#usu-tabla').onclick = async e => {
     const t = e.target.closest('button'); if (!t) return;
     if (t.dataset.pag) { usu.pag = +t.dataset.pag; return pintar(); }
@@ -508,6 +381,101 @@ async function renderUsuarios(v) {
 /* =========================================================
    Montaje del panel
    ========================================================= */
+
+/* =========================================================
+   REPORTES
+   ========================================================= */
+const rep = { dias: 30 };
+let chartRep = null;
+async function renderReportes(v) {
+  const tk = v._tk = (v._tk || 0) + 1;
+  const [pedidos, motos] = await Promise.all([api('/pedidos'), api('/motos?todas=true')]);
+  if (v._tk !== tk) return;
+  const porId = Object.fromEntries(motos.map(m => [m.id, m]));
+  const DIA = 86400000;
+  const periodos = [[7, '7 días'], [30, '30 días'], [90, '90 días'], [0, 'Todo']];
+
+  v.innerHTML = `
+    <div class="pg-head animate-up">
+      <div><h2>Reportes</h2><p>Resumen comercial del periodo y estado del inventario.</p></div>
+      <div class="pg-actions">
+        <button class="btn btn-ghost" id="rp-ped" type="button">${I.dl} Pedidos CSV</button>
+        <button class="btn btn-ghost" id="rp-inv" type="button">${I.dl} Inventario CSV</button>
+        <button class="btn btn-ghost" id="rp-print" type="button">Imprimir</button>
+      </div>
+    </div>
+    <div class="toolbar animate-up delay-1" style="border:1px solid var(--border-subtle);border-radius:var(--radius-md);background:var(--bg-surface);margin-bottom:20px">
+      <span class="tb-label">Periodo</span>
+      <div class="chips" id="rp-chips" role="group" aria-label="Periodo del reporte"></div>
+    </div>
+    <div id="rp-body"></div>`;
+
+  const pintar = () => {
+    $('#rp-chips').innerHTML = periodos.map(([d, l]) => `<button type="button" class="chip" data-d="${d}" aria-pressed="${rep.dias === d}">${l}</button>`).join('');
+    const desde = rep.dias ? Date.now() - rep.dias * DIA : 0;
+    const ps = pedidos.filter(p => new Date(p.creado).getTime() >= desde);
+    const ent = ps.filter(p => p.estado === 'entregado');
+    const ingresos = ent.reduce((s, p) => s + (porId[p.moto_id] ? enSoles(porId[p.moto_id]) : 0), 0);
+    const tasa = ps.length ? Math.round(ent.length / ps.length * 100) : 0;
+    const activos = ps.filter(p => p.estado !== 'cancelado');
+
+    // Más solicitadas
+    const cont = {}; activos.forEach(p => { cont[p.moto] = (cont[p.moto] || 0) + 1; });
+    const top = Object.entries(cont).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    const maxTop = top.length ? top[0][1] : 1;
+    // Por marca (inventario)
+    const porMarca = {}; motos.filter(m => m.activo).forEach(m => { const o = porMarca[m.marca] || (porMarca[m.marca] = { modelos: 0, unidades: 0, valor: 0 }); o.modelos++; o.unidades += m.stock; o.valor += enSoles(m) * m.stock; });
+    const marcas = Object.entries(porMarca).sort((a, b) => b[1].valor - a[1].valor);
+    const maxVal = marcas.length ? marcas[0][1].valor || 1 : 1;
+    const porTipo = {}; motos.filter(m => m.activo).forEach(m => { porTipo[m.tipo] = (porTipo[m.tipo] || 0) + 1; });
+    const tipos = Object.entries(porTipo).sort((a, b) => b[1] - a[1]);
+    const maxTipo = tipos.length ? tipos[0][1] : 1;
+    const sinStock = motos.filter(m => m.activo && m.stock === 0).length;
+
+    const kpi = (l, n, sub = '') => `<div class="kpi-card"><div class="kpi-header"><span class="kpi-label">${l}</span></div><div class="kpi-value">${n}</div>${sub ? `<div class="kpi-sub">${sub}</div>` : ''}</div>`;
+    $('#rp-body').innerHTML = `
+      <div class="grid-kpi">
+        ${kpi('Pedidos recibidos', ps.length, rep.dias ? `Últimos ${rep.dias} días` : 'Todo el historial')}
+        ${kpi('Entregados', ent.length, `${tasa} % de los pedidos`)}
+        ${kpi('Ventas estimadas', solesTxt(ingresos), 'Según precio lista de lo entregado')}
+        ${kpi('Ticket promedio', ent.length ? solesTxt(ingresos / ent.length) : '—', 'Por moto entregada')}
+      </div>
+      <div class="rp-grid">
+        <div class="table-card"><div class="table-header"><h3 class="table-title">Pedidos en el tiempo</h3></div><div class="rp-chart"><canvas id="rp-chart" aria-label="Pedidos por periodo"></canvas></div></div>
+        <div class="table-card"><div class="table-header"><h3 class="table-title">Motos más solicitadas</h3></div>
+          <div class="rp-bars">${top.length ? top.map(([n, c]) => `<div><span>${esc(n)}</span><i style="--w:${Math.round(c / maxTop * 100)}%"></i><b>${c}</b></div>`).join('') : '<p class="text-muted">Aún no hay pedidos en este periodo.</p>'}</div></div>
+        <div class="table-card"><div class="table-header"><h3 class="table-title">Valor del inventario por marca</h3></div>
+          <div class="rp-bars">${marcas.map(([n, o]) => `<div><span>${esc(n)} <small>${o.unidades} un.</small></span><i style="--w:${Math.round(o.valor / maxVal * 100)}%"></i><b>${solesTxt(o.valor)}</b></div>`).join('')}</div></div>
+        <div class="table-card"><div class="table-header"><h3 class="table-title">Modelos por tipo</h3></div>
+          <div class="rp-bars">${tipos.map(([n, c]) => `<div><span>${esc(n)}</span><i style="--w:${Math.round(c / maxTipo * 100)}%"></i><b>${c}</b></div>`).join('')}</div>
+          ${sinStock ? `<p class="rp-aviso">${sinStock} modelo${sinStock === 1 ? '' : 's'} sin stock. <a href="#motos">Revisar inventario</a></p>` : ''}</div>
+      </div>`;
+
+    // Gráfico: pedidos por día (7 y 30 días) o por semana (90 días y todo)
+    const semana = rep.dias === 0 || rep.dias > 30;
+    const clave = d => { const x = new Date(d); if (semana) { x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); } return x.toISOString().slice(0, 10); };
+    const buckets = new Map();
+    if (rep.dias) { const paso = semana ? 7 : 1; for (let t = desde; t <= Date.now() + DIA; t += paso * DIA) buckets.set(clave(t), 0); }
+    ps.forEach(p => { const k = clave(p.creado); buckets.set(k, (buckets.get(k) || 0) + 1); });
+    const keys = [...buckets.keys()].sort();
+    const fmt = k => new Date(k + 'T12:00:00').toLocaleDateString('es-PE', { day: 'numeric', month: 'short' });
+    if (chartRep) { chartRep.destroy(); chartRep = null; }
+    const cv = $('#rp-chart');
+    if (!window.Chart) { cv.parentElement.innerHTML = '<p class="text-muted" style="padding:24px">No se pudo cargar el gráfico (revisa tu conexión).</p>'; }
+    else if (!ps.length) { cv.parentElement.innerHTML = '<p class="text-muted" style="padding:24px">Sin pedidos en este periodo.</p>'; }
+    else {
+      Chart.defaults.color = '#94A3B8'; Chart.defaults.font.family = 'Montserrat, sans-serif'; Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+      chartRep = new Chart(cv, { type: 'bar', data: { labels: keys.map(fmt), datasets: [{ label: semana ? 'Pedidos por semana' : 'Pedidos por día', data: keys.map(k => buckets.get(k)), backgroundColor: '#2F6FE0', borderRadius: 4, maxBarThickness: 28 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } }, x: { grid: { display: false } } } } });
+    }
+    enlazarExport('rp-ped', () => ps.map(p => ({ 'N° Pedido': p.id, 'Fecha': fecha(p.creado), 'Cliente': p.cliente, 'Moto': p.moto, 'Estado': ESTADOS[p.estado], 'Precio lista (S/)': porId[p.moto_id] ? Math.round(enSoles(porId[p.moto_id])) : '', 'Nota': p.nota || '' })), 'Reporte_pedidos', 'Reporte de pedidos');
+  };
+  pintar();
+  $('#rp-chips').onclick = e => { const b = e.target.closest('[data-d]'); if (b) { rep.dias = +b.dataset.d; pintar(); } };
+  enlazarExport('rp-inv', () => motos.map(m => ({ 'Marca': m.marca, 'Modelo': m.modelo, 'Tipo': m.tipo, 'cc': m.cc, 'Precio lista': m.precio, 'Moneda': m.moneda, 'Precio tarjeta': m.precio_tarjeta || '', 'Stock': m.stock, 'Visible': m.activo ? 'Sí' : 'No' })), 'Reporte_inventario', 'Reporte de inventario');
+  $('#rp-print').onclick = () => window.print();
+}
+
 mountPanel({ rol: 'admin', title: 'Admin', sections: [
   { id: 'resumen', label: 'Dashboard', async render(v) {
     const [stats, pedidos, motos] = await Promise.all([
@@ -676,6 +644,8 @@ mountPanel({ rol: 'admin', title: 'Admin', sections: [
   
   { id: 'motos', label: 'Inventario', render: renderInventario },
   { id: 'pedidos', label: 'Pedidos', render: renderPedidos },
+  { id: 'reportes', label: 'Reportes', render: renderReportes },
   { id: 'usuarios', label: 'Usuarios', render: renderUsuarios },
 ] });
 document.body.classList.add('admin');
+panelX({ admin: true, inventario: 'motos', alCambiar: () => window.dispatchEvent(new HashChangeEvent('hashchange')) });
