@@ -1,0 +1,96 @@
+/* Capa de movimiento compartida (landing + cliente). Todo con transform/opacity (GPU) y curvas suaves. */
+:root { --mo-ease: cubic-bezier(.22, 1, .36, 1); --mo-spring: cubic-bezier(.34, 1.56, .64, 1); }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Barra de progreso de lectura */
+.mo-progress { position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 200; pointer-events: none; transform-origin: 0 50%; transform: scaleX(0);
+  background: linear-gradient(90deg, #2F6FE0, #8FB8FF 60%, #FFD21F); box-shadow: 0 0 12px rgba(47, 111, 224, .8); will-change: transform; }
+
+/* Entrada al hacer scroll (con escalonado) */
+.mo { opacity: 0; transform: translate3d(0, 30px, 0) scale(.97); will-change: opacity, transform; animation: none !important;
+  transition: opacity .8s var(--mo-ease), transform .9s var(--mo-ease); transition-delay: var(--mo-d, 0ms); }
+.mo.mo-left { transform: translate3d(-44px, 0, 0); }
+.mo.mo-right { transform: translate3d(44px, 0, 0); }
+.mo.mo-zoom { transform: scale(.9); }
+.mo.mo-in { opacity: 1; transform: none; }
+.mo.mo-done { will-change: auto; transition-delay: 0ms; }
+/* tras entrar, que el hover vuelva a sus transiciones normales y rápidas */
+.moto-card.mo-done, .benefit-card.mo-done, .style-card.mo-done, .sh-tipo.mo-done { transition: transform .28s var(--mo-ease), box-shadow .28s, border-color .28s, background .28s, opacity .3s; }
+
+/* Entrada del hero del cliente y de la landing (una sola vez, al cargar) */
+@keyframes mo-rise { from { opacity: 0; transform: translate3d(0, 26px, 0); } to { opacity: 1; transform: none; } }
+@keyframes mo-slide { from { opacity: 0; transform: translate3d(70px, 0, 0) scale(.94); } to { opacity: 1; transform: none; } }
+@keyframes mo-pop { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: none; } }
+.sh-hero-text > * { animation: mo-rise .9s var(--mo-ease) backwards; }
+.sh-hero-text > :nth-child(1) { animation-delay: .05s; } .sh-hero-text > :nth-child(2) { animation-delay: .15s; }
+.sh-hero-text > :nth-child(3) { animation-delay: .25s; } .sh-hero-text > :nth-child(4) { animation-delay: .35s; }
+.sh-hero-text > :nth-child(5) { animation-delay: .45s; } .sh-hero-text > :nth-child(6) { animation-delay: .55s; }
+.sh-hero-bike img { animation: mo-slide 1.1s var(--mo-ease) .15s both; }
+.sh-tag { animation: mo-pop .8s var(--mo-spring) .9s backwards; }
+.sh-stats li { animation: mo-rise .8s var(--mo-ease) backwards; }
+.sh-stats li:nth-child(1) { animation-delay: .6s; } .sh-stats li:nth-child(2) { animation-delay: .72s; } .sh-stats li:nth-child(3) { animation-delay: .84s; }
+.fact { animation: mo-rise .8s var(--mo-ease) backwards; }
+.fact:nth-child(1) { animation-delay: .5s; } .fact:nth-child(2) { animation-delay: .62s; } .fact:nth-child(3) { animation-delay: .74s; } .fact:nth-child(4) { animation-delay: .86s; }
+.shop-nav { animation: mo-drop .7s var(--mo-ease) backwards; }
+@keyframes mo-drop { from { opacity: 0; transform: translate3d(0, -100%, 0); } to { opacity: 1; transform: none; } }
+
+/* Flotación suave de las motos del hero y respiración del sticker */
+@keyframes mo-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
+.showcase-bike img, .sh-hero-bike img { animation-name: mo-slide, mo-float; animation-duration: 1.1s, 6s; animation-delay: .15s, 1.4s; animation-iteration-count: 1, infinite; animation-timing-function: var(--mo-ease), ease-in-out; animation-fill-mode: backwards, none; }
+.sh-ghost { will-change: transform; }
+
+/* Parallax y tilt (usan las propiedades individuales translate/rotate: no pisan el transform existente) */
+[data-par] { translate: 0 var(--mo-py, 0px); will-change: translate; }
+.mo-tilt { transform: perspective(1000px) rotateX(var(--mo-rx, 0deg)) rotateY(var(--mo-ry, 0deg)); transition: transform .35s var(--mo-ease); transform-style: preserve-3d; }
+.mo-tilt.mo-live { transition: transform .08s linear; }
+
+/* Botones magnéticos + onda al pulsar */
+.btn, .sh-marca, .sh-tipo { -webkit-tap-highlight-color: transparent; }
+.mo-mag { translate: var(--mo-mx, 0px) var(--mo-my, 0px); transition: translate .3s var(--mo-ease), transform .2s, box-shadow .2s, background-color .2s, border-color .2s; }
+.mo-ripple { position: absolute; border-radius: 50%; pointer-events: none; background: rgba(255, 255, 255, .45); transform: scale(0); animation: mo-ripple .65s var(--mo-ease) forwards; z-index: 1; }
+@keyframes mo-ripple { to { transform: scale(1); opacity: 0; } }
+.btn, .sh-marca { position: relative; overflow: hidden; }
+
+/* Brillo que sigue al cursor en tarjetas */
+.moto-card, .benefit-card, .style-card, .sh-tipo { --mx: 50%; --my: 50%; }
+.moto-card::after, .benefit-card::after, .sales-card::after { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .35s;
+  background: radial-gradient(260px circle at var(--mx) var(--my), rgba(143, 184, 255, .22), transparent 60%); }
+.moto-card, .benefit-card { position: relative; }
+.moto-card:hover::after, .benefit-card:hover::after, .sales-card:hover::after { opacity: 1; }
+
+/* Imágenes: aparecen al cargar y la moto se acerca en hover */
+img.mo-img { opacity: 0; transform: scale(1.04); transition: opacity .7s var(--mo-ease), transform .9s var(--mo-ease); }
+img.mo-img.mo-loaded { opacity: 1; transform: none; }
+.moto-card:hover .moto-img, .sales-card:hover img { transform: scale(1.06) translateY(-2px); }
+
+/* Navegación: subrayado deslizante y barra que se compacta */
+.landing-navbar, .shop-nav { transition: transform .45s var(--mo-ease), background-color .3s, box-shadow .3s, padding .3s; }
+.mo-hide { transform: translate3d(0, -110%, 0) !important; }
+.shop-links a::after { transform-origin: 0 50%; transition: transform .35s var(--mo-ease); }
+
+/* Contadores: dígitos de ancho fijo para que no "bailen" */
+.sh-stats b, .fact b, .fact strong, [data-count] { font-variant-numeric: tabular-nums; }
+
+/* Filtros y chips: respuesta con resorte */
+.sh-marca, .sh-tipo { transition: transform .35s var(--mo-spring), background-color .25s, border-color .25s, color .25s, box-shadow .25s; }
+.sh-marca:active, .sh-tipo:active { transform: scale(.94); }
+.sh-marca.active, .sh-tipo.active { animation: mo-pop-soft .45s var(--mo-spring); }
+@keyframes mo-pop-soft { 0% { transform: scale(.92); } 100% { transform: scale(1); } }
+
+/* Cambio de vista y carga */
+.spinner { animation-duration: .8s; }
+.loading-state { animation: mo-rise .5s var(--mo-ease) backwards; }
+.sh-more .btn { animation: mo-rise .5s var(--mo-ease) backwards; }
+
+/* Botón de WhatsApp: entrada con rebote */
+.wa-float { animation: mo-pop .9s var(--mo-spring) 1.2s backwards; }
+
+/* Modales/ventanas del panel (por si se reutiliza) */
+@media (prefers-reduced-motion: reduce) {
+  .mo, .mo.mo-left, .mo.mo-right, .mo.mo-zoom { opacity: 1; transform: none; transition: none; }
+  .mo-progress { display: none; }
+  img.mo-img { opacity: 1; transform: none; }
+  .sh-hero-text > *, .sh-hero-bike img, .sh-tag, .sh-stats li, .fact, .shop-nav, .wa-float, .showcase-bike img { animation: none !important; }
+  [data-par], .mo-mag { translate: none; }
+}
