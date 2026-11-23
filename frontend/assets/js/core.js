@@ -160,9 +160,74 @@ async function semilla() {
   };
 }
 
-const guardarDB = d => { try { localStorage.setItem(DB_KEY, JSON.stringify(d)); } catch { /* sin acceso a storage */ } };
+const guardarDB = d => { if (d._fs) return guardarFirestore(d); try { localStorage.setItem(DB_KEY, JSON.stringify(d)); } catch { /* sin acceso a storage */ } };
 let semillaPromise = null;
+// ===================================================================
+// FIRESTORE (sitio publicado en Firebase Hosting): los datos viven en la nube y se comparten entre máquinas.
+// Colecciones: motos, usuarios, pedidos (documento = id numérico). Si Firestore no responde, se usa localStorage.
+// ===================================================================
+const FS_COLS = ['motos', 'usuarios', 'pedidos'];
+const cargarScript = src => new Promise((ok, mal) => {
+  if (document.querySelector(`script[data-fb="${src}"]`)) return ok();
+  const el = document.createElement('script');
+  el.src = src; el.dataset.fb = src; el.onload = ok; el.onerror = () => mal(new Error('No se pudo cargar ' + src));
+  document.head.appendChild(el);
+});
+let fsPromise = null;
+function detectarFirestore() {
+  fsPromise ??= (async () => {
+    if (location.protocol === 'file:' || /^(localhost|127\.|0\.0\.0\.0)/.test(location.hostname)) return null;
+    try {
+      const r = await fetch('/__/firebase/init.json', { cache: 'no-store' });
+      if (!r.ok) return null;
+      const cfg = await r.json();
+      if (!cfg?.projectId) return null;
+      if (!window.firebase?.initializeApp) await cargarScript('/__/firebase/10.14.1/firebase-app-compat.js');
+      if (!firebase.firestore) await cargarScript('/__/firebase/10.14.1/firebase-firestore-compat.js');
+      const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(cfg);
+      const fs = firebase.firestore(app);
+      await fs.collection('meta').doc('config').get(); // prueba de permisos
+      return fs;
+    } catch (e) { console.warn('Firestore no disponible, se usa el almacenamiento local:', e); return null; }
+  })();
+  return fsPromise;
+}
+let cacheFs = null, escrituras = [];
+async function cargarDBFirestore(fs) {
+  if (cacheFs && Date.now() - cacheFs.t < 3000) return cacheFs.db;
+  const snaps = await Promise.all(FS_COLS.map(c => fs.collection(c).get()));
+  const db = {};
+  FS_COLS.forEach((c, i) => { db[c] = snaps[i].docs.map(d => ({ ...d.data(), id: d.data().id ?? (+d.id || d.id) })); });
+  if (!db.motos.length && !db.usuarios.length) { // base vacía: se siembra con el catálogo y las cuentas demo
+    const sem = await semilla();
+    db.motos = sem.motos; db.usuarios = sem.usuarios; db.pedidos = [];
+    Object.defineProperty(db, '_snap', { value: Object.fromEntries(FS_COLS.map(c => [c, new Map()])) });
+  } else {
+    Object.defineProperty(db, '_snap', { value: Object.fromEntries(FS_COLS.map(c => [c, new Map(db[c].map(x => [String(x.id), JSON.stringify(x)]))])) });
+  }
+  db.seq = Object.fromEntries(FS_COLS.map(c => [c, db[c].reduce((m, x) => Math.max(m, +x.id || 0), 0)]));
+  Object.defineProperty(db, '_fs', { value: fs });
+  cacheFs = { t: Date.now(), db };
+  if (!db._snap.motos.size) guardarDB(db);
+  return db;
+}
+function guardarFirestore(d) {
+  const cambios = [];
+  FS_COLS.forEach(c => d[c].forEach(x => {
+    const j = JSON.stringify(x), k = String(x.id);
+    if (d._snap[c].get(k) !== j) { cambios.push([c, k, JSON.parse(j)]); d._snap[c].set(k, j); }
+  }));
+  for (let i = 0; i < cambios.length; i += 400) {
+    const lote = d._fs.batch();
+    cambios.slice(i, i + 400).forEach(([c, k, v]) => lote.set(d._fs.collection(c).doc(k), v));
+    escrituras.push(lote.commit());
+  }
+  if (cacheFs) cacheFs.t = Date.now();
+}
+
 async function cargarDB() {
+  const fsDb = await detectarFirestore();
+  if (fsDb) return cargarDBFirestore(fsDb);
   const leer = () => { try { return JSON.parse(localStorage.getItem(DB_KEY)); } catch { return null; } };
   let d = leer();
   if (!d) {
@@ -202,7 +267,15 @@ function validarMoto(d) {
   return r;
 }
 
-async function apiLocal(path, { method = 'GET', body } = {}) {
+async function apiLocal(path, opts) {
+  try {
+    const r = await apiLocalCore(path, opts);
+    await Promise.all(escrituras);
+    return r;
+  } catch (e) { cacheFs = null; throw e; } finally { escrituras = []; }
+}
+
+async function apiLocalCore(path, { method = 'GET', body } = {}) {
   const db = await cargarDB();
   const [ruta, qs] = path.split('?');
   const q = new URLSearchParams(qs || '');
